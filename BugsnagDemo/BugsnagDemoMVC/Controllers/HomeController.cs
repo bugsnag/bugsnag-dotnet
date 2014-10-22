@@ -16,14 +16,13 @@ namespace BugsnagDemoMVC.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
+            throw new ExecutionEngineException("Could not compute!!!!");
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-            throw new InvalidCastException("RandomCast");
 
             return View();
         }

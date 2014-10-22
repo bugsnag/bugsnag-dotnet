@@ -11,7 +11,7 @@ namespace BugsnagDemoMVC
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static Client Bugsnag = null;
+        public static Client Bugsnag { get; set; }
 
         protected void Application_Start()
         {
@@ -21,7 +21,6 @@ namespace BugsnagDemoMVC
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            
         }
     }
 }
