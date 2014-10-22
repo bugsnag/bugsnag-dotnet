@@ -94,7 +94,7 @@ namespace Bugsnag
             var errorInfo = new EventInfo
             {
                 App = appInfo,
-                Device = new DeviceInfo { OsVersion = Config.OsVersion },
+                Device = Configuration.DeviceInfo,
                 Severity = "info",
                 User = userInfo,
                 Exceptions = expInfos,
@@ -139,8 +139,12 @@ namespace Bugsnag
             dataStream.Write(byteArray, 0, byteArray.Length);
             dataStream.Close();
 
-            //  Get the response.  See https://bugsnag.com/docs/notifier-api for response codes
-            var response = request.GetResponse();
+            // TODO do something with the response
+            request.GetResponse();
+
+            stream.Dispose();
+            dataStream.Dispose();
+
         }
 
         

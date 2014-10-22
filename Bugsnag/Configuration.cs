@@ -1,4 +1,5 @@
 ﻿using Bugsnag.Message.Core;
+using Bugsnag.Message.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +12,16 @@ namespace Bugsnag
     {
         private const string DefaultEndpoint = "notify.bugsnag.com";
 
-        private const string NotifierName = ".NET Bugsnag Notifier (ALPHA)";
-        private const string NotifierVersion = "1.2.6";
-        private const string NotifierUrl = "https://bugsnag.com";
-
         public static readonly NotifierInfo NotifierInfo = new NotifierInfo
         {
             Name = ".NET Bugsnag Notifier (ALPHA)",
             Version = "1.2.6",
             Url = "https://bugsnag.com"
+        };
+
+        public static readonly DeviceInfo DeviceInfo = new DeviceInfo
+        {
+             OsVersion = Profiler.GetOsInfo()
         };
 
         public string ApiKey { get; private set; }
