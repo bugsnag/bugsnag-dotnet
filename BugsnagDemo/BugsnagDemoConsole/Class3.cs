@@ -10,7 +10,8 @@ namespace BugsnagDemoConsole
     {
         public static void GetExp()
         {
-            throw new ArithmeticException("Can't Add 1 and 1");
+            
+            throw new InvalidTimeZoneException("TIME ZONE A");
         }
     }
 }

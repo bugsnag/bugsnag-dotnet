@@ -1,23 +1,22 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Bugsnag.Message.Event
 {
-    [DataContract]
     public class StackTraceFrameInfo
     {
-        [DataMember(Name = "file")]
+        [JsonProperty("file")]
         public string File { get; set; }
 
-        [DataMember(Name = "lineNumber")]
-        public int LineNumber { get; set; }
+        [JsonProperty("lineNumber")]
+        public int? LineNumber { get; set; }
 
-        [DataMember(Name = "columnNumber", IsRequired = false, EmitDefaultValue = false)]
-        public int ColumnNumber { get; set; }
+        [JsonProperty("columnNumber")]
+        public int? ColumnNumber { get; set; }
 
-        [DataMember(Name = "method")]
+        [JsonProperty("method")]
         public string Method { get; set; }
 
-        [DataMember(Name = "inProject", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("inProject")]
         public bool InProject { get; set; }
     }
 }

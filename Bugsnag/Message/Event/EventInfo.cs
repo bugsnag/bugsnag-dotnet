@@ -1,45 +1,47 @@
 ﻿using Bugsnag.Message.App;
 using Bugsnag.Message.Core;
 using Bugsnag.Message.Device;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Bugsnag.Message.Event
 {
-    [DataContract]
     public class EventInfo
     {
-        [DataMember(Name = "user", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("user")]
         public UserInfo User { get; set; }
 
-        [DataMember(Name = "app", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("app")]
         public AppInfo App { get; set; }
 
-        [DataMember(Name = "appState", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("appState")]
         public AppStateInfo AppState { get; set; }
 
-        [DataMember(Name = "device", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("device")]
         public DeviceInfo Device { get; set; }
 
-        [DataMember(Name = "deviceState", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("deviceState")]
         public DeviceStateInfo DeviceState { get; set; }
 
-        [DataMember(Name = "context", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("context")]
         public string Context { get; set; }
 
-        [DataMember(Name = "severity", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("severity")]
         public string Severity { get; set; }
 
-        [DataMember(Name = "payloadVersion")]
-        public const int PayloadVersion = 2;
+        [JsonProperty("payloadVersion")]
+        public int PayloadVersion {get {return 2;}}
 
-        [DataMember(Name = "groupingHash", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("groupingHash")]
         public string GroupingHash { get; set; }
 
-        [DataMember(Name = "exceptions")]
+        [JsonProperty("exceptions")]
         public List<ExceptionInfo> Exceptions { get; set; }
 
-        [DataMember(Name = "threads", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("threads")]
         public List<ThreadInfo> Threads { get; set; }
+
+        [JsonProperty("metaData")]
+        public Dictionary<string, TabInfo> MetaData { get; set; }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Bugsnag.Message.Device
 {
-    [DataContract]
     public class DeviceInfo
     {
-        [DataMember(Name = "osVersion", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("osVersion")]
         public string OsVersion { get; set; }
 
-        [DataMember(Name = "hostname", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("hostname")]
         public string Hostname { get; set; }
     }
 }

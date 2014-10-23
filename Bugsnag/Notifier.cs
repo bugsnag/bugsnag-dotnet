@@ -3,6 +3,7 @@ using Bugsnag.Message.App;
 using Bugsnag.Message.Core;
 using Bugsnag.Message.Device;
 using Bugsnag.Message.Event;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +17,7 @@ namespace Bugsnag
     public class Notifier
     {
         private Configuration Config { get; set; }
-        private DataContractJsonSerializer serialiser = new DataContractJsonSerializer(typeof(Notification));
+        private static IWebProxy Proxy = WebRequest.DefaultWebProxy;
 
         public Notifier(Configuration config)
         {
@@ -49,11 +50,12 @@ namespace Bugsnag
             var currentExp = exp;
             while (currentExp != null)
             {
-                
-                var stack = new StackTrace(exp, true);
-                var frames = new List<StackTraceFrameInfo>();
+
+                var stack = new StackTrace(currentExp, true);
+                List<StackTraceFrameInfo> frames = null;
                 if (stack.GetFrames() != null)
                 {
+                    frames = new List<StackTraceFrameInfo>();
                     foreach (var frame in stack.GetFrames())
                     {
                         var method = frame.GetMethod();
@@ -83,13 +85,35 @@ namespace Bugsnag
                 }
                 var expInfo = new ExceptionInfo
                 {
-                    ExceptionClass = exp.GetType().Name,
-                    Message = exp.Message,
+                    ExceptionClass = currentExp.GetType().Name,
+                    Message = currentExp.Message,
                     StackTrace = frames
                 };
                 expInfos.Add(expInfo);
-                currentExp = exp.InnerException;
-            }       
+                currentExp = currentExp.InnerException;
+            }
+
+            var t1 = new TabInfo
+            {
+                Entries = new List<TabEntry>
+                {
+                    new TabKeyValuePair("aaa","Hello_A"),
+                    new TabKeyValuePair("bbb","Hello_B"),
+                   
+                    new TabKeyValuePair("eee","Hello_E"),
+                    new TabKeyValuePair("fff","Hello_F"),
+                    new TabSection { Name = "Section Alpha", Pairs = new List<TabKeyValuePair>
+                    {
+                        new TabKeyValuePair("ccc","Hello_C"),
+                        new TabKeyValuePair("ddd","Hello_D")
+                    }},
+                    new TabSection { Name = "Section Beta", Pairs = new List<TabKeyValuePair>
+                    {
+                        new TabKeyValuePair("ccc","Hello_C"),
+                        new TabKeyValuePair("ddd","Hello_D")
+                    }}
+                }
+            };
 
             var errorInfo = new EventInfo
             {
@@ -99,7 +123,8 @@ namespace Bugsnag
                 User = userInfo,
                 Exceptions = expInfos,
                 Context = "",
-                GroupingHash = ""
+                GroupingHash = "",
+                MetaData = new Dictionary<string, TabInfo> { {"Test23", t1 }, {"pop", t2}}
             };
             events.Add(errorInfo);
 
@@ -116,37 +141,21 @@ namespace Bugsnag
 
         public void Send(Notification notification)
         {
-            var stream = new MemoryStream();
-            serialiser.WriteObject(stream, notification);
-
-            //  Create a byte array:
-            byte[] byteArray = stream.ToArray();
-
             //  Post JSON to server:
             //var request = WebRequest.Create("http://requestb.in/12pa7di1");
             var request = WebRequest.Create("https://notify.bugsnag.com");
-           
-            //if (useSSL)
-            //    request = WebRequest.Create(httpsUrl);
-            //else
-            //    request = WebRequest.Create(httpUrl);
 
             request.Method = WebRequestMethods.Http.Post;
             request.ContentType = "application/json";
-            request.ContentLength = byteArray.Length;
+            request.Proxy = Proxy;
 
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-
-            // TODO do something with the response
-            request.GetResponse();
-
-            stream.Dispose();
-            dataStream.Dispose();
-
-        }
-
-        
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(notification, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+            request.GetResponse().Close();
+        } 
     }
 }

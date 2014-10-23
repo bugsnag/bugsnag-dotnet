@@ -10,7 +10,14 @@ namespace BugsnagDemoConsole
     {
         public static void GetExp()
         {
-            Class3.GetExp();
+            try
+            {
+                Class3.GetExp();
+            }
+            catch (Exception exp)
+            {
+                throw new ArithmeticException("Can't Multiply 1 and 1", exp);
+            }
         }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Bugsnag.Message.App
 {
-    [DataContract]
     public class AppInfo
     {
-        [DataMember(Name = "version", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("version")]
         public string Version { get; set; }
 
-        [DataMember(Name = "releaseStage", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty("releaseStage")]
         public string ReleaseStage { get; set; }
     }
 }

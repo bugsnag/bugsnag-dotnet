@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Bugsnag.Message.Event
 {
-    [DataContract]
     public class ExceptionInfo
     {
-        [DataMember(Name = "errorClass")]
+        [JsonProperty("errorClass")]
         public string ExceptionClass { get; set; }
 
-        [DataMember(Name = "message")]
+        [JsonProperty("message")]
         public string Message { get; set; }
 
-        [DataMember(Name = "stacktrace")]
+        [JsonProperty("stacktrace")]
         public List<StackTraceFrameInfo> StackTrace { get; set; }
     }
 }

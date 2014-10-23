@@ -1,20 +1,19 @@
 ﻿using Bugsnag.Message.Core;
 using Bugsnag.Message.Event;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Bugsnag.Message
 {
-    [DataContract]
     public class Notification
     {
-        [DataMember(Name = "apiKey")]
+        [JsonProperty("apiKey")]
         public string ApiKey { get; set; }
 
-        [DataMember(Name = "notifier")]
+        [JsonProperty("notifier")]
         public NotifierInfo Notifier { get; set; }
 
-        [DataMember(Name = "events")]
+        [JsonProperty("events")]
         public List<EventInfo> Events { get; set; }
     }
 }

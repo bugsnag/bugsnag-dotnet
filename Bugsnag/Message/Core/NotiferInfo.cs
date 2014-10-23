@@ -1,17 +1,16 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Bugsnag.Message.Core
 {
-    [DataContract]
     public class NotifierInfo
     {
-        [DataMember(Name = "name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [DataMember(Name = "version")]
+        [JsonProperty("version")]
         public string Version { get; set; }
 
-        [DataMember(Name = "url")]
+        [JsonProperty("url")]
         public string Url { get; set; }
     }
 }
