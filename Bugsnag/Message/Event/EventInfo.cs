@@ -27,7 +27,7 @@ namespace Bugsnag.Message.Event
         public string Context { get; set; }
 
         [JsonProperty("severity")]
-        public string Severity { get; set; }
+        public Severity Severity { get; set; }
 
         [JsonProperty("payloadVersion")]
         public int PayloadVersion {get {return 2;}}
@@ -42,6 +42,6 @@ namespace Bugsnag.Message.Event
         public List<ThreadInfo> Threads { get; set; }
 
         [JsonProperty("metaData")]
-        public Dictionary<string, TabInfo> MetaData { get; set; }
+        public Dictionary<string, Dictionary<string, object>> MetaData { get; set; }
     }
 }

@@ -45,12 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Event\Event.cs" />
+    <Compile Include="MetaData.cs" />
+    <Compile Include="NotificationFactory.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Event\Error.cs" />
+    <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Message\App\AppInfo.cs" />
     <Compile Include="Message\App\AppStateInfo.cs" />
-    <Compile Include="Message\Core\TabInfo.cs" />
     <Compile Include="Message\Device\DeviceInfo.cs" />
     <Compile Include="Message\Device\DeviceStateInfo.cs" />
     <Compile Include="Message\Event\EventInfo.cs" />

@@ -4,11 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bugsnag.Message.Device;
 
 namespace Bugsnag
 {
     public static class Profiler
     {
+        public static readonly DeviceInfo DeviceInfo = new DeviceInfo
+        {
+            OsVersion = GetOsInfo()
+        };
+
+
         public static string GetOsInfo()
         {
             var osInfo = Environment.OSVersion;

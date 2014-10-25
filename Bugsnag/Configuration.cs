@@ -10,49 +10,33 @@ namespace Bugsnag
 {
     public class Configuration
     {
-        private const string DefaultEndpoint = "notify.bugsnag.com";
-
-        public static readonly NotifierInfo NotifierInfo = new NotifierInfo
-        {
-            Name = ".NET Bugsnag Notifier (ALPHA)",
-            Version = "1.2.6",
-            Url = "https://bugsnag.com"
-        };
-
-        public static readonly DeviceInfo DeviceInfo = new DeviceInfo
-        {
-             OsVersion = Profiler.GetOsInfo()
-        };
-
         public string ApiKey { get; private set; }
 
+        public string AppVersion { get; set; }
+        public string ReleaseStage { get; set; }
 
-        private bool autoNotify = true;
-        private bool useSSL = false;
-        private string endpoint;
-        private List<string> notifyReleaseStages = null;
-        private List<string> filters = new List<string> { "password" };
-        //private List<string> projectPackages;
-        //private List<string> ignoreClasses;
+        public string UserId { get; private set; }
+        public string UserEmail { get; private set; }
+        public string UserName { get; private set; }
+        
+        public bool TrimFilenames { get; set; }
 
-        public string AppVersion
-        {
-            get { return "0.1.2"; }
-        }
-
-        public string ReleaseStage
-        {
-            get { return "Pre Stage BETA"; }
-        }
-
-        public string OsVersion { get; private set; }
+        public MetaData StaticData { get; private set; }
 
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
-            OsVersion = Environment.OSVersion.ToString();
+            AppVersion = "1.0.0";
+            ReleaseStage = "Development";
+            StaticData = new MetaData();
+            TrimFilenames = true;
         }
 
-
+        public void SetUser(string userId, string userEmail, string userName)
+        {
+            UserId = userId;
+            UserEmail = userEmail;
+            UserName = userName;
+        }
     }
 }
