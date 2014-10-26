@@ -2,6 +2,7 @@
 using Bugsnag.Message;
 using Bugsnag.Message.App;
 using Bugsnag.Message.Core;
+using Bugsnag.Message.Device;
 using Bugsnag.Message.Event;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,17 @@ namespace Bugsnag
 
         private static Notification CreateBase(Configuration config)
         {
+            var notifierInfo = new NotifierInfo
+            {
+                Name = Notifier.Name,
+                Version = Notifier.Version,
+                Url = Notifier.Url
+            };
+
             var notification = new Notification
             {
                 ApiKey = config.ApiKey,
-                Notifier = Notifier.NotifierInfo,
+                Notifier = notifierInfo,
                 Events = new List<EventInfo>()
             };
             return notification;
@@ -48,10 +56,15 @@ namespace Bugsnag
                 Name = config.UserName
             };
 
+            var deviceInfo = new DeviceInfo
+            {
+                OsVersion = Profiler.DetectedOsVersion
+            };
+
             var eventInfo = new EventInfo
             {
                 App = appInfo,
-                Device = Profiler.DeviceInfo,
+                Device = deviceInfo,
                 Severity = eventData.Severity,
                 User = userInfo,
                 Context = eventData.Context,
@@ -79,14 +92,16 @@ namespace Bugsnag
             while (currentExp != null)
             {
                 var stackFrames = new StackTrace(currentExp, true).GetFrames();
-                List<StackTraceFrameInfo> frames = null;
+                List<StackTraceFrameInfo> frames = new List<StackTraceFrameInfo>();
                 if (stackFrames != null)
-                    frames = stackFrames.Select(x => ExtractFrameInfo(x, config.TrimFilenames)).ToList();
+                    frames = stackFrames.Select(x => ExtractFrameInfo(x, config.FilePrefix, config.AutoDetectInProject)).ToList();
+                else if (error.CallTrace != null)
+                    frames = error.CallTrace.GetFrames().Skip(1).Select(x => ExtractFrameInfo(x, config.FilePrefix, config.AutoDetectInProject)).ToList();
 
                 var expInfo = new ExceptionInfo
                 {
                     ExceptionClass = currentExp.GetType().Name,
-                    Message = currentExp.Message,
+                    Message = currentExp.Message + (error.CallTrace != null ? " [NOTIFY CALL STACK (stack trace not available)]" : ""),
                     StackTrace = frames
                 };
 
@@ -97,7 +112,7 @@ namespace Bugsnag
             return expInfos;
         }
 
-        private static StackTraceFrameInfo ExtractFrameInfo(StackFrame frame, bool trimFilename = true)
+        private static StackTraceFrameInfo ExtractFrameInfo(StackFrame frame, string[] filePrefix, bool autoDetectInProject)
         {
             var method = frame.GetMethod();
 
@@ -111,15 +126,20 @@ namespace Bugsnag
             methodInfo += "." + signature;
 
             var file = frame.GetFileName();
-            if (!String.IsNullOrEmpty(file))
-                file = file.Replace(@"e:\GitHub\Bugsnag-NET\BugsnagDemoMVC\", "");
+            if (filePrefix != null && !String.IsNullOrEmpty(file))
+            {
+                foreach(var prefix in filePrefix)
+                {
+                    file = file.Replace(prefix, "");
+                }
+            }
 
             return new StackTraceFrameInfo
             {
                 File = file,
                 LineNumber = frame.GetFileLineNumber(),
                 Method = methodInfo,
-                InProject = !String.IsNullOrEmpty(file)
+                InProject = autoDetectInProject ? !String.IsNullOrEmpty(file) : true
             };
         }
     }

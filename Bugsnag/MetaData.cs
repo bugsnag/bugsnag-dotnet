@@ -31,6 +31,10 @@ namespace Bugsnag
                 metaDataStore.Add(tabName, new Dictionary<string, object>{{tabEntryKey, tabEntryValue}});
         }
 
+        public void RemoveTab(string tabName)
+        {
+            metaDataStore.Remove(tabName);
+        }
 
         public static InternalMetaData GenerateMetaDataOutput(MetaData data1, MetaData data2)
         {

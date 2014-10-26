@@ -10,11 +10,12 @@ namespace Bugsnag
 {
     public static class Profiler
     {
-        public static readonly DeviceInfo DeviceInfo = new DeviceInfo
+        public static readonly string DetectedOsVersion;
+ 
+        static Profiler()
         {
-            OsVersion = GetOsInfo()
-        };
-
+            DetectedOsVersion = GetOsInfo();
+        }
 
         public static string GetOsInfo()
         {

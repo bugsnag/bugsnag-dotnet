@@ -18,8 +18,11 @@ namespace Bugsnag
         public string UserId { get; private set; }
         public string UserEmail { get; private set; }
         public string UserName { get; private set; }
-        
-        public bool TrimFilenames { get; set; }
+
+        public bool UseSsl { get; set; }
+        public string[] FilePrefix { get; set; }
+        public bool AutoDetectInProject { get; set; }
+        public bool ShowTraces { get; set; }
 
         public MetaData StaticData { get; private set; }
 
@@ -29,7 +32,9 @@ namespace Bugsnag
             AppVersion = "1.0.0";
             ReleaseStage = "Development";
             StaticData = new MetaData();
-            TrimFilenames = true;
+            UseSsl = true;
+            AutoDetectInProject = true;
+            ShowTraces = true;
         }
 
         public void SetUser(string userId, string userEmail, string userName)

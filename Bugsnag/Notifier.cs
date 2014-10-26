@@ -1,9 +1,8 @@
 ﻿using Bugsnag.Event;
 using Bugsnag.Message;
-using Bugsnag.Message.Core;
-using Bugsnag.Message.Device;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 
@@ -11,29 +10,22 @@ namespace Bugsnag
 {
     public class Notifier
     {
+        public const string Name = ".NET Bugsnag Notifier (ALPHA)";
+        public const string Version = "1.2.6";
+        public const string Url = "https://bugsnag.com";
+
+        private const string DefaultEndpoint = "http://notify.bugsnag.com";
+        private const string DefaultEndpointSsl = "https://notify.bugsnag.com";
+
+        private static readonly IWebProxy DetectedProxy;
+        private static readonly JsonSerializerSettings JsonSettings;
+
         private Configuration Config { get; set; }
-
-        private static readonly IWebProxy Proxy;
-        public static readonly NotifierInfo NotifierInfo;
-        public static readonly DeviceInfo DeviceInfo;
-
-        private const string DefaultEndpoint = "notify.bugsnag.com";
 
         static Notifier()
         {
-            NotifierInfo = new NotifierInfo
-            {
-                Name = ".NET Bugsnag Notifier (ALPHA)",
-                Version = "1.2.6",
-                Url = "https://bugsnag.com"
-            };
-
-            DeviceInfo = new DeviceInfo
-            {
-                OsVersion = Profiler.GetOsInfo()
-            };
-
-            Proxy =  WebRequest.DefaultWebProxy;
+            DetectedProxy = WebRequest.DefaultWebProxy;
+            JsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
         }
 
         public Notifier(Configuration config)
@@ -49,46 +41,33 @@ namespace Bugsnag
 
         public void Send(Error error)
         {
-            error.MetaData.AddToTab("Exp", "Help Links", new { Exception1 = "http://google.com", Exception2 = "No Idea" });
-            error.MetaData.AddToTab("Runtime Dying", true);
+            // Record a full notify stack trace if the exception has none
+            if (error.Exception.StackTrace == null)
+                error.CallTrace = new StackTrace(1, true);
+
+            if (Config.ShowTraces)
+            {
+                error.MetaData.AddToTab("Traces", "Notify Trace", new StackTrace(1).ToString());
+                if (error.CreationTrace != null)
+                    error.MetaData.AddToTab("Traces", "Creation Trace", error.CreationTrace.ToString());
+            }
+
             var notification = NotificationFactory.CreateFromError(error, Config);
-            Send(notification);
-
-
-            //var addErrorTab = new Dictionary<string, object>
-            //{ 
-            //    { "lmo", "lmo2" },
-            //    { "raman", true},
-            //    { "dfd", new
-            //             {
-            //                looper = "loops",
-            //                jump = new
-            //                {
-            //                    a = 234,
-            //                    b = 245,
-            //                    c = 234
-            //                }
-            //            }}
-            //};
-
-
-            
+            Send(notification);            
         }
-
 
         public void Send(Notification notification)
         {
             //  Post JSON to server:
-            //var request = WebRequest.Create("http://requestb.in/12pa7di1");
-            var request = WebRequest.Create("https://notify.bugsnag.com");
+            var request = WebRequest.Create(Config.UseSsl ? DefaultEndpointSsl : DefaultEndpoint);
 
             request.Method = WebRequestMethods.Http.Post;
             request.ContentType = "application/json";
-            request.Proxy = Proxy;
+            request.Proxy = DetectedProxy;
 
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
-                string json = JsonConvert.SerializeObject(notification, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                string json = JsonConvert.SerializeObject(notification, JsonSettings);
                 streamWriter.Write(json);
                 streamWriter.Flush();
             }

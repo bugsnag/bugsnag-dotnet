@@ -23,7 +23,6 @@ namespace Bugsnag
 
         private static void NotifyExceptionHandler(object sender, UnhandledExceptionEventArgs e)
         {
-            // TODO : Record and feedback that the runtime is exiting
             var exp = e.ExceptionObject as Exception;
             if (exp != null)
                 NotifyOnUnhandledException(exp, e.IsTerminating);
