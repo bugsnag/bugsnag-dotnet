@@ -44,7 +44,9 @@ namespace Bugsnag
             var appInfo = new AppInfo
             {
                 Version = config.AppVersion,
-                ReleaseStage = config.ReleaseStage
+                ReleaseStage = config.ReleaseStage,
+                AppArchitecture = Profiler.AppArchitecture,
+                ClrVersion = Profiler.ClrVersion
             };
 
             var userInfo = new UserInfo
@@ -57,7 +59,10 @@ namespace Bugsnag
             var deviceInfo = new DeviceInfo
             {
                 OsVersion = Profiler.DetectedOsVersion,
-                ServicePack = Profiler.ServicePack
+                ServicePack = Profiler.ServicePack,
+                OsArchitecture = Profiler.OsArchitecture,
+                ProcessorCount = Profiler.ProcessorCount,
+                MachineName = Profiler.MachineName
             };
 
             var eventInfo = new EventInfo

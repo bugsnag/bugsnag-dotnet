@@ -12,14 +12,24 @@ namespace Bugsnag
     {
         public static readonly string DetectedOsVersion;
         public static readonly string ServicePack;
+        public static readonly string AppArchitecture;
+        public static readonly string OsArchitecture;
+        public static readonly string ProcessorCount;
+        public static readonly string MachineName;
+        public static readonly string ClrVersion;
  
         static Profiler()
         {
             DetectedOsVersion = GetOsInfo();
             ServicePack = Environment.OSVersion.ServicePack;
+            AppArchitecture = Environment.Is64BitProcess ? "64 bit" : "32 bit";
+            OsArchitecture = Environment.Is64BitOperatingSystem ? "64 bit" : "32 bit";
+            ProcessorCount = Environment.ProcessorCount + " cores";
+            MachineName = Environment.MachineName;
+            ClrVersion = Environment.Version.ToString();
         }
 
-        public static string GetOsInfo()
+        static string GetOsInfo()
         {
             var osInfo = Environment.OSVersion;
 

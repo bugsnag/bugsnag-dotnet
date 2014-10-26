@@ -9,5 +9,11 @@ namespace Bugsnag.Message.App
 
         [JsonProperty("releaseStage")]
         public string ReleaseStage { get; set; }
+
+        [JsonProperty("appArchitecture")]
+        public string AppArchitecture { get; set; }
+
+        [JsonProperty("clrVersion")]
+        public string ClrVersion { get; set; }
     }
 }

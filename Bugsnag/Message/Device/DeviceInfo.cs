@@ -12,5 +12,14 @@ namespace Bugsnag.Message.Device
 
         [JsonProperty("servicePack")]
         public string ServicePack { get; set; }
+
+        [JsonProperty("osArchitecture")]
+        public string OsArchitecture { get; set; }
+
+        [JsonProperty("processorCount")]
+        public string ProcessorCount { get; set; }
+
+        [JsonProperty("machineName")]
+        public string MachineName { get; set; }
     }
 }

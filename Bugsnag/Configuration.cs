@@ -35,6 +35,7 @@ namespace Bugsnag
             UseSsl = true;
             AutoDetectInProject = true;
             ShowTraces = true;
+            UserId = Environment.UserName;
         }
 
         public void SetUser(string userId, string userEmail, string userName)
