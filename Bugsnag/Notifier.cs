@@ -36,11 +36,7 @@ namespace Bugsnag
         public void Send(Exception exp, bool? runtimeEnding = null)
         {
             var error = new Error(exp, runtimeEnding);
-            Send(error);
-        }
-
-        public void Send(Error error)
-        {
+            
             // Record a full notify stack trace if the exception has none
             if (error.Exception.StackTrace == null)
                 error.CallTrace = new StackTrace(1, true);
@@ -51,7 +47,11 @@ namespace Bugsnag
                 if (error.CreationTrace != null)
                     error.MetaData.AddToTab("Traces", "Creation Trace", error.CreationTrace.ToString());
             }
+            Send(error);
+        }
 
+        public void Send(Error error)
+        {
             var notification = NotificationFactory.CreateFromError(error, Config);
             Send(notification);            
         }
