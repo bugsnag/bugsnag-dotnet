@@ -21,16 +21,16 @@ namespace Bugsnag.Event
             Severity = Severity.Error;
 
             if (runtimeEnding != null)
-                MetaData.AddToTab("Exception Details", "Runtime Ending", IsRuntimeEnding);
+                MetaData.AddToTab("Exception Details", "runtimeEnding", IsRuntimeEnding);
 
             if (exp.HelpLink != null)
-                MetaData.AddToTab("Exception Details", "Help Link", exp.HelpLink);
+                MetaData.AddToTab("Exception Details", "helpLink", exp.HelpLink);
 
             if (exp.Source != null)
-                MetaData.AddToTab("Exception Details", "Source", exp.Source);
+                MetaData.AddToTab("Exception Details", "source", exp.Source);
 
             if (exp.TargetSite != null)
-                MetaData.AddToTab("Exception Details", "Target Site", exp.TargetSite);
+                MetaData.AddToTab("Exception Details", "targetSite", exp.TargetSite);
 
             if (recordTrace)
                 CreationTrace = new StackTrace(1);

@@ -43,9 +43,9 @@ namespace Bugsnag
 
             if (Config.ShowTraces)
             {
-                error.MetaData.AddToTab("Traces", "Notify Trace", new StackTrace(1).ToString());
+                error.MetaData.AddToTab("Traces", "notifyTrace", new StackTrace(1).ToString());
                 if (error.CreationTrace != null)
-                    error.MetaData.AddToTab("Traces", "Creation Trace", error.CreationTrace.ToString());
+                    error.MetaData.AddToTab("Traces", "creationTrace", error.CreationTrace.ToString());
             }
             Send(error);
         }

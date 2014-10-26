@@ -56,7 +56,8 @@ namespace Bugsnag
 
             var deviceInfo = new DeviceInfo
             {
-                OsVersion = Profiler.DetectedOsVersion
+                OsVersion = Profiler.DetectedOsVersion,
+                ServicePack = Profiler.ServicePack
             };
 
             var eventInfo = new EventInfo

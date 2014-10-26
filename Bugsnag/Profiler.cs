@@ -11,10 +11,12 @@ namespace Bugsnag
     public static class Profiler
     {
         public static readonly string DetectedOsVersion;
+        public static readonly string ServicePack;
  
         static Profiler()
         {
             DetectedOsVersion = GetOsInfo();
+            ServicePack = Environment.OSVersion.ServicePack;
         }
 
         public static string GetOsInfo()

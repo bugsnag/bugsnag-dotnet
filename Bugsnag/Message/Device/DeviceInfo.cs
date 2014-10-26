@@ -9,5 +9,8 @@ namespace Bugsnag.Message.Device
 
         [JsonProperty("hostname")]
         public string Hostname { get; set; }
+
+        [JsonProperty("servicePack")]
+        public string ServicePack { get; set; }
     }
 }
