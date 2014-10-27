@@ -53,7 +53,8 @@ namespace Bugsnag
             {
                 Id = config.UserId,
                 Email = config.UserEmail,
-                Name = config.UserName
+                Name = config.UserName,
+                LoggedOnUser = config.LoggedOnUser
             };
 
             var deviceInfo = new DeviceInfo

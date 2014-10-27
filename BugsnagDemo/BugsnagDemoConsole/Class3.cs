@@ -10,8 +10,9 @@ namespace BugsnagDemoConsole
     {
         public static void GetExp()
         {
-            
-            throw new InvalidTimeZoneException("TIME ZONE A");
+            var isZero = 1 - 1;
+
+            var incorrect = 1 / isZero;
         }
     }
 }

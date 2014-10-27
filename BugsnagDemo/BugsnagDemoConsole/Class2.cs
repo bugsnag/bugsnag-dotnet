@@ -16,6 +16,7 @@ namespace BugsnagDemoConsole
             }
             catch (Exception exp)
             {
+                exp.HelpLink = "http://msdn.microsoft.com/en-us/library/system.dividebyzeroexception(v=vs.110).aspx";
                 throw new ArithmeticException("Can't Multiply 1 and 1", exp);
             }
         }

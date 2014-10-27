@@ -18,6 +18,7 @@ namespace Bugsnag
         public string UserId { get; private set; }
         public string UserEmail { get; private set; }
         public string UserName { get; private set; }
+        public string LoggedOnUser { get; private set; }
 
         public bool UseSsl { get; set; }
         public string[] FilePrefix { get; set; }
@@ -36,6 +37,7 @@ namespace Bugsnag
             AutoDetectInProject = true;
             ShowTraces = true;
             UserId = Environment.UserName;
+            LoggedOnUser = @"\\" + Environment.UserDomainName + "\\" + Environment.UserName;
         }
 
         public void SetUser(string userId, string userEmail, string userName)

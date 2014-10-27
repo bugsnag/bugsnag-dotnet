@@ -1,5 +1,4 @@
-﻿using Bugsnag.Event;
-using Bugsnag.Message.Core;
+﻿using Bugsnag.Message.Core;
 using Bugsnag.Message.Event;
 using Newtonsoft.Json;
 using System.Collections.Generic;

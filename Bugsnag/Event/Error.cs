@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bugsnag.Event
 {    
@@ -19,18 +15,23 @@ namespace Bugsnag.Event
             Exception = exp;
             IsRuntimeEnding = runtimeEnding;
             Severity = Severity.Error;
+            
+            // Get to the inner most exception
+            var innerExp = exp;
+            while (innerExp.InnerException != null)
+                innerExp = innerExp.InnerException;
 
             if (runtimeEnding != null)
                 MetaData.AddToTab("Exception Details", "runtimeEnding", IsRuntimeEnding);
 
-            if (exp.HelpLink != null)
-                MetaData.AddToTab("Exception Details", "helpLink", exp.HelpLink);
+            if (innerExp.HelpLink != null)
+                MetaData.AddToTab("Exception Details", "helpLink", innerExp.HelpLink);
 
-            if (exp.Source != null)
-                MetaData.AddToTab("Exception Details", "source", exp.Source);
+            if (innerExp.Source != null)
+                MetaData.AddToTab("Exception Details", "source", innerExp.Source);
 
-            if (exp.TargetSite != null)
-                MetaData.AddToTab("Exception Details", "targetSite", exp.TargetSite);
+            if (innerExp.TargetSite != null)
+                MetaData.AddToTab("Exception Details", "targetSite", innerExp.TargetSite);
 
             if (recordTrace)
                 CreationTrace = new StackTrace(1);

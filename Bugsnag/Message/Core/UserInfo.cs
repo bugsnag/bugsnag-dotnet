@@ -12,5 +12,8 @@ namespace Bugsnag.Message.Core
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("loggedOnUser")]
+        public string LoggedOnUser { get; set; }
     }
 }
