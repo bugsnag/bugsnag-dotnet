@@ -1,4 +1,5 @@
-﻿using Bugsnag.Message.Core;
+﻿using Bugsnag.Event;
+using Bugsnag.Message.Core;
 using Bugsnag.Message.Device;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ namespace Bugsnag
         public bool UseSsl { get; set; }
         public string[] FilePrefix { get; set; }
         public bool AutoDetectInProject { get; set; }
-        public bool ShowTraces { get; set; }
+
+        public Func<Error,bool> BeforeNotifyFunc { get; set; }
 
         public MetaData StaticData { get; private set; }
 
@@ -35,9 +37,8 @@ namespace Bugsnag
             StaticData = new MetaData();
             UseSsl = true;
             AutoDetectInProject = true;
-            ShowTraces = true;
             UserId = Environment.UserName;
-            LoggedOnUser = @"\\" + Environment.UserDomainName + "\\" + Environment.UserName;
+            LoggedOnUser = Environment.UserDomainName + "\\" + Environment.UserName;
         }
 
         public void SetUser(string userId, string userEmail, string userName)

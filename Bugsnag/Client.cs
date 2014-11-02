@@ -1,5 +1,7 @@
 ﻿using Bugsnag.Event;
 using System;
+using System.Web.Mvc;
+using System.Web;
 using System.Diagnostics;
 
 namespace Bugsnag
@@ -19,7 +21,7 @@ namespace Bugsnag
 
             // Install a default exception handler with this client
             if (installHandler)
-                ExceptionHandler.InstallDefaultHandler(Notifier.Send);
+                ExceptionHandler.InstallDefaultHandler(Notify);
         }
 
         public void Notify(Error err)
@@ -27,9 +29,11 @@ namespace Bugsnag
             Notifier.Send(err);
         }
 
-        public void Notify(Exception exp)
+        public void Notify(Exception exp, bool? runtimeEnding = null)
         {
-            Notifier.Send(exp);
+            var error = new Error(exp, runtimeEnding);
+            Notify(error);
         }
+
     }
 }

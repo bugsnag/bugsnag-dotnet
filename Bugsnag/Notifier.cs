@@ -5,6 +5,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Web.Mvc;
+using System.Web;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Bugsnag
 {
@@ -33,30 +37,16 @@ namespace Bugsnag
             Config = config;
         }
 
-        public void Send(Exception exp, bool? runtimeEnding = null)
-        {
-            var error = new Error(exp, runtimeEnding);
-            
-            // Record a full notify stack trace if the exception has none
-            if (error.Exception.StackTrace == null)
-                error.CallTrace = new StackTrace(1, true);
-
-            if (Config.ShowTraces)
-            {
-                error.MetaData.AddToTab("Traces", "notifyTrace", new StackTrace(1).ToString());
-                if (error.CreationTrace != null)
-                    error.MetaData.AddToTab("Traces", "creationTrace", error.CreationTrace.ToString());
-            }
-            Send(error);
-        }
-
         public void Send(Error error)
         {
+            if (Config.BeforeNotifyFunc != null && !Config.BeforeNotifyFunc(error))
+                return;
+
             var notification = NotificationFactory.CreateFromError(error, Config);
             Send(notification);            
         }
 
-        public void Send(Notification notification)
+        private void Send(Notification notification)
         {
             //  Post JSON to server:
             var request = WebRequest.Create(Config.UseSsl ? DefaultEndpointSsl : DefaultEndpoint);

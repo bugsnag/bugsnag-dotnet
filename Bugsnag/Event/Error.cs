@@ -8,9 +8,8 @@ namespace Bugsnag.Event
         public Exception Exception { get; private set; }
         public bool? IsRuntimeEnding { get; private set; }
         public StackTrace CallTrace { get; set; }
-        public StackTrace CreationTrace { get; private set; }
 
-        public Error(Exception exp, bool? runtimeEnding = null, bool recordTrace = true): base()
+        public Error(Exception exp, bool? runtimeEnding = null): base()
         {
             Exception = exp;
             IsRuntimeEnding = runtimeEnding;
@@ -21,6 +20,7 @@ namespace Bugsnag.Event
             while (innerExp.InnerException != null)
                 innerExp = innerExp.InnerException;
 
+            // Record the exception details if there are any
             if (runtimeEnding != null)
                 MetaData.AddToTab("Exception Details", "runtimeEnding", IsRuntimeEnding);
 
@@ -33,8 +33,9 @@ namespace Bugsnag.Event
             if (innerExp.TargetSite != null)
                 MetaData.AddToTab("Exception Details", "targetSite", innerExp.TargetSite);
 
-            if (recordTrace)
-                CreationTrace = new StackTrace(1);
+            // Record a full notify stack trace if the exception has none
+            if (Exception.StackTrace == null)
+                CallTrace = new StackTrace(1, true);
         }
     }
 }
