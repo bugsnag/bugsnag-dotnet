@@ -1,75 +1,94 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using InternalMetaData = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
 namespace Bugsnag
 {
     public class MetaData
     {
-        private InternalMetaData metaDataStore;
+        private const string DefaultTabName = "Custom Data";
+
+        public InternalMetaData MetaDataStore {get; private set;}
 
         public MetaData()
         {
-            metaDataStore = new InternalMetaData();
+            MetaDataStore = new InternalMetaData();
         }
 
         public void AddToTab(string tabEntryKey, object tabEntryValue)
         {
-            AddToTab("Custom Data", tabEntryKey, tabEntryValue);
+            AddToTab(DefaultTabName, tabEntryKey, tabEntryValue);
         }
 
         public void AddToTab(string tabName, string tabEntryKey, object tabEntryValue)
         {
-            if (metaDataStore.ContainsKey(tabName))
-                metaDataStore[tabName].Add(tabEntryKey, tabEntryValue);
+            if (MetaDataStore.ContainsKey(tabName))
+            {
+                if (MetaDataStore[tabName].ContainsKey(tabEntryKey))
+                    throw new ArgumentException("Unable to add to tab, tab entry already exists");
+
+                MetaDataStore[tabName].Add(tabEntryKey, tabEntryValue);
+            }
             else
-                metaDataStore.Add(tabName, new Dictionary<string, object>{{tabEntryKey, tabEntryValue}});
+            {
+                var newTabData = new Dictionary<string, object> { { tabEntryKey, tabEntryValue } };
+                MetaDataStore.Add(tabName, newTabData);
+            }
         }
 
         public void RemoveTab(string tabName)
         {
-            metaDataStore.Remove(tabName);
+            if (!MetaDataStore.ContainsKey(tabName))
+                throw new ArgumentException("Unable to remove tab, tab does not exist");
+
+            MetaDataStore.Remove(tabName);
         }
 
-        public static InternalMetaData GenerateMetaDataOutput(MetaData data1, MetaData data2)
+        public void RemoveTabEntry(string tabName, string tabEntryKey)
         {
-            var result = new InternalMetaData();
+            if (!MetaDataStore.ContainsKey(tabName))
+                throw new ArgumentException("Unable to remove tab entry, tab does not exist");
 
-            foreach (var tab in data1.metaDataStore)
-            {
-                var tabData = new Dictionary<string,object>();
-                foreach (var entry in tab.Value)
-                {
-                    tabData.Add(entry.Key, entry.Value);
-                }
-                result.Add(tab.Key, tabData);
-            }
+            if (!MetaDataStore[tabName].ContainsKey(tabEntryKey))
+                throw new ArgumentException("Unable to remove tab entry , tab does not exist");
 
-            foreach (var tab in data2.metaDataStore)
+            MetaDataStore[tabName].Remove(tabEntryKey);
+        }
+
+        public static MetaData MergeMetaData(params MetaData[] data)
+        {
+            var aggData = data.ToList();
+            aggData.Insert(0, new MetaData());
+            return aggData.Aggregate(Merge);
+        }
+
+        private static MetaData Merge(MetaData currentData, MetaData dataToAdd)
+        {
+            var currStore = currentData.MetaDataStore;
+            var storeToAdd = dataToAdd.MetaDataStore;
+
+            // Loop through all the tabs that are in the data to add...
+            foreach (var newTab in storeToAdd)
             {
-                if (result.ContainsKey(tab.Key))
+                // If the tab doesn't exist in current data, add a blank tab
+                if (!currStore.ContainsKey(newTab.Key))
+                    currStore.Add(newTab.Key, new Dictionary<string, object>());
+
+                var currTab = currStore[newTab.Key];
+
+                // Loop through all the entries in the tab to add...
+                foreach(var newTabEntry in newTab.Value)
                 {
-                    foreach(var entry in tab.Value)
-                    {
-                        result[tab.Key].Add(entry.Key, entry.Value);
-                    }
-                }
-                else
-                {
-                    var tabData = new Dictionary<string, object>();
-                    foreach (var entry in tab.Value)
-                    {
-                        tabData.Add(entry.Key, entry.Value);
-                    }
-                    result.Add(tab.Key, tabData);
+                    // If the current data has the same key, fail the merge, otherwise add it
+                    if (currTab.ContainsKey(newTabEntry.Key))
+                        throw new InvalidOperationException(
+                            String.Format("Could not merge data for tab {0}, duplicate data for tab entry {1}", newTabEntry.Key, newTabEntry));
+
+                    currTab.Add(newTabEntry.Key, newTabEntry.Value);
                 }
             }
-            return result;
+            return currentData;
         }
     }
 }

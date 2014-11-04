@@ -4,24 +4,31 @@ using Bugsnag.Message.App;
 using Bugsnag.Message.Core;
 using Bugsnag.Message.Device;
 using Bugsnag.Message.Event;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using BugsnagEvent = Bugsnag.Event.Event;
 
 namespace Bugsnag
 {
-    public static class NotificationFactory
+    public class NotificationFactory
     {
-        public static Notification CreateFromError(Error error, Configuration config)
+        private Configuration Config { get; set; }
+        private ExceptionParser ExpParser { get; set; }
+
+        public NotificationFactory(Configuration config)
         {
-            var notification = CreateBase(config);
-            var eventInfo = CreateEventInfo(error, config);
+            Config = config;
+            ExpParser = new ExceptionParser(config);
+        }
+
+        public Notification CreateFromError(Error error)
+        {
+            var notification = CreateNotificationBase();
+            var eventInfo = CreateErrorEventInfo(error);
             notification.Events.Add(eventInfo);
             return notification;
         }
 
-        private static Notification CreateBase(Configuration config)
+        private Notification CreateNotificationBase()
         {
             var notifierInfo = new NotifierInfo
             {
@@ -32,29 +39,29 @@ namespace Bugsnag
 
             var notification = new Notification
             {
-                ApiKey = config.ApiKey,
+                ApiKey = Config.ApiKey,
                 Notifier = notifierInfo,
                 Events = new List<EventInfo>()
             };
             return notification;
         }
 
-        private static EventInfo CreateBase(Bugsnag.Event.Event eventData, Configuration config)
+        private EventInfo CreateEventInfoBase(BugsnagEvent eventData)
         {
             var appInfo = new AppInfo
             {
-                Version = config.AppVersion,
-                ReleaseStage = config.ReleaseStage,
+                Version = Config.AppVersion,
+                ReleaseStage = Config.ReleaseStage,
                 AppArchitecture = Profiler.AppArchitecture,
                 ClrVersion = Profiler.ClrVersion
             };
 
             var userInfo = new UserInfo
             {
-                Id = config.UserId,
-                Email = config.UserEmail,
-                Name = config.UserName,
-                LoggedOnUser = config.LoggedOnUser
+                Id = Config.UserId,
+                Email = Config.UserEmail,
+                Name = Config.UserName,
+                LoggedOnUser = Config.LoggedOnUser
             };
 
             var deviceInfo = new DeviceInfo
@@ -72,21 +79,46 @@ namespace Bugsnag
                 Device = deviceInfo,
                 Severity = eventData.Severity,
                 User = userInfo,
-                Context = eventData.Context,
+                Context = Config.Context,
                 GroupingHash = eventData.GroupingHash
             };
             return eventInfo;
         }
 
-        private static EventInfo CreateEventInfo(Error error, Configuration config)
+        private EventInfo CreateErrorEventInfo(Error error)
         {
-            var errInfo = CreateBase(error, config);
-            errInfo.Exceptions = CreateExceptionInfo(error, config);
-            errInfo.MetaData = MetaData.GenerateMetaDataOutput(config.StaticData, error.MetaData);
+            var errInfo = CreateEventInfoBase(error);
+            errInfo.Exceptions = CreateExceptionsInfo(error);
+            if (Config.SendThreads)
+                errInfo.Threads = ExpParser.CreateThreadsInfo();
+            
+            // Get to the inner most exception
+            var innerExp = error.Exception;
+            while (innerExp.InnerException != null)
+                innerExp = innerExp.InnerException;
+
+            var expMetaData = new MetaData();
+            const string expDetailsTabName = "Exception Details";
+
+            // Record the exception details if there are any
+            if (error.IsRuntimeEnding != null)
+                expMetaData.AddToTab(expDetailsTabName, "runtimeEnding", error.IsRuntimeEnding);
+
+            if (innerExp.HelpLink != null)
+                expMetaData.AddToTab(expDetailsTabName, "helpLink", innerExp.HelpLink);
+
+            if (innerExp.Source != null)
+                expMetaData.AddToTab(expDetailsTabName, "source", innerExp.Source);
+
+            if (innerExp.TargetSite != null)
+                expMetaData.AddToTab(expDetailsTabName, "targetSite", innerExp.TargetSite);
+
+            errInfo.MetaData = MetaData.MergeMetaData(Config.StaticData, error.MetaData, expMetaData).MetaDataStore;
+
             return errInfo;
         }
 
-        private static List<ExceptionInfo> CreateExceptionInfo(Error error, Configuration config)
+        private List<ExceptionInfo> CreateExceptionsInfo(Error error)
         {
             // Create a list of exception information
             var expInfos = new List<ExceptionInfo>();
@@ -96,56 +128,10 @@ namespace Bugsnag
             var currentExp = error.Exception;
             while (currentExp != null)
             {
-                var stackFrames = new StackTrace(currentExp, true).GetFrames();
-                List<StackTraceFrameInfo> frames = new List<StackTraceFrameInfo>();
-                if (stackFrames != null)
-                    frames = stackFrames.Select(x => ExtractFrameInfo(x, config.FilePrefix, config.AutoDetectInProject)).ToList();
-                else if (error.CallTrace != null)
-                    frames = error.CallTrace.GetFrames().Skip(1).Select(x => ExtractFrameInfo(x, config.FilePrefix, config.AutoDetectInProject)).ToList();
-
-                var expInfo = new ExceptionInfo
-                {
-                    ExceptionClass = currentExp.GetType().Name,
-                    Message = currentExp.Message + (error.CallTrace != null ? " [NOTIFY CALL STACK (stack trace not available)]" : ""),
-                    StackTrace = frames
-                };
-
-                expInfos.Add(expInfo);
+                expInfos.Add(ExpParser.ExtractExceptionInfo(currentExp, error.CallTrace));
                 currentExp = currentExp.InnerException;
             }
-
             return expInfos;
-        }
-
-        private static StackTraceFrameInfo ExtractFrameInfo(StackFrame frame, string[] filePrefix, bool autoDetectInProject)
-        {
-            var method = frame.GetMethod();
-
-            var param = method.GetParameters()
-                  .Select(p => String.Format("{0} {1}", p.ParameterType.Name, p.Name))
-                  .ToArray();
-
-            string signature = String.Format("{0}({1})", method.Name, String.Join(",", param));
-
-            var methodInfo = method.DeclaringType == null ? "" : method.DeclaringType.FullName;
-            methodInfo += "." + signature;
-
-            var file = frame.GetFileName();
-            if (filePrefix != null && !String.IsNullOrEmpty(file))
-            {
-                foreach(var prefix in filePrefix)
-                {
-                    file = file.Replace(prefix, "");
-                }
-            }
-
-            return new StackTraceFrameInfo
-            {
-                File = file,
-                LineNumber = frame.GetFileLineNumber(),
-                Method = methodInfo,
-                InProject = autoDetectInProject ? !String.IsNullOrEmpty(file) : true
-            };
         }
     }
 }

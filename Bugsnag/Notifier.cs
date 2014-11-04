@@ -18,13 +18,11 @@ namespace Bugsnag
         public const string Version = "1.2.6";
         public const string Url = "https://bugsnag.com";
 
-        private const string DefaultEndpoint = "http://notify.bugsnag.com";
-        private const string DefaultEndpointSsl = "https://notify.bugsnag.com";
-
         private static readonly IWebProxy DetectedProxy;
         private static readonly JsonSerializerSettings JsonSettings;
 
         private Configuration Config { get; set; }
+        private NotificationFactory Factory { get; set; }
 
         static Notifier()
         {
@@ -35,21 +33,19 @@ namespace Bugsnag
         public Notifier(Configuration config)
         {
             Config = config;
+            Factory = new NotificationFactory(config);
         }
 
         public void Send(Error error)
         {
-            if (Config.BeforeNotifyFunc != null && !Config.BeforeNotifyFunc(error))
-                return;
-
-            var notification = NotificationFactory.CreateFromError(error, Config);
+            var notification = Factory.CreateFromError(error);
             Send(notification);            
         }
 
         private void Send(Notification notification)
         {
             //  Post JSON to server:
-            var request = WebRequest.Create(Config.UseSsl ? DefaultEndpointSsl : DefaultEndpoint);
+            var request = WebRequest.Create(Config.FinalUrl);
 
             request.Method = WebRequestMethods.Http.Post;
             request.ContentType = "application/json";

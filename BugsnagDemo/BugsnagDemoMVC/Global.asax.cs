@@ -16,7 +16,7 @@ namespace BugsnagDemoMVC
         protected void Application_Start()
         {
             Bugsnag = new Client("9134c4469d16f30f025a1e98f45b3ddb");
-            Bugsnag.Config.FilePrefix = new[] { @"e:\GitHub\Bugsnag-NET\" };
+            Bugsnag.Config.FilePrefix = new List<string> { @"e:\GitHub\Bugsnag-NET\" };
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

@@ -18,13 +18,16 @@ namespace BugsnagDemoConsole
             bugsnag.Config.SetUser("1234", "aaaa@bbbb.com", "Aaaa Bbbb");
 
             bugsnag.Config.StaticData.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
-            bugsnag.Config.FilePrefix = new[] { @"e:\GitHub\Bugsnag-NET\" };
+            bugsnag.Config.FilePrefix = new List<string> { @"e:\GitHub\Bugsnag-NET\" };
 
             bugsnag.Config.BeforeNotifyFunc = error =>
             {
                 error.MetaData.AddToTab("CallBack", "Check", true);
                 return true;
             };
+
+            bugsnag.Config.AutoDetectInProject = false;
+            bugsnag.Config.ProjectNamespaces = new List<string> { "Microsoft.VisualStudio.HostingProcess"};
             //bugsnag.Config.AutoDetectInProject = false;
             //bugsnag.Config.ShowTraces = false;
 

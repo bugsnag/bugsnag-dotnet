@@ -14,26 +14,8 @@ namespace Bugsnag.Event
             Exception = exp;
             IsRuntimeEnding = runtimeEnding;
             Severity = Severity.Error;
-            
-            // Get to the inner most exception
-            var innerExp = exp;
-            while (innerExp.InnerException != null)
-                innerExp = innerExp.InnerException;
 
-            // Record the exception details if there are any
-            if (runtimeEnding != null)
-                MetaData.AddToTab("Exception Details", "runtimeEnding", IsRuntimeEnding);
-
-            if (innerExp.HelpLink != null)
-                MetaData.AddToTab("Exception Details", "helpLink", innerExp.HelpLink);
-
-            if (innerExp.Source != null)
-                MetaData.AddToTab("Exception Details", "source", innerExp.Source);
-
-            if (innerExp.TargetSite != null)
-                MetaData.AddToTab("Exception Details", "targetSite", innerExp.TargetSite);
-
-            // Record a full notify stack trace if the exception has none
+            // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
             if (Exception.StackTrace == null)
                 CallTrace = new StackTrace(1, true);
         }

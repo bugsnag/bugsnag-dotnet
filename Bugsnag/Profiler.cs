@@ -29,7 +29,7 @@ namespace Bugsnag
             ClrVersion = Environment.Version.ToString();
         }
 
-        static string GetOsInfo()
+        private static string GetOsInfo()
         {
             var osInfo = Environment.OSVersion;
 
@@ -92,7 +92,7 @@ namespace Bugsnag
             }
         }
 
-        public static bool IsServerVersion()
+        private static bool IsServerVersion()
         {
             using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
             {

@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Diagnostics.Runtime">
+      <HintPath>..\BugsnagDemo\packages\Microsoft.Diagnostics.Runtime.0.8.27-beta\lib\net40\Microsoft.Diagnostics.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\BugsnagDemo\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -47,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Event\Event.cs" />
+    <Compile Include="ExceptionParser.cs" />
     <Compile Include="MetaData.cs" />
     <Compile Include="NotificationFactory.cs" />
     <Compile Include="Client.cs" />

@@ -11,7 +11,7 @@ namespace Bugsnag
         public Configuration Config { get; private set; }
         private Notifier Notifier { get; set; }
 
-        public Client(string apiKey, bool installHandler = true)
+        public Client(string apiKey, bool installDefaultHandler = true)
         {
             if (String.IsNullOrEmpty(apiKey))
                 throw new ArgumentNullException("You must provide a Bugsnag API key");
@@ -20,20 +20,63 @@ namespace Bugsnag
             Notifier = new Notifier(Config);
 
             // Install a default exception handler with this client
-            if (installHandler)
-                ExceptionHandler.InstallDefaultHandler(Notify);
+            if (installDefaultHandler)
+                StartAutoNotify();
+        }
+
+        public Client(Configuration config)
+        {
+            Config = config;
+            Notifier = new Notifier(Config);
+        }
+
+        public void StartAutoNotify(Action<Exception, bool> customHandler = null)
+        {
+            if (customHandler == null)
+                ExceptionHandler.InstallDefaultHandler(HandleDefaultException);
+            else
+                ExceptionHandler.InstallDefaultHandler(customHandler);
+        }
+
+        public void StopAutoNotify()
+        {
+            ExceptionHandler.UninstallDefaultHandler();
+        }
+
+
+        public void Notify(Exception exp)
+        {
+            var error = new Error(exp);
+            Notify(error);
+        }
+
+        public void Notify(Exception exp, Severity severity)
+        {
+            var error = new Error(exp);
+            error.Severity = severity;
+            Notify(error);
         }
 
         public void Notify(Error err)
         {
+            // Call the before notify action is there is one
+            if (Config.BeforeNotifyFunc != null && !Config.BeforeNotifyFunc(err))
+                return;
+
+            // Ignore the error if its part of the classes we are ignoring
+            if (Config.IgnoreClasses != null &&
+                err.Exception != null &&
+                err.Exception.GetType() != null &&
+                Config.IgnoreClasses.Contains(err.Exception.GetType().Name))
+                return;
+
             Notifier.Send(err);
         }
 
-        public void Notify(Exception exp, bool? runtimeEnding = null)
+        private void HandleDefaultException(Exception exp, bool runtimeEnding)
         {
             var error = new Error(exp, runtimeEnding);
             Notify(error);
         }
-
     }
 }

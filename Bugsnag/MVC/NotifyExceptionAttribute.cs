@@ -22,14 +22,13 @@ namespace Bugsnag
 
             var error = new Error(filterContext.Exception);
 
-            // Obtain a reference to the Request.Params collection.
-            var pColl = filterContext.HttpContext.Request.Params;
+            var reqParams = filterContext.HttpContext.Request.Params;
 
-            for (int i = 0; i <= pColl.Count - 1; i++)
+            for (int i = 0; i <= reqParams.Count - 1; i++)
             {
-                var dataValues = String.Join("\n", pColl.GetValues(i));
+                var dataValues = String.Join("\n", reqParams.GetValues(i));
                 if (!String.IsNullOrEmpty(dataValues))
-                    error.MetaData.AddToTab("Request", pColl.GetKey(i), dataValues);
+                    error.MetaData.AddToTab("Request", reqParams.GetKey(i), dataValues);
             }
 
             Client.Notify(error);
