@@ -26,13 +26,29 @@ namespace BugsnagDemoConsole
                 return true;
             };
 
-            bugsnag.Config.AutoDetectInProject = false;
-            bugsnag.Config.ProjectNamespaces = new List<string> { "Microsoft.VisualStudio.HostingProcess"};
-            //bugsnag.Config.AutoDetectInProject = false;
-            //bugsnag.Config.ShowTraces = false;
+            var t = System.Threading.Tasks.Task.Factory.StartNew(() =>
+            {
+                System.Threading.Thread.Sleep(1000);
+                throw new ArgumentOutOfRangeException("Thread Exp");
+            });
+            t.Wait();
 
             //bugsnag.Notify(new ArgumentException("Non-fatal"));
-            Class1.GetExp();
+            //Class1.GetExp();
+            System.Threading.Thread.Sleep(5000);
+            t = null;
+            GC.Collect();
+            System.Threading.Thread.Sleep(5000);
+
+            //Recursive(0);
+        }
+
+        static void Recursive(int value)
+        {
+            // Write call number and call this method again.
+            // ... The stack will eventually overflow.
+         
+            Recursive(++value);
         }
     }
 }

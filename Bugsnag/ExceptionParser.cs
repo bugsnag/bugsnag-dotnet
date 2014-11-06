@@ -24,7 +24,7 @@ namespace Bugsnag
         {
             bool usedCallTrace = false;
             var trace = new StackTrace(exp, true);
-            if (trace == null)
+            if (trace == null || trace.FrameCount == 0)
             {
                 trace = callTrace;
                 usedCallTrace = true;
