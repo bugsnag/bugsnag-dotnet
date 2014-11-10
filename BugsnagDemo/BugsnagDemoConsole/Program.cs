@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
@@ -21,29 +22,43 @@ namespace BugsnagDemoConsole
             bugsnag.Config.StaticData.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
             bugsnag.Config.FilePrefix = new List<string> { @"e:\GitHub\Bugsnag-NET\" };
 
+            bugsnag.Config.SendThreads = true;
+
             bugsnag.Config.BeforeNotifyFunc = error =>
             {
                 error.MetaData.AddToTab("CallBack", "Check", true);
                 return true;
             };
 
-            //var t = System.Threading.Tasks.Task.Factory.StartNew(() =>
+            // UNOBSERVED TASK EXCEPTION
+            //var t = Task.Factory.StartNew(() =>
             //{
-            //    System.Threading.Thread.Sleep(1000);
+            //    Thread.Sleep(1000);
             //    throw new ArgumentOutOfRangeException("Thread Exp");
             //});
-            //t.Wait();
-
-            //bugsnag.Notify(new ArgumentException("Non-fatal"));
-            //Class1.GetExp();
-            //System.Threading.Thread.Sleep(5000);
+            //Thread.Sleep(2000);
             //t = null;
             //GC.Collect();
-            //System.Threading.Thread.Sleep(5000);
 
- 
-            IntPtr ptr = new IntPtr(1000);
-            System.Runtime.InteropServices.Marshal.StructureToPtr(1000, ptr, true);
+            // NORMAL CALL STACK EXCEPTION
+            //Class1.GetExp();
+
+            // ACCESS VIOLATION EXCEPTION
+            //IntPtr ptr = new IntPtr(1000);
+            //System.Runtime.InteropServices.Marshal.StructureToPtr(1000, ptr, true);
+
+            // MULTIPLE THREADS EXCEPTION
+            for(int i = 0; i< 5 ; i++)
+            {
+                Task.Factory.StartNew(ConsoleWork);
+            }
+            Thread.Sleep(1000);
+            throw new RankException("Wrong Rank with 5 threads");
+        }
+
+        private static void ConsoleWork()
+        {
+            Thread.Sleep(5000);
         }
     }
 }
