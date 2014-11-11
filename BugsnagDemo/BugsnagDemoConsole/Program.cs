@@ -30,6 +30,13 @@ namespace BugsnagDemoConsole
                 return true;
             };
 
+            // RECURSIVE DICTIONARY
+            var a = new Dictionary<string, object>();
+            var b = new Dictionary<string, object>();
+            a.Add("b", b);
+            b.Add("a", a);
+            bugsnag.Config.StaticData.AddToTab("Random2", a);
+
             // UNOBSERVED TASK EXCEPTION
             //var t = Task.Factory.StartNew(() =>
             //{

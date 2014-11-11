@@ -1,5 +1,5 @@
 ﻿using Bugsnag.Event;
-using Bugsnag.Message;
+using Bugsnag.Payload;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -27,7 +27,11 @@ namespace Bugsnag
         static Notifier()
         {
             DetectedProxy = WebRequest.DefaultWebProxy;
-            JsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            JsonSettings = new JsonSerializerSettings 
+            { 
+                NullValueHandling = NullValueHandling.Ignore, 
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
         }
 
         public Notifier(Configuration config)
@@ -55,7 +59,7 @@ namespace Bugsnag
             {
                 string json = JsonConvert.SerializeObject(notification, JsonSettings);
                 streamWriter.Write(json);
-                streamWriter.Flush();
+                streamWriter.Flush();  
             }
             request.GetResponse().Close();
         } 
