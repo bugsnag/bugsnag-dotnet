@@ -23,35 +23,37 @@ namespace Bugsnag
 
         public void AddToTab(string tabName, string tabEntryKey, object tabEntryValue)
         {
-            if (MetaDataStore.ContainsKey(tabName))
-            {
-                if (MetaDataStore[tabName].ContainsKey(tabEntryKey))
-                    throw new ArgumentException("Unable to add to tab, tab entry already exists");
-
-                MetaDataStore[tabName].Add(tabEntryKey, tabEntryValue);
-            }
-            else
+            // If the tab doesn't exist create a new tab with a single entry
+            if (!MetaDataStore.ContainsKey(tabName))
             {
                 var newTabData = new Dictionary<string, object> { { tabEntryKey, tabEntryValue } };
                 MetaDataStore.Add(tabName, newTabData);
+            }
+            else
+            {
+                // If the tab entry exists, overwrite the entry otherwise add it as a new entry
+                if (MetaDataStore[tabName].ContainsKey(tabEntryKey))
+                    MetaDataStore[tabName][tabEntryKey] = tabEntryValue;
+                else
+                    MetaDataStore[tabName].Add(tabEntryKey, tabEntryValue);
             }
         }
 
         public void RemoveTab(string tabName)
         {
+            // If the tab doesn't exist simply do nothing
             if (!MetaDataStore.ContainsKey(tabName))
-                throw new ArgumentException("Unable to remove tab, tab does not exist");
+                return;
 
             MetaDataStore.Remove(tabName);
         }
 
         public void RemoveTabEntry(string tabName, string tabEntryKey)
         {
-            if (!MetaDataStore.ContainsKey(tabName))
-                throw new ArgumentException("Unable to remove tab entry, tab does not exist");
-
-            if (!MetaDataStore[tabName].ContainsKey(tabEntryKey))
-                throw new ArgumentException("Unable to remove tab entry , tab does not exist");
+            // If the tab doesn't exist or the tab entry doesn't exist simply do nothing
+            if (!MetaDataStore.ContainsKey(tabName) || 
+                !MetaDataStore[tabName].ContainsKey(tabEntryKey))
+                return;
 
             MetaDataStore[tabName].Remove(tabEntryKey);
         }
@@ -80,12 +82,10 @@ namespace Bugsnag
                 // Loop through all the entries in the tab to add...
                 foreach(var newTabEntry in newTab.Value)
                 {
-                    // If the current data has the same key, fail the merge, otherwise add it
-                    if (currTab.ContainsKey(newTabEntry.Key))
-                        throw new InvalidOperationException(
-                            String.Format("Could not merge data for tab {0}, duplicate data for tab entry {1}", newTabEntry.Key, newTabEntry));
-
-                    currTab.Add(newTabEntry.Key, newTabEntry.Value);
+                    // Only add the entry if its a new tab entry, otherwise use the existing
+                    // entry and ignore the entry to be merged
+                    if (!currTab.ContainsKey(newTabEntry.Key))
+                        currTab.Add(newTabEntry.Key, newTabEntry.Value);
                 }
             }
             return currentData;
