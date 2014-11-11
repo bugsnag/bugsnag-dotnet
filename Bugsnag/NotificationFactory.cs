@@ -1,9 +1,9 @@
 ﻿using Bugsnag.Event;
-using Bugsnag.Message;
-using Bugsnag.Message.App;
-using Bugsnag.Message.Core;
-using Bugsnag.Message.Device;
-using Bugsnag.Message.Event;
+using Bugsnag.Payload;
+using Bugsnag.Payload.App;
+using Bugsnag.Payload.Core;
+using Bugsnag.Payload.Device;
+using Bugsnag.Payload.Event;
 using System.Collections.Generic;
 using BugsnagEvent = Bugsnag.Event.Event;
 

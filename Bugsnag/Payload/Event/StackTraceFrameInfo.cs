@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Message.Event
+namespace Bugsnag.Payload.Event
 {
     public class StackTraceFrameInfo
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Message.Core
+namespace Bugsnag.Payload.Core
 {
     public class UserInfo
     {

@@ -1,4 +1,4 @@
-﻿using Bugsnag.Message.Event;
+﻿using Bugsnag.Payload.Event;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

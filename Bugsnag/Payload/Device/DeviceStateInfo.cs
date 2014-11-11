@@ -1,5 +1,5 @@
 ﻿
-namespace Bugsnag.Message.Device
+namespace Bugsnag.Payload.Device
 {
     public class DeviceStateInfo
     {

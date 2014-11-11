@@ -1,6 +1,6 @@
 ﻿using Bugsnag.Event;
-using Bugsnag.Message.Core;
-using Bugsnag.Message.Device;
+using Bugsnag.Payload.Core;
+using Bugsnag.Payload.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;

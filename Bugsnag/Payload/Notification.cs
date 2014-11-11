@@ -1,9 +1,9 @@
-﻿using Bugsnag.Message.Core;
-using Bugsnag.Message.Event;
+﻿using Bugsnag.Payload.Core;
+using Bugsnag.Payload.Event;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Bugsnag.Message
+namespace Bugsnag.Payload
 {
     public class Notification
     {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Bugsnag.Message.Event
+namespace Bugsnag.Payload.Event
 {
     public class ExceptionInfo
     {

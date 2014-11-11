@@ -1,10 +1,10 @@
-﻿using Bugsnag.Message.App;
-using Bugsnag.Message.Core;
-using Bugsnag.Message.Device;
+﻿using Bugsnag.Payload.App;
+using Bugsnag.Payload.Core;
+using Bugsnag.Payload.Device;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Bugsnag.Message.Event
+namespace Bugsnag.Payload.Event
 {
     public class EventInfo
     {
