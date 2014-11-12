@@ -1,5 +1,4 @@
-﻿using Bugsnag.Event;
-using System;
+﻿using System;
 using System.Web.Mvc;
 using System.Web;
 using System.Diagnostics;
@@ -46,18 +45,18 @@ namespace Bugsnag
 
         public void Notify(Exception exp)
         {
-            var error = new Error(exp);
+            var error = new Event(exp);
             Notify(error);
         }
 
         public void Notify(Exception exp, Severity severity)
         {
-            var error = new Error(exp);
+            var error = new Event(exp);
             error.Severity = severity;
             Notify(error);
         }
 
-        public void Notify(Error err)
+        public void Notify(Event err)
         {
             // Call the before notify action is there is one
             if (Config.BeforeNotifyFunc != null && !Config.BeforeNotifyFunc(err))
@@ -75,7 +74,7 @@ namespace Bugsnag
 
         private void HandleDefaultException(Exception exp, bool runtimeEnding)
         {
-            var error = new Error(exp, runtimeEnding);
+            var error = new Event(exp, runtimeEnding);
             Notify(error);
         }
     }

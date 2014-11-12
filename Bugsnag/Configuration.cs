@@ -1,5 +1,4 @@
-﻿using Bugsnag.Event;
-using Bugsnag.Payload.Core;
+﻿using Bugsnag.Payload.Core;
 using Bugsnag.Payload.Device;
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ namespace Bugsnag
         public List<string> IgnoreClasses { get; set; }
         public List<string> ProjectNamespaces { get; set; }
 
-        public Func<Error,bool> BeforeNotifyFunc { get; set; }
+        public Func<Event,bool> BeforeNotifyFunc { get; set; }
 
         public MetaData StaticData { get; private set; }
 

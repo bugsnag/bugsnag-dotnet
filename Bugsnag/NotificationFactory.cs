@@ -1,26 +1,22 @@
-﻿using Bugsnag.Event;
-using Bugsnag.Payload;
+﻿using Bugsnag.Payload;
 using Bugsnag.Payload.App;
 using Bugsnag.Payload.Core;
 using Bugsnag.Payload.Device;
 using Bugsnag.Payload.Event;
 using System.Collections.Generic;
-using BugsnagEvent = Bugsnag.Event.Event;
 
 namespace Bugsnag
 {
     public class NotificationFactory
     {
         private Configuration Config { get; set; }
-        private ExceptionParser ExpParser { get; set; }
 
         public NotificationFactory(Configuration config)
         {
             Config = config;
-            ExpParser = new ExceptionParser(config);
         }
 
-        public Notification CreateFromError(Error error)
+        public Notification CreateFromError(Event error)
         {
             var notification = CreateNotificationBase();
             var eventInfo = CreateErrorEventInfo(error);
@@ -49,7 +45,7 @@ namespace Bugsnag
             return notification;
         }
 
-        private EventInfo CreateEventInfoBase(BugsnagEvent eventData)
+        private EventInfo CreateEventInfoBase(Event errorData)
         {
             var appInfo = new AppInfo
             {
@@ -80,15 +76,15 @@ namespace Bugsnag
             {
                 App = appInfo,
                 Device = deviceInfo,
-                Severity = eventData.Severity,
+                Severity = errorData.Severity,
                 User = userInfo,
                 Context = Config.Context,
-                GroupingHash = eventData.GroupingHash
+                GroupingHash = errorData.GroupingHash
             };
             return eventInfo;
         }
 
-        private EventInfo CreateErrorEventInfo(Error error)
+        private EventInfo CreateErrorEventInfo(Event error)
         {
             var errInfo = CreateEventInfoBase(error);
             var exps = CreateExceptionsInfo(error);
@@ -96,8 +92,10 @@ namespace Bugsnag
                 return null;
 
             errInfo.Exceptions = exps;
-            if (Config.SendThreads)
-                errInfo.Threads = ExpParser.CreateThreadsInfo();
+
+            // TODO Find a way to snapshot all manage threads at this point
+            //if (Config.SendThreads)
+            //    errInfo.Threads = CreateThreadsInfo(Config);
             
             // Get to the inner most exception
             var innerExp = error.Exception;
@@ -125,7 +123,7 @@ namespace Bugsnag
             return errInfo;
         }
 
-        private List<ExceptionInfo> CreateExceptionsInfo(Error error)
+        private List<ExceptionInfo> CreateExceptionsInfo(Event error)
         {
             // Create a list of exception information
             var expInfos = new List<ExceptionInfo>();
@@ -135,7 +133,7 @@ namespace Bugsnag
             var currentExp = error.Exception;
             while (currentExp != null)
             {
-                var expInfo = ExpParser.ExtractExceptionInfo(currentExp, error.CallTrace);
+                var expInfo = error.GenerateExceptionInfo(Config);
                 if (expInfo != null)
                     expInfos.Add(expInfo);
                 currentExp = currentExp.InnerException;

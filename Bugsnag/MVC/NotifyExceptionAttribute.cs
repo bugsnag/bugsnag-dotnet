@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
 using System.Web;
-using Bugsnag.Event;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,7 +19,7 @@ namespace Bugsnag
         {
             base.OnException(filterContext);
 
-            var error = new Error(filterContext.Exception);
+            var error = new Event(filterContext.Exception);
 
             var reqParams = filterContext.HttpContext.Request.Params;
 

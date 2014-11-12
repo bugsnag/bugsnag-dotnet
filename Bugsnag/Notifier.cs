@@ -1,5 +1,4 @@
-﻿using Bugsnag.Event;
-using Bugsnag.Payload;
+﻿using Bugsnag.Payload;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -46,10 +45,10 @@ namespace Bugsnag
             Factory = new NotificationFactory(config);
         }
 
-        public void Send(Error error)
+        public void Send(Event error)
         {
             var notification = Factory.CreateFromError(error);
-            if (notification == null)
+            if (notification != null)
                 Send(notification);            
         }
 

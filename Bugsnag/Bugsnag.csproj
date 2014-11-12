@@ -46,14 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Event\Event.cs" />
-    <Compile Include="ExceptionParser.cs" />
     <Compile Include="MetaData.cs" />
     <Compile Include="NotificationFactory.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="Event\Error.cs" />
+    <Compile Include="Event.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Payload\App\AppInfo.cs" />
     <Compile Include="Payload\App\AppStateInfo.cs" />
