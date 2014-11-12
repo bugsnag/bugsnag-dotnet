@@ -9,23 +9,29 @@ using System.Web.Mvc;
 using System.Web;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Bugsnag
 {
     public class Notifier
     {
         public const string Name = ".NET Bugsnag Notifier (ALPHA)";
-        public const string Version = "1.2.6";
         public const string Url = "https://bugsnag.com";
+
+        public static readonly string Version;
 
         private static readonly IWebProxy DetectedProxy;
         private static readonly JsonSerializerSettings JsonSettings;
-
+        
         private Configuration Config { get; set; }
         private NotificationFactory Factory { get; set; }
 
         static Notifier()
         {
+            Version = Assembly.GetExecutingAssembly()
+                              .GetName()
+                              .Version.ToString(3);
+
             DetectedProxy = WebRequest.DefaultWebProxy;
             JsonSettings = new JsonSerializerSettings 
             { 
