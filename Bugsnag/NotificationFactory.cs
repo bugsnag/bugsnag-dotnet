@@ -24,6 +24,9 @@ namespace Bugsnag
         {
             var notification = CreateNotificationBase();
             var eventInfo = CreateErrorEventInfo(error);
+            if (eventInfo == null)
+                return null;
+
             notification.Events.Add(eventInfo);
             return notification;
         }
@@ -88,7 +91,11 @@ namespace Bugsnag
         private EventInfo CreateErrorEventInfo(Error error)
         {
             var errInfo = CreateEventInfoBase(error);
-            errInfo.Exceptions = CreateExceptionsInfo(error);
+            var exps = CreateExceptionsInfo(error);
+            if (exps == null)
+                return null;
+
+            errInfo.Exceptions = exps;
             if (Config.SendThreads)
                 errInfo.Threads = ExpParser.CreateThreadsInfo();
             
@@ -128,10 +135,12 @@ namespace Bugsnag
             var currentExp = error.Exception;
             while (currentExp != null)
             {
-                expInfos.Add(ExpParser.ExtractExceptionInfo(currentExp, error.CallTrace));
+                var expInfo = ExpParser.ExtractExceptionInfo(currentExp, error.CallTrace);
+                if (expInfo != null)
+                    expInfos.Add(expInfo);
                 currentExp = currentExp.InnerException;
             }
-            return expInfos;
+            return expInfos.Count == 0 ? null : expInfos;
         }
     }
 }

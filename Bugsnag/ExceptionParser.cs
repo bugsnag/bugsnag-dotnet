@@ -28,11 +28,11 @@ namespace Bugsnag
             }
 
             if (trace == null)
-                throw new ArgumentException("No valid stack trace in exception or no valid call stack trace was provided");
+                return null;
 
             var frames = trace.GetFrames();
             if (frames == null)
-                throw new ArgumentException("Unable to extract frames from stack trace");
+                return null;
 
             var stackFrameInfos = frames.Select(ExtractStackTraceFrameInfo).ToList();
 

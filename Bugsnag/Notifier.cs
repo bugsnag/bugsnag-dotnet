@@ -49,7 +49,8 @@ namespace Bugsnag
         public void Send(Error error)
         {
             var notification = Factory.CreateFromError(error);
-            Send(notification);            
+            if (notification == null)
+                Send(notification);            
         }
 
         private void Send(Notification notification)
