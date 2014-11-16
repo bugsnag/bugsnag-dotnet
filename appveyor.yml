@@ -1,0 +1,22 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.2.6.{build}
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# environment variables
+environment:
+  test_api_key: 123456
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# scripts to run before build
+before_build:
+  nuget restore
