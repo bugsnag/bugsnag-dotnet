@@ -23,7 +23,7 @@ namespace BugsnagDemoConsole
 
             bugsnag.Config.BeforeNotifyFunc = error =>
             {
-                error.MetaData.AddToTab("CallBack", "Check", true);
+                error.Metadata.AddToTab("CallBack", "Check", true);
                 return true;
             };
 

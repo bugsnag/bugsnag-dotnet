@@ -7,10 +7,12 @@ namespace Bugsnag.Core
         public Configuration Config { get; private set; }
         private Notifier Notifier { get; set; }
 
-        public Client(string apiKey, bool installDefaultHandler = true)
+        public Client(string apiKey) : this(apiKey, true) { }
+
+        public Client(string apiKey, bool installDefaultHandler)
         {
             if (String.IsNullOrEmpty(apiKey))
-                throw new ArgumentNullException("You must provide a Bugsnag API key");
+                throw new ArgumentException("You must provide a Bugsnag API key");
 
             Config = new Configuration(apiKey);
             Notifier = new Notifier(Config);
@@ -26,35 +28,42 @@ namespace Bugsnag.Core
             Notifier = new Notifier(Config);
         }
 
-        public void StartAutoNotify(Action<Exception, bool> customHandler = null)
+        public void StartAutoNotify()
         {
-            if (customHandler == null)
-                ExceptionHandler.InstallDefaultHandler(HandleDefaultException);
-            else
+            ExceptionHandler.InstallDefaultHandler(HandleDefaultException);
+        }
+
+        public void StartAutoNotify(Action<Exception, bool> customHandler)
+        {
+            if (customHandler != null)
                 ExceptionHandler.InstallDefaultHandler(customHandler);
         }
 
+        // TODO, this will clear it globally rather than on a client by client basis
         public void StopAutoNotify()
         {
             ExceptionHandler.UninstallDefaultHandler();
         }
 
 
-        public void Notify(Exception exp)
+        public void Notify(Exception exception)
         {
-            var error = new Event(exp);
+            var error = new Event(exception);
             Notify(error);
         }
 
-        public void Notify(Exception exp, Severity severity)
+        public void Notify(Exception exception, Severity severity)
         {
-            var error = new Event(exp);
+            var error = new Event(exception);
             error.Severity = severity;
             Notify(error);
         }
 
         public void Notify(Event err)
         {
+            if (err == null)
+                return;
+
             // Call the before notify action is there is one
             if (Config.BeforeNotifyFunc != null && !Config.BeforeNotifyFunc(err))
                 return;

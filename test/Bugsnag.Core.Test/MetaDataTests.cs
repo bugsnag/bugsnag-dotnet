@@ -8,7 +8,7 @@ namespace Bugsnag.Core.Test
         public void Constructor_BlankMetadataContainsEmptyDataStore()
         {
             // Arrange
-            var testMetaData = new MetaData();
+            var testMetaData = new Metadata();
 
             // Assert
             Assert.NotNull(testMetaData.MetaDataStore);

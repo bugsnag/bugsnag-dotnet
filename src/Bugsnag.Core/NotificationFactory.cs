@@ -1,7 +1,4 @@
 ﻿using Bugsnag.Core.Payload;
-using Bugsnag.Core.Payload.App;
-using Bugsnag.Core.Payload.Device;
-using Bugsnag.Core.Payload.Event;
 using System.Collections.Generic;
 
 namespace Bugsnag.Core
@@ -32,7 +29,7 @@ namespace Bugsnag.Core
             {
                 Name = Notifier.Name,
                 Version = Notifier.Version,
-                Url = Notifier.Url
+                Url = Notifier.Url.AbsoluteUri
             };
 
             var notification = new Notification
@@ -64,9 +61,9 @@ namespace Bugsnag.Core
 
             var deviceInfo = new DeviceInfo
             {
-                OsVersion = Profiler.DetectedOsVersion,
+                OSVersion = Profiler.DetectedOSVersion,
                 ServicePack = Profiler.ServicePack,
-                OsArchitecture = Profiler.OsArchitecture,
+                OSArchitecture = Profiler.OSArchitecture,
                 ProcessorCount = Profiler.ProcessorCount,
                 MachineName = Profiler.MachineName
             };
@@ -101,7 +98,7 @@ namespace Bugsnag.Core
             while (innerExp.InnerException != null)
                 innerExp = innerExp.InnerException;
 
-            var expMetaData = new MetaData();
+            var expMetaData = new Metadata();
             const string expDetailsTabName = "Exception Details";
 
             // Record the exception details if there are any
@@ -117,7 +114,7 @@ namespace Bugsnag.Core
             if (innerExp.TargetSite != null)
                 expMetaData.AddToTab(expDetailsTabName, "targetSite", innerExp.TargetSite);
 
-            errInfo.MetaData = MetaData.MergeMetaData(Config.StaticData, error.MetaData, expMetaData).MetaDataStore;
+            errInfo.Metadata = Metadata.MergeMetaData(Config.StaticData, error.Metadata, expMetaData).MetaDataStore;
 
             return errInfo;
         }

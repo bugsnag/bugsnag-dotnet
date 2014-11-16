@@ -1,4 +1,4 @@
-﻿using Bugsnag.Core.Payload.Event;
+﻿using Bugsnag.Core.Payload;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -13,16 +13,18 @@ namespace Bugsnag.Core
 
         public string GroupingHash { get; set; }
         public Severity Severity { get; set; }
-        public MetaData MetaData { get; private set; }
+        public Metadata Metadata { get; private set; }
 
         private const string CallTraceHeading = "[NOTIFY CALL STACK (stack trace not available)]";
 
-        public Event(Exception exp, bool? runtimeEnding = null)
+        public Event(Exception exception) : this(exception, null) { }
+
+        public Event(Exception exception, bool? runtimeEnding)
         {
-            Exception = exp;
+            Exception = exception;
             IsRuntimeEnding = runtimeEnding;
             Severity = Severity.Error;
-            MetaData = new MetaData();
+            Metadata = new Metadata();
 
             // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
             if (Exception.StackTrace == null)
@@ -81,7 +83,7 @@ namespace Bugsnag.Core
             else
             {
                 if (config.ProjectNamespaces != null && method.DeclaringType != null)
-                    inProject = config.ProjectNamespaces.Any(x => method.DeclaringType.FullName.StartsWith(x));
+                    inProject = config.ProjectNamespaces.Any(x => method.DeclaringType.FullName.StartsWith(x, StringComparison.Ordinal));
             }
 
             return new StackTraceFrameInfo

@@ -1,9 +1,7 @@
-﻿using Bugsnag.Core.Payload.App;
-using Bugsnag.Core.Payload.Device;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Bugsnag.Core.Payload.Event
+namespace Bugsnag.Core.Payload
 {
     public class EventInfo
     {
@@ -41,6 +39,6 @@ namespace Bugsnag.Core.Payload.Event
         public List<ThreadInfo> Threads { get; set; }
 
         [JsonProperty("metaData")]
-        public Dictionary<string, Dictionary<string, object>> MetaData { get; set; }
+        public Dictionary<string, Dictionary<string, object>> Metadata { get; set; }
     }
 }

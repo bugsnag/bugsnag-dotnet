@@ -10,14 +10,14 @@ namespace Bugsnag
         private static EventHandler<UnobservedTaskExceptionEventArgs> DefaultTaskHandler = null;
         private static Action<Exception, bool> NotifyOnUnhandledException = null;
 
-        public static void InstallDefaultHandler(Action<Exception, bool> actionOnExp)
+        public static void InstallDefaultHandler(Action<Exception, bool> actionOnException)
         {
             if (DefaultHandler != null || DefaultTaskHandler != null || NotifyOnUnhandledException != null)
                 UninstallDefaultHandler();
 
             DefaultHandler = NotifyExceptionHandler;
             DefaultTaskHandler = NotifyExceptionHandler;
-            NotifyOnUnhandledException = actionOnExp;
+            NotifyOnUnhandledException = actionOnException;
             AppDomain.CurrentDomain.UnhandledException += DefaultHandler;
             TaskScheduler.UnobservedTaskException += DefaultTaskHandler;
         }
@@ -38,19 +38,19 @@ namespace Bugsnag
             NotifyOnUnhandledException = null;
         }
 
-        public static void NotifyExceptionHandler(object sender, UnobservedTaskExceptionEventArgs e)
+        private static void NotifyExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args)
         {
-            var exp = e.Exception as Exception;
+            var exp = args.Exception as Exception;
             if (exp != null)
                 NotifyOnUnhandledException(exp, false);
         }
 
         [HandleProcessCorruptedStateExceptions]
-        private static void NotifyExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        private static void NotifyExceptionHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            var exp = e.ExceptionObject as Exception;
+            var exp = args.ExceptionObject as Exception;
             if (exp != null)
-                NotifyOnUnhandledException(exp, e.IsTerminating);
+                NotifyOnUnhandledException(exp, args.IsTerminating);
         }
     }
 }

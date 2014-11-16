@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Bugsnag.Core.Payload.Event
+namespace Bugsnag.Core.Payload
 {
     public class ThreadInfo
     {

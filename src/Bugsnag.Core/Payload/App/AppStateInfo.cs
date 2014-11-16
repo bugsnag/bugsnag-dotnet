@@ -1,5 +1,5 @@
 ﻿
-namespace Bugsnag.Core.Payload.App
+namespace Bugsnag.Core.Payload
 {
     public class AppStateInfo
     {

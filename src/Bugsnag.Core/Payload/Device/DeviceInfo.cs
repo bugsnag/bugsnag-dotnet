@@ -1,20 +1,20 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload.Device
+namespace Bugsnag.Core.Payload
 {
     public class DeviceInfo
     {
         [JsonProperty("osVersion")]
-        public string OsVersion { get; set; }
+        public string OSVersion { get; set; }
 
         [JsonProperty("hostname")]
-        public string Hostname { get; set; }
+        public string HostName { get; set; }
 
         [JsonProperty("servicePack")]
         public string ServicePack { get; set; }
 
         [JsonProperty("osArchitecture")]
-        public string OsArchitecture { get; set; }
+        public string OSArchitecture { get; set; }
 
         [JsonProperty("processorCount")]
         public string ProcessorCount { get; set; }

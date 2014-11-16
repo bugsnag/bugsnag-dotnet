@@ -29,11 +29,11 @@ namespace Bugsnag.Core
 
         public Func<Event, bool> BeforeNotifyFunc { get; set; }
 
-        public MetaData StaticData { get; private set; }
+        public Metadata StaticData { get; private set; }
 
-        public string FinalUrl
+        public Uri FinalUrl
         {
-            get { return (UseSsl ? @"https:\\" : "http\\") + Endpoint; }
+            get { return new Uri((UseSsl ? @"https:\\" : "http\\") + Endpoint); }
         }
 
         public Configuration(string apiKey)
@@ -41,7 +41,7 @@ namespace Bugsnag.Core
             ApiKey = apiKey;
             AppVersion = "1.0.0";
             ReleaseStage = "Development";
-            StaticData = new MetaData();
+            StaticData = new Metadata();
             UseSsl = true;
             AutoDetectInProject = true;
             UserId = Environment.UserName;

@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using InternalMetaData = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
+using InternalMetadata = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
 namespace Bugsnag
 {
-    public class MetaData
+    public class Metadata
     {
         private const string DefaultTabName = "Custom Data";
 
-        public InternalMetaData MetaDataStore { get; private set; }
+        public InternalMetadata MetaDataStore { get; private set; }
 
-        public MetaData()
+        public Metadata()
         {
-            MetaDataStore = new InternalMetaData();
+            MetaDataStore = new InternalMetadata();
         }
 
         public void AddToTab(string tabEntryKey, object tabEntryValue)
@@ -57,14 +57,14 @@ namespace Bugsnag
             MetaDataStore[tabName].Remove(tabEntryKey);
         }
 
-        public static MetaData MergeMetaData(params MetaData[] data)
+        public static Metadata MergeMetaData(params Metadata[] data)
         {
             var aggData = data.ToList();
-            aggData.Insert(0, new MetaData());
+            aggData.Insert(0, new Metadata());
             return aggData.Aggregate(Merge);
         }
 
-        private static MetaData Merge(MetaData currentData, MetaData dataToAdd)
+        private static Metadata Merge(Metadata currentData, Metadata dataToAdd)
         {
             var currStore = currentData.MetaDataStore;
             var storeToAdd = dataToAdd.MetaDataStore;
