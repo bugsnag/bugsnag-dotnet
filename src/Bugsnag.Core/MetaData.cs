@@ -8,11 +8,11 @@ namespace Bugsnag
     {
         private const string DefaultTabName = "Custom Data";
 
-        public InternalMetadata MetaDataStore { get; private set; }
+        public InternalMetadata MetadataStore { get; private set; }
 
         public Metadata()
         {
-            MetaDataStore = new InternalMetadata();
+            MetadataStore = new InternalMetadata();
         }
 
         public void AddToTab(string tabEntryKey, object tabEntryValue)
@@ -23,38 +23,38 @@ namespace Bugsnag
         public void AddToTab(string tabName, string tabEntryKey, object tabEntryValue)
         {
             // If the tab doesn't exist create a new tab with a single entry
-            if (!MetaDataStore.ContainsKey(tabName))
+            if (!MetadataStore.ContainsKey(tabName))
             {
                 var newTabData = new Dictionary<string, object> { { tabEntryKey, tabEntryValue } };
-                MetaDataStore.Add(tabName, newTabData);
+                MetadataStore.Add(tabName, newTabData);
             }
             else
             {
                 // If the tab entry exists, overwrite the entry otherwise add it as a new entry
-                if (MetaDataStore[tabName].ContainsKey(tabEntryKey))
-                    MetaDataStore[tabName][tabEntryKey] = tabEntryValue;
+                if (MetadataStore[tabName].ContainsKey(tabEntryKey))
+                    MetadataStore[tabName][tabEntryKey] = tabEntryValue;
                 else
-                    MetaDataStore[tabName].Add(tabEntryKey, tabEntryValue);
+                    MetadataStore[tabName].Add(tabEntryKey, tabEntryValue);
             }
         }
 
         public void RemoveTab(string tabName)
         {
             // If the tab doesn't exist simply do nothing
-            if (!MetaDataStore.ContainsKey(tabName))
+            if (!MetadataStore.ContainsKey(tabName))
                 return;
 
-            MetaDataStore.Remove(tabName);
+            MetadataStore.Remove(tabName);
         }
 
         public void RemoveTabEntry(string tabName, string tabEntryKey)
         {
             // If the tab doesn't exist or the tab entry doesn't exist simply do nothing
-            if (!MetaDataStore.ContainsKey(tabName) ||
-                !MetaDataStore[tabName].ContainsKey(tabEntryKey))
+            if (!MetadataStore.ContainsKey(tabName) ||
+                !MetadataStore[tabName].ContainsKey(tabEntryKey))
                 return;
 
-            MetaDataStore[tabName].Remove(tabEntryKey);
+            MetadataStore[tabName].Remove(tabEntryKey);
         }
 
         public static Metadata MergeMetaData(params Metadata[] data)
@@ -66,8 +66,8 @@ namespace Bugsnag
 
         private static Metadata Merge(Metadata currentData, Metadata dataToAdd)
         {
-            var currStore = currentData.MetaDataStore;
-            var storeToAdd = dataToAdd.MetaDataStore;
+            var currStore = currentData.MetadataStore;
+            var storeToAdd = dataToAdd.MetadataStore;
 
             // Loop through all the tabs that are in the data to add...
             foreach (var newTab in storeToAdd)
