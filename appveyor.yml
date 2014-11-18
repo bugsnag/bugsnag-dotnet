@@ -17,7 +17,9 @@ environment:
 #       build configuration       #
 #---------------------------------#
 
-configuration: Release
+configuration: 
+  - Release
+  - Debug
 
 # scripts to run before build
 before_build:
