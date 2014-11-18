@@ -6,7 +6,7 @@ namespace Bugsnag
 {
     public class Metadata
     {
-        private const string DefaultTabName = "Custom Data";
+        public const string DefaultTabName = "Custom Data";
 
         public InternalMetadata MetadataStore { get; private set; }
 
