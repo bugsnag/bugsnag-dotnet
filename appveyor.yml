@@ -24,4 +24,6 @@ before_build:
   nuget restore
 
 after_build:
-  FxCop.ps1
+  - ps: FxCop.ps1
+  - ps: analyseCodeAnalysisResults "src\Bugsnag.Core\bin\Debug\Bugsnag.Core.dll.CodeAnalysisLog.xml"
+  - ps: analyseCodeAnalysisResults "src\Bugsnag.Web\bin\Debug\Bugsnag.Web.dll.CodeAnalysisLog.xml"
