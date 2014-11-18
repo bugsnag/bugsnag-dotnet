@@ -17,10 +17,8 @@ environment:
 #       build configuration       #
 #---------------------------------#
 
-configuration: CI
+configuration: Release
 
 # scripts to run before build
 before_build:
-  - nuget restore src\Bugsnag.Core\packages.config -PackagesDirectory ..\..\packages
-  - nuget restore src\Bugsnag.Web\packages.config -PackagesDirectory ..\..\packages
-  - nuget restore test\Bugsnag.Core.Test\packages.config -PackagesDirectory ..\..\packages
+  nuget restore
