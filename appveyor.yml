@@ -24,3 +24,6 @@ configuration:
 # scripts to run before build
 before_build:
   nuget restore
+
+after_build:
+  FxCop.ps1

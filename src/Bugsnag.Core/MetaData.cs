@@ -2,24 +2,47 @@
 using System.Linq;
 using InternalMetadata = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
 
-namespace Bugsnag
+namespace Bugsnag.Core
 {
+    /// <summary>
+    /// Used to store custom data that can be attached to an individual event
+    /// </summary>
     public class Metadata
     {
+        /// <summary>
+        /// The tab name to use if a tab name is not supplied
+        /// </summary>
         public const string DefaultTabName = "Custom Data";
 
+        /// <summary>
+        /// The internal store used to represent the data. Can be modified directly and serialised
+        /// </summary>
         public InternalMetadata MetadataStore { get; private set; }
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public Metadata()
         {
             MetadataStore = new InternalMetadata();
         }
 
+        /// <summary>
+        /// Adds an entry to the default tab
+        /// </summary>
+        /// <param name="tabEntryKey">The key of the entry</param>
+        /// <param name="tabEntryValue">The object representing the entry</param>
         public void AddToTab(string tabEntryKey, object tabEntryValue)
         {
             AddToTab(DefaultTabName, tabEntryKey, tabEntryValue);
         }
 
+        /// <summary>
+        /// Adds an entry to a specific tab
+        /// </summary>
+        /// <param name="tabName">The tab to add the entry to</param>
+        /// <param name="tabEntryKey">The key of the entry</param>
+        /// <param name="tabEntryValue">The object representing the entry</param>
         public void AddToTab(string tabName, string tabEntryKey, object tabEntryValue)
         {
             // If the tab doesn't exist create a new tab with a single entry

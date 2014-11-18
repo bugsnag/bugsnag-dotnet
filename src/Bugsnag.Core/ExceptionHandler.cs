@@ -2,7 +2,7 @@
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
-namespace Bugsnag
+namespace Bugsnag.Core
 {
     public static class ExceptionHandler
     {

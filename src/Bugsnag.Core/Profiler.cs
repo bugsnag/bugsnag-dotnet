@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Management;
 
-namespace Bugsnag
+namespace Bugsnag.Core
 {
     public static class Profiler
     {
