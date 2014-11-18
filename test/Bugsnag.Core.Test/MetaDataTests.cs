@@ -49,7 +49,7 @@ namespace Bugsnag.Core.Test
             var testMetadata = new Metadata();
             var testTabObject1 = "Random String";
             var testTabObject2 = 34;
-            var testTabObject3 = new Object[]{23, 24, 25, "Rt"};
+            var testTabObject3 = new Object[] { 23, 24, 25, "Rt" };
             var tabName = useDefaultTab ? Metadata.DefaultTabName : "Test Tab";
 
             // Act
@@ -74,7 +74,7 @@ namespace Bugsnag.Core.Test
             Assert.Equal(testTabObject2, testStore[tabName]["Test Key 2"]);
             Assert.Equal(testTabObject3, testStore[tabName]["Test Key 3"]);
         }
-        
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
@@ -84,23 +84,24 @@ namespace Bugsnag.Core.Test
             var testMetadata = new Metadata();
             var testTab1Object1 = new Object();
             var testTab1Object2 = 5;
-            var testTab2Object1 = new [] {"a", "b", "c"};
+            var testTab2Object1 = new[] { "a", "b", "c" };
             var testTab3Object1 = "My test";
             var testTab3Object2 = DateTime.Now;
             var testTab3Object3 = new Object();
 
+            // If we using the default tab, only use it for the first tab
             var firstTabName = useDefaultTab ? Metadata.DefaultTabName : "Test Tab 1";
 
             // Act
             if (useDefaultTab)
             {
-                 testMetadata.AddToTab("Test Key 1", testTab1Object1);
-                 testMetadata.AddToTab("Test Key 2", testTab1Object2);
+                testMetadata.AddToTab("Test Key 1", testTab1Object1);
+                testMetadata.AddToTab("Test Key 2", testTab1Object2);
             }
             else
             {
-                 testMetadata.AddToTab("Test Tab 1", "Test Key 1", testTab1Object1);
-                 testMetadata.AddToTab("Test Tab 1", "Test Key 2", testTab1Object2);
+                testMetadata.AddToTab("Test Tab 1", "Test Key 1", testTab1Object1);
+                testMetadata.AddToTab("Test Tab 1", "Test Key 2", testTab1Object2);
             }
             testMetadata.AddToTab("Test Tab 2", "Test Key 1", testTab2Object1);
             testMetadata.AddToTab("Test Tab 3", "Test Key 1", testTab3Object1);
@@ -120,7 +121,7 @@ namespace Bugsnag.Core.Test
             Assert.Equal(testTab3Object2, testStore["Test Tab 3"]["Test Key 2"]);
             Assert.Equal(testTab3Object3, testStore["Test Tab 3"]["Test Key 3"]);
         }
-        
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
