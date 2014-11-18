@@ -21,5 +21,5 @@ configuration: CI
 
 # scripts to run before build
 before_build:
-  nuget restore src\Bugsnag.Core\packages.config
-  nuget restore src\Bugsnag.Web\packages.config
+  nuget restore \src\Bugsnag.Core\packages.config
+  nuget restore \src\Bugsnag.Web\packages.config
