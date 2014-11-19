@@ -1,14 +1,15 @@
- <Dictionary>
-    <Words>
-       <Recognized>
-          <Word>Bugsnag</Word>
-		  <Word>api</Word>
-		  <Word>Notifier</Word>
-       </Recognized>
-    </Words>
-	<Acronyms>
-		<CasingExceptions>
-			<Acronym>OS</Acronym>   <!-- Operating System -->
-         </CasingExceptions>
-      </Acronyms>
- </Dictionary>
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>Bugsnag</Word>
+      <Word>api</Word>
+      <Word>Notifier</Word>
+    </Recognized>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>OS</Acronym>
+      <!-- Operating System -->
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

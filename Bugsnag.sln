@@ -24,7 +24,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B25A7B43-2D72-4970-8BBC-AF0C36DF1576}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		BugsnagCodeAnalysisRules.ruleset = BugsnagCodeAnalysisRules.ruleset
+		CustomDictionary.xml = CustomDictionary.xml
 		FxCop.ps1 = FxCop.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A6AB78D3-F339-4F9E-B395-C10297C477CB}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
 Global
