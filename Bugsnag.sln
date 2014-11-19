@@ -9,11 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.Web", "src\Bugsnag.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.Core.Test", "test\Bugsnag.Core.Test\Bugsnag.Core.Test.csproj", "{8539FD93-F93E-4F3B-ACC5-C0C665C7C02B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A9C5CF82-30BC-41CD-91F5-ECD1972B261D}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2CBE6402-4C06-42B2-BFBC-0D77C286C6DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5E25531B-BE8D-4386-9BC3-3C0684F769D0}"
@@ -25,6 +20,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.MVCApp", "samples\Web.MVCApp\Web.MVCApp.csproj", "{385DC263-2D7B-4C81-9154-AFA898DB3ED4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Desktop.WPFApp", "samples\Desktop.WPFApp\Desktop.WPFApp.csproj", "{0E890E8C-0F32-4C45-BAB8-26BF8748D1D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B25A7B43-2D72-4970-8BBC-AF0C36DF1576}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		FxCop.ps1 = FxCop.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
