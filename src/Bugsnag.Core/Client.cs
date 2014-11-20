@@ -6,6 +6,7 @@ namespace Bugsnag.Core
     {
         public Configuration Config { get; private set; }
         private Notifier Notifier { get; set; }
+        private ExceptionHandler ExceptionHandler { get; set; }
 
         public Client(string apiKey) : this(apiKey, true) { }
 
@@ -16,6 +17,7 @@ namespace Bugsnag.Core
 
             Config = new Configuration(apiKey);
             Notifier = new Notifier(Config);
+            ExceptionHandler = new ExceptionHandler();
 
             // Install a default exception handler with this client
             if (installDefaultHandler)
@@ -45,7 +47,6 @@ namespace Bugsnag.Core
             ExceptionHandler.UninstallDefaultHandler();
         }
 
-
         public void Notify(Exception exception)
         {
             var error = new Event(exception);
@@ -69,10 +70,9 @@ namespace Bugsnag.Core
                 return;
 
             // Ignore the error if its part of the classes we are ignoring
-            if (Config.IgnoreClasses != null &&
-                err.Exception != null &&
+            if (err.Exception != null &&  
                 err.Exception.GetType() != null &&
-                Config.IgnoreClasses.Contains(err.Exception.GetType().Name))
+                Config.IsClassToIgnore(err.Exception.GetType().Name))
                 return;
 
             Notifier.Send(err);

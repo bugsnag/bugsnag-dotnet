@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using InternalMetadata = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, object>>;
+using TabData = System.Collections.Generic.Dictionary<string, object>;
 
 namespace Bugsnag.Core
 {
@@ -17,14 +17,14 @@ namespace Bugsnag.Core
         /// <summary>
         /// The internal store used to represent the data. Can be modified directly and serialised
         /// </summary>
-        public InternalMetadata MetadataStore { get; private set; }
+        public Dictionary<string, TabData> MetadataStore { get; private set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public Metadata()
         {
-            MetadataStore = new InternalMetadata();
+            MetadataStore = new Dictionary<string, TabData>();
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Bugsnag.Core
             MetadataStore[tabName].Remove(tabEntryKey);
         }
 
-        public static Metadata MergeMetaData(params Metadata[] data)
+        public static Metadata MergeMetadata(params Metadata[] data)
         {
             var aggData = data.ToList();
             aggData.Insert(0, new Metadata());

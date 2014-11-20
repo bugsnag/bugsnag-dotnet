@@ -39,7 +39,7 @@ namespace Bugsnag.Core
                 case 0:
                     return "Windows 95";
                 case 10:
-                    return osInfo.Version.Revision.ToString() == "2222A" ? "Windows 98 Second Edition" : "Windows 98";
+                    return "Windows 98";
                 case 90:
                     return "Windows Me";
                 default:

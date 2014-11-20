@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace Bugsnag.Core
 {
-    public static class ExceptionHandler
+    public class ExceptionHandler
     {
-        private static UnhandledExceptionEventHandler DefaultHandler = null;
-        private static EventHandler<UnobservedTaskExceptionEventArgs> DefaultTaskHandler = null;
-        private static Action<Exception, bool> NotifyOnUnhandledException = null;
+        private UnhandledExceptionEventHandler DefaultHandler = null;
+        private EventHandler<UnobservedTaskExceptionEventArgs> DefaultTaskHandler = null;
+        private Action<Exception, bool> NotifyOnUnhandledException = null;
 
-        public static void InstallDefaultHandler(Action<Exception, bool> actionOnException)
+        public void InstallDefaultHandler(Action<Exception, bool> actionOnException)
         {
             if (DefaultHandler != null || DefaultTaskHandler != null || NotifyOnUnhandledException != null)
                 UninstallDefaultHandler();
@@ -22,7 +22,7 @@ namespace Bugsnag.Core
             TaskScheduler.UnobservedTaskException += DefaultTaskHandler;
         }
 
-        public static void UninstallDefaultHandler()
+        public void UninstallDefaultHandler()
         {
             if (DefaultHandler != null)
             {
@@ -38,7 +38,7 @@ namespace Bugsnag.Core
             NotifyOnUnhandledException = null;
         }
 
-        private static void NotifyExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args)
+        private void NotifyExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args)
         {
             var exp = args.Exception as Exception;
             if (exp != null)
@@ -46,7 +46,7 @@ namespace Bugsnag.Core
         }
 
         [HandleProcessCorruptedStateExceptions]
-        private static void NotifyExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        private void NotifyExceptionHandler(object sender, UnhandledExceptionEventArgs args)
         {
             var exp = args.ExceptionObject as Exception;
             if (exp != null)

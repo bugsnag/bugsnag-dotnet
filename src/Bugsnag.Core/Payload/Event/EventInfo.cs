@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using TabData = System.Collections.Generic.Dictionary<string, object>;
 
 namespace Bugsnag.Core.Payload
 {
@@ -39,6 +40,6 @@ namespace Bugsnag.Core.Payload
         public List<ThreadInfo> Threads { get; set; }
 
         [JsonProperty("metaData")]
-        public Dictionary<string, Dictionary<string, object>> Metadata { get; set; }
+        public Dictionary<string, TabData> Metadata { get; set; }
     }
 }

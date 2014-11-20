@@ -17,7 +17,7 @@ namespace BugsnagDemoConsole
             bugsnag.Config.SetUser("1234", "aaaa@bbbb.com", "Aaaa Bbbb");
 
             bugsnag.Config.StaticData.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
-            bugsnag.Config.FilePrefix = new List<string> { @"e:\GitHub\Bugsnag-NET\" };
+            bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
 
             bugsnag.Config.SendThreads = true;
 

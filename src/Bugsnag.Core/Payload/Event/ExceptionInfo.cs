@@ -9,7 +9,7 @@ namespace Bugsnag.Core.Payload
         public string ExceptionClass { get; set; }
 
         [JsonProperty("message")]
-        public string Message { get; set; }
+        public string Description { get; set; }
 
         [JsonProperty("stacktrace")]
         public List<StackTraceFrameInfo> StackTrace { get; set; }

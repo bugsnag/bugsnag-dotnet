@@ -16,7 +16,7 @@ namespace Desktop.WPFApp
             bugsnag.Config.AppVersion = "6.7.8";
             bugsnag.Config.ReleaseStage = "Beta WPF";
             bugsnag.Config.SetUser("2222", "cccc@dddd.com", "CCcc Dddd");
-            bugsnag.Config.FilePrefix = new List<string> { @"e:\GitHub\Bugsnag-NET\" };
+            bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
 
             base.OnStartup(e);
 

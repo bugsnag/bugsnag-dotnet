@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Bugsnag.Core
@@ -17,20 +18,20 @@ namespace Bugsnag.Core
 
         public string Context { get; set; }
 
-        public string Endpoint { get; private set; }
 
+        public bool AutoDetectInProject { get; set; }
         public bool SendThreads { get; set; }
 
-        public bool UseSsl { get; set; }
-        public List<string> FilePrefix { get; set; }
-        public bool AutoDetectInProject { get; set; }
-        public List<string> IgnoreClasses { get; set; }
-        public List<string> ProjectNamespaces { get; set; }
+        private List<string> FilePrefix { get; set; }
+        private List<string> IgnoreClasses { get; set; }
+        private List<string> ProjectNamespaces { get; set; }
 
         public Func<Event, bool> BeforeNotifyFunc { get; set; }
 
         public Metadata StaticData { get; private set; }
 
+        public bool UseSsl { get; set; }
+        public string Endpoint { get; private set; }
         public Uri FinalUrl
         {
             get { return new Uri((UseSsl ? @"https:\\" : "http\\") + Endpoint); }
@@ -49,6 +50,9 @@ namespace Bugsnag.Core
             Context = null;
             Endpoint = "notify.bugsnag.com";
             SendThreads = false;
+            FilePrefix = new List<string>();
+            IgnoreClasses = new List<string>();
+            ProjectNamespaces = new List<string>();
         }
 
         public void SetUser(string userId, string userEmail, string userName)
@@ -56,6 +60,38 @@ namespace Bugsnag.Core
             UserId = userId;
             UserEmail = userEmail;
             UserName = userName;
+        }
+
+        public void SetFilePrefix(params string[] prefixes)
+        {
+            FilePrefix = prefixes.ToList();
+        }
+
+        public string RemoveFileNamePrefix(string fileName)
+        {
+            var result = fileName;
+            FilePrefix.ForEach(x => result = result.Replace(x, ""));
+            return result;
+        }
+
+        public void SetIgnoreClasses(params string[] classNames)
+        {
+            IgnoreClasses = classNames.ToList();
+        }
+
+        public bool IsClassToIgnore(string className)
+        {
+            return IgnoreClasses.Contains(className);
+        }
+
+        public void SetProjectNamespaces(params string[] projectNamespaces)
+        {
+            ProjectNamespaces = projectNamespaces.ToList();
+        }
+
+        public bool IsInProjectNamespace(string fullMethodName)
+        {
+            return ProjectNamespaces.Any(x => fullMethodName.StartsWith(x, StringComparison.Ordinal));
         }
     }
 }

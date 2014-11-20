@@ -1,6 +1,7 @@
 ﻿using Bugsnag.Core.Payload;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace Bugsnag.Core
@@ -14,8 +15,6 @@ namespace Bugsnag.Core
         public string GroupingHash { get; set; }
         public Severity Severity { get; set; }
         public Metadata Metadata { get; private set; }
-
-        private const string CallTraceHeading = "[NOTIFY CALL STACK (stack trace not available)]";
 
         public Event(Exception exception) : this(exception, null) { }
 
@@ -49,11 +48,10 @@ namespace Bugsnag.Core
                 return null;
 
             var stackFrameInfos = frames.Select(x => ExtractStackTraceFrameInfo(x, config)).ToList();
-
             return new ExceptionInfo
             {
                 ExceptionClass = Exception.GetType().Name,
-                Message = Exception.Message + (usedCallTrace ? " " + CallTraceHeading : ""),
+                Description = Exception.Message + (usedCallTrace ? " [CALL STACK]" : ""),
                 StackTrace = stackFrameInfos
             };
         }
@@ -64,28 +62,17 @@ namespace Bugsnag.Core
 
             var param = method.GetParameters().Select(p => p.ParameterType.Name + " " + p.Name);
             var paramSummary = String.Join(",", param);
-            var signature = String.Format("{0}({1})", method.Name, paramSummary);
+            var signature = String.Format(CultureInfo.CurrentCulture, "{0}({1})", method.Name, paramSummary);
 
             var methodInfo = method.DeclaringType == null ? "" : method.DeclaringType.FullName;
             methodInfo += "." + signature;
 
-            var file = frame.GetFileName();
-            if (config.FilePrefix != null && !String.IsNullOrEmpty(file))
-            {
-                config.FilePrefix.ToList().ForEach(x => file = file.Replace(x, ""));
-            }
+            var file = config.RemoveFileNamePrefix(frame.GetFileName());
 
-            var inProject = true;
-            if (config.AutoDetectInProject)
-            {
-                inProject = !String.IsNullOrEmpty(file);
-            }
-            else
-            {
-                if (config.ProjectNamespaces != null && method.DeclaringType != null)
-                    inProject = config.ProjectNamespaces.Any(x => method.DeclaringType.FullName.StartsWith(x, StringComparison.Ordinal));
-            }
-
+            var inProject = config.AutoDetectInProject ?
+                            !String.IsNullOrEmpty(file) :
+                            config.IsInProjectNamespace(method.DeclaringType.FullName);
+ 
             return new StackTraceFrameInfo
             {
                 File = file,
