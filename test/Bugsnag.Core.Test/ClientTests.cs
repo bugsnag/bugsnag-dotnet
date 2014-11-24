@@ -262,6 +262,55 @@ namespace Bugsnag.Core.Test
         }
 
         [Fact]
+        public void Notify_CallingNotifyFromExceptionWithoutSeverityDefaultToWarning()
+        {
+            // Arrange
+            var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
+            var mockConfig = new Mock<IConfiguration>();
+            var mockExceptionHandler = new Mock<IExceptionHandler>();
+            var testClient = new Client("123456", false, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
+            var testExp = new StackOverflowException("Test Stack Overflow");
+
+            // Set up the call so that we invoke the handler with our test exception immediately
+            mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
+            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
+                                                             y.Severity == Severity.Warning)));
+
+            // Act
+            testClient.Notify(testExp);
+
+            // Assert
+            mockNotifier.VerifyAll();
+        }
+
+        [Theory]
+        public void Notify_CallingNotifyFromExceptionAndMetaDataWithoutSeverityDefaultToWarning()
+        {
+            // Arrange
+            var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
+            var mockConfig = new Mock<IConfiguration>();
+            var mockExceptionHandler = new Mock<IExceptionHandler>();
+            var testClient = new Client("123456", false, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
+            var testExp = new StackOverflowException("Test Stack Overflow");
+            var testMetadata = new Metadata();
+            testMetadata.AddToTab("Tab 1", "Tab Key 1", "Tab Value 1");
+
+            // Set up the call so that we invoke the handler with our test exception immediately
+            mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
+            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
+                                                             y.Severity == Severity.Warning &&
+                                                             y.Metadata.MetadataStore["Tab 1"]["Tab Key 1"] == "Tab Value 1")));
+
+            // Act
+            testClient.Notify(testExp, testMetadata);
+
+            // Assert
+            mockNotifier.VerifyAll();
+        }
+
+        [Fact]
         public void HandleDefaultException_NotifyIsCalledAsPartOfDefaultHandler()
         {
             // Arrange
@@ -276,7 +325,9 @@ namespace Bugsnag.Core.Test
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
-            mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp && y.IsRuntimeEnding == true)));
+            mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
+                                                             y.IsRuntimeEnding == true &&
+                                                             y.Severity == Severity.Error)));
 
             // Act
             var testClient = new Client("123456", true, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);

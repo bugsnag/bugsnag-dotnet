@@ -90,6 +90,7 @@ namespace Bugsnag.Core
         public void Notify(Exception exception)
         {
             var error = new Event(exception);
+            error.Severity = Severity.Warning;
             Notify(error);
         }
 
@@ -113,6 +114,7 @@ namespace Bugsnag.Core
         public void Notify(Exception exception, Metadata data)
         {
             var error = new Event(exception);
+            error.Severity = Severity.Warning;
             error.Metadata.AddMetadata(data);
             Notify(error);
         }
