@@ -5,9 +5,9 @@ namespace Bugsnag.Core
 {
     public class NotificationFactory
     {
-        private Configuration Config { get; set; }
+        private IConfiguration Config { get; set; }
 
-        public NotificationFactory(Configuration config)
+        public NotificationFactory(IConfiguration config)
         {
             Config = config;
         }

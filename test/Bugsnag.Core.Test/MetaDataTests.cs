@@ -4,7 +4,7 @@ using Xunit.Extensions;
 
 namespace Bugsnag.Core.Test
 {
-    public class MetaDataTests
+    public class MetadataTests
     {
         [Fact]
         public void Constructor_NewMetadataContainsEmptyDataStore()

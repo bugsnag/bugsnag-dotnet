@@ -7,12 +7,12 @@ using System.Reflection;
 
 namespace Bugsnag.Core
 {
-    public class Notifier
+    public class Notifier : INotifier
     {
         public const string Name = ".NET Bugsnag Notifier (ALPHA)";
         public static readonly Uri Url = new Uri("https://bugsnag.com");
 
-        public static readonly string Version = 
+        public static readonly string Version =
             Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
         private static readonly IWebProxy DetectedProxy = WebRequest.DefaultWebProxy;
@@ -23,18 +23,18 @@ namespace Bugsnag.Core
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
 
-        private Configuration Config { get; set; }
+        private IConfiguration Config { get; set; }
         private NotificationFactory Factory { get; set; }
 
-        public Notifier(Configuration config)
+        public Notifier(IConfiguration config)
         {
             Config = config;
             Factory = new NotificationFactory(config);
         }
 
-        public void Send(Event error)
+        public void Send(Event errorEvent)
         {
-            var notification = Factory.CreateFromError(error);
+            var notification = Factory.CreateFromError(errorEvent);
             if (notification != null)
                 Send(notification);
         }

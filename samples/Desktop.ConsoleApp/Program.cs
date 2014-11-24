@@ -19,8 +19,6 @@ namespace BugsnagDemoConsole
             bugsnag.Config.StaticData.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
             bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
 
-            bugsnag.Config.SendThreads = true;
-
             bugsnag.Config.BeforeNotifyFunc = error =>
             {
                 error.Metadata.AddToTab("CallBack", "Check", true);

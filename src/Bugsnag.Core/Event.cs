@@ -26,11 +26,11 @@ namespace Bugsnag.Core
             Metadata = new Metadata();
 
             // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
-            if (Exception.StackTrace == null)
+            if (Exception == null || Exception.StackTrace == null)
                 CallTrace = new StackTrace(1, true);
         }
 
-        public ExceptionInfo GenerateExceptionInfo(Configuration config)
+        public ExceptionInfo GenerateExceptionInfo(IConfiguration config)
         {
             bool usedCallTrace = false;
             var trace = new StackTrace(Exception, true);
@@ -56,7 +56,7 @@ namespace Bugsnag.Core
             };
         }
 
-        private static StackTraceFrameInfo ExtractStackTraceFrameInfo(StackFrame frame, Configuration config)
+        private static StackTraceFrameInfo ExtractStackTraceFrameInfo(StackFrame frame, IConfiguration config)
         {
             var method = frame.GetMethod();
 
@@ -72,7 +72,7 @@ namespace Bugsnag.Core
             var inProject = config.AutoDetectInProject ?
                             !String.IsNullOrEmpty(file) :
                             config.IsInProjectNamespace(method.DeclaringType.FullName);
- 
+
             return new StackTraceFrameInfo
             {
                 File = file,

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Bugsnag.Core
 {
-    public class ExceptionHandler
+    public class ExceptionHandler : IExceptionHandler
     {
         private UnhandledExceptionEventHandler DefaultHandler = null;
         private EventHandler<UnobservedTaskExceptionEventArgs> DefaultTaskHandler = null;

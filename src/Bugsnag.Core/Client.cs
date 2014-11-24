@@ -10,17 +10,17 @@ namespace Bugsnag.Core
         /// <summary>
         /// The notifier used by the client to send notifications to Bugsnag
         /// </summary>
-        private Notifier notifier;
+        private INotifier notifier;
 
         /// <summary>
         /// The handler used to handle app level exceptions and notify Bugsnag accordingly
         /// </summary>
-        private ExceptionHandler exceptionHandler;
+        private IExceptionHandler exceptionHandler;
 
         /// <summary>
         /// Gets the configuration of the client, allowing users to config it
         /// </summary>
-        public Configuration Config { get; private set; }
+        public IConfiguration Config { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class. Will use all the default settings and will 
@@ -34,23 +34,37 @@ namespace Bugsnag.Core
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class. Provides the option to automatically 
-        /// hook into uncaught exceptions 
+        /// hook into uncaught exceptions. Uses default dependencies.
         /// </summary>
         /// <param name="apiKey">The Bugsnag API key to use</param>
         /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
         public Client(string apiKey, bool autoNotify)
         {
-            // TODO : Anyway to better validate key other than checking if its null or empty
-            if (string.IsNullOrEmpty(apiKey))
-                throw new ArgumentException("You must provide a Bugsnag API key");
-
             Config = new Configuration(apiKey);
             notifier = new Notifier(Config);
             exceptionHandler = new ExceptionHandler();
+            InitialiseClient(apiKey, autoNotify);
+        }
 
-            // Install a default exception handler with this client
-            if (autoNotify)
-                StartAutoNotify();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Client"/> class. Provides the option to automatically 
+        /// hook into uncaught exceptions. Allows injection of dependant classes
+        /// </summary>
+        /// <param name="apiKey">The Bugsnag API key to use</param>
+        /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
+        /// <param name="configInstance">The configuration of the client</param>
+        /// <param name="notifierInstance">The notifier used to send notifications</param>
+        /// <param name="handlerInstance">The exception handler used to attach to uncaught exceptions</param>
+        public Client(string apiKey,
+                      bool autoNotify,
+                      IConfiguration configInstance,
+                      INotifier notifierInstance,
+                      IExceptionHandler handlerInstance)
+        {
+            Config = configInstance;
+            notifier = notifierInstance;
+            exceptionHandler = handlerInstance;
+            InitialiseClient(apiKey, autoNotify);
         }
 
         /// <summary>
@@ -135,18 +149,33 @@ namespace Bugsnag.Core
             if (Config.BeforeNotifyFunc != null)
             {
                 // Do nothing if the before notify action indicates we should ignore the error event
-                var shouldIgnore = Config.BeforeNotifyFunc(errorEvent);
-                if (shouldIgnore)
+                var shouldContinue = Config.BeforeNotifyFunc(errorEvent);
+                if (!shouldContinue)
                     return;
             }
 
             // Ignore the error if the exception it contains is one of the classes to ignore
-            if (errorEvent.Exception != null &&
-                errorEvent.Exception.GetType() != null &&
+            if (errorEvent.Exception == null ||
                 Config.IsClassToIgnore(errorEvent.Exception.GetType().Name))
                 return;
 
             notifier.Send(errorEvent);
+        }
+
+        /// <summary>
+        /// Initialize the client with dependencies
+        /// </summary>
+        /// <param name="apiKey">The Bugsnag API key to use</param>
+        /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
+        private void InitialiseClient(string apiKey, bool autoNotify)
+        {
+            // TODO : Anyway to better validate key other than checking if its null or empty
+            if (string.IsNullOrEmpty(apiKey))
+                throw new ArgumentException("You must provide a Bugsnag API key");
+
+            // Install a default exception handler with this client
+            if (autoNotify)
+                StartAutoNotify();
         }
 
         /// <summary>

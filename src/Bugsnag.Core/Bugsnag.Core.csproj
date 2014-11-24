@@ -50,6 +50,9 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="Interfaces\IConfiguration.cs" />
+    <Compile Include="Interfaces\IExceptionHandler.cs" />
+    <Compile Include="Interfaces\INotifier.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Metadata.cs" />
     <Compile Include="NotificationFactory.cs" />

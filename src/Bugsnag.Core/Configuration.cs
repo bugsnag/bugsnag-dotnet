@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bugsnag.Core
 {
-    public class Configuration
+    public class Configuration : IConfiguration
     {
         public string ApiKey { get; private set; }
 
@@ -20,7 +20,6 @@ namespace Bugsnag.Core
 
 
         public bool AutoDetectInProject { get; set; }
-        public bool SendThreads { get; set; }
 
         private List<string> FilePrefix { get; set; }
         private List<string> NotifyReleaseStages { get; set; }
@@ -50,7 +49,6 @@ namespace Bugsnag.Core
             LoggedOnUser = Environment.UserDomainName + "\\" + Environment.UserName;
             Context = null;
             Endpoint = "notify.bugsnag.com";
-            SendThreads = false;
             FilePrefix = new List<string>();
             IgnoreClasses = new List<string>();
             ProjectNamespaces = new List<string>();
