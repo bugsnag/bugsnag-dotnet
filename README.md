@@ -40,7 +40,7 @@ Thats it...you will be reporting on uncaught exceptions by default.
 
 Creating the client
 ---------------------
-The bugsnag client needs to be created using your API key. If you would prefer to disable the auto notification, you can create the client with auto notify turned off (on by default).
+The client needs to be created using your API key. If you would prefer to disable the auto notification, you can create the client with auto notify turned off (on by default).
 ```c#
 var bugsnag = new Client("your-api-key-goes-here", false);
 ```
@@ -52,3 +52,33 @@ bugsnag.StopAutoNotify();
 // To start auto notification
 bugsnag.StartAutoNotify();
 ```
+
+Send Non-Fatal Exceptions to Bugsnag
+------------------------------------
+
+If you would like to send non-fatal exceptions to Bugsnag, you can pass any
+object that inherits from `Exception` to the `Notify` method:
+
+```c#
+bugsnag.Notify(new ArgumentException("Non-fatal"));
+```
+You can also send additional meta-data with your exception:
+```c#
+var metadata = new Metadata();
+metadata.AddToTab("Company", "Department", "Human Resources");
+metadata.AddToTab("Company", "Location", "New York");
+
+bugsnag.Notify(new ArgumentException("Non-fatal"), metadata);
+```
+You can set the severity of an error in Bugsnag by including the severity option when
+notifying bugsnag of the error,
+```c#
+bugsnag.Notify(new ArgumentException("Non-fatal"), Severity.Info)
+```
+Valid severities are `Severity.Error`, `Severity.Warning` and `Severity.Info`.
+
+Severity is displayed in the dashboard and can be used to filter the error list.
+By default all crashes (or unhandled exceptions) are set to `Severity.Error` and all
+`bugsnag.Notify()` calls default to `Severity.Warning`.
+
+
