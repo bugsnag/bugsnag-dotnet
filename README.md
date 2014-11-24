@@ -28,23 +28,27 @@ Bugsnag for .NET depends only on the `JSON.net` library and needs to be referenc
 
 Quick Reference Guide
 ---------------------
-
 Import the Bugnsnag core library into your application 
-
 ```c#
 using Bugsnag.Core;
 ```
-
-Create and instance of the client using your api key.
+Create an instance of the client using your API key.
 ```c#
 var bugsnag = new Client("your-api-key-goes-here");
 ```
+Thats it...you will be reporting on uncaught exceptions by default.
 
-Thats it...you will be catching and reporting on uncaught exceptions.
+Creating the client
+---------------------
+The bugsnag client needs to be created using your API key. If you would prefer to disable the auto notification, you can create the client with auto notify turned off (on by default).
+```c#
+var bugsnag = new Client("your-api-key-goes-here", false);
+```
+To manually start or stop auto notification at any point...
+```c#
+// To stop auto notification
+bugsnag.StopAutoNotify();
 
-
-
-
-
-
-
+// To start auto notification
+bugsnag.StartAutoNotify();
+```

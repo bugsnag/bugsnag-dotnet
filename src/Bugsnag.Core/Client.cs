@@ -54,33 +54,11 @@ namespace Bugsnag.Core
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class. Allows a client to be configured using a 
-        /// pre-built configuration object. Will NOT automatically notify uncaught exceptions.
-        /// </summary>
-        /// <param name="config">The configuration to use for the client</param>
-        public Client(Configuration config)
-        {
-            Config = config;
-            notifier = new Notifier(Config);
-            exceptionHandler = new ExceptionHandler();
-        }
-
-        /// <summary>
         /// Enables auto notification, using the default exception handler
         /// </summary>
         public void StartAutoNotify()
         {
-            StartAutoNotify(HandleDefaultException);
-        }
-
-        /// <summary>
-        /// Enables auto notification using a provided custom handler
-        /// </summary>
-        /// <param name="customHandler">The custom handler to run when an unmanaged exception occurs. 
-        /// Uses the exception to notify on and a boolean indicating if the runtime is ending</param>
-        public void StartAutoNotify(Action<Exception, bool> customHandler)
-        {
-            exceptionHandler.InstallHandler(customHandler);
+            exceptionHandler.InstallHandler(HandleDefaultException);
         }
 
         /// <summary>
@@ -88,7 +66,7 @@ namespace Bugsnag.Core
         /// </summary>
         public void StopAutoNotify()
         {
-            exceptionHandler.UninstallDefaultHandler();
+            exceptionHandler.UninstallHandler();
         }
 
         /// <summary>
@@ -158,12 +136,13 @@ namespace Bugsnag.Core
             {
                 // Do nothing if the before notify action indicates we should ignore the error event
                 var shouldIgnore = Config.BeforeNotifyFunc(errorEvent);
-                if (shouldIgnore) 
+                if (shouldIgnore)
                     return;
             }
 
             // Ignore the error if the exception it contains is one of the classes to ignore
-            if (errorEvent.Exception != null && errorEvent.Exception.GetType() != null &&
+            if (errorEvent.Exception != null &&
+                errorEvent.Exception.GetType() != null &&
                 Config.IsClassToIgnore(errorEvent.Exception.GetType().Name))
                 return;
 

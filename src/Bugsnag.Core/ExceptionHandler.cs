@@ -13,7 +13,7 @@ namespace Bugsnag.Core
         public void InstallHandler(Action<Exception, bool> actionOnException)
         {
             if (DefaultHandler != null || DefaultTaskHandler != null || NotifyOnUnhandledException != null)
-                UninstallDefaultHandler();
+                UninstallHandler();
 
             DefaultHandler = NotifyExceptionHandler;
             DefaultTaskHandler = NotifyExceptionHandler;
@@ -22,7 +22,7 @@ namespace Bugsnag.Core
             TaskScheduler.UnobservedTaskException += DefaultTaskHandler;
         }
 
-        public void UninstallDefaultHandler()
+        public void UninstallHandler()
         {
             if (DefaultHandler != null)
             {
