@@ -10,7 +10,7 @@ namespace Bugsnag.Core
         private EventHandler<UnobservedTaskExceptionEventArgs> DefaultTaskHandler = null;
         private Action<Exception, bool> NotifyOnUnhandledException = null;
 
-        public void InstallDefaultHandler(Action<Exception, bool> actionOnException)
+        public void InstallHandler(Action<Exception, bool> actionOnException)
         {
             if (DefaultHandler != null || DefaultTaskHandler != null || NotifyOnUnhandledException != null)
                 UninstallDefaultHandler();

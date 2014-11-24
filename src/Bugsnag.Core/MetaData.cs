@@ -61,6 +61,11 @@ namespace Bugsnag.Core
             }
         }
 
+        public void AddMetadata(Metadata data)
+        {
+            MetadataStore = MergeMetadata(this, data).MetadataStore;
+        }
+
         public void RemoveTab(string tabName)
         {
             // If the tab doesn't exist simply do nothing

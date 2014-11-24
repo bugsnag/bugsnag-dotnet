@@ -23,6 +23,7 @@ namespace Bugsnag.Core
         public bool SendThreads { get; set; }
 
         private List<string> FilePrefix { get; set; }
+        private List<string> NotifyReleaseStages { get; set; }
         private List<string> IgnoreClasses { get; set; }
         private List<string> ProjectNamespaces { get; set; }
 
@@ -53,6 +54,7 @@ namespace Bugsnag.Core
             FilePrefix = new List<string>();
             IgnoreClasses = new List<string>();
             ProjectNamespaces = new List<string>();
+            NotifyReleaseStages = null;
         }
 
         public void SetUser(string userId, string userEmail, string userName)
@@ -92,6 +94,24 @@ namespace Bugsnag.Core
         public bool IsInProjectNamespace(string fullMethodName)
         {
             return ProjectNamespaces.Any(x => fullMethodName.StartsWith(x, StringComparison.Ordinal));
+        }
+
+        public void SetNotifyReleaseStages(params string[] releaseStages)
+        {
+            NotifyReleaseStages = releaseStages.ToList();
+        }
+
+        public void NotifyOnAllReleaseStages()
+        {
+            NotifyReleaseStages = null;
+        }
+
+        public bool IsNotifyReleaseStage()
+        {
+            if (NotifyReleaseStages == null)
+                return true;
+
+            return NotifyReleaseStages.Any(x => x == ReleaseStage);
         }
     }
 }

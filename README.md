@@ -11,3 +11,40 @@ The Bugsnag Notifier for .NET gives you instant notification of exceptions throw
 - An exception filter `NotifyExceptionAttribute` to use as a global filter is provided for handling exceptions in ASP.NET MVC applications.
 
 [Bugsnag](https://bugsnag.com) captures errors in real-time from your websites and mobile applications, helping you to understand and resolve them as fast as possible. [Create a free account](https://bugsnag.com) to start capturing errors from your applications.
+
+How to Install
+--------------
+
+### Using Nuget (Recommended)
+    TODO
+
+### Manual Library Reference
+
+- Download the latest Bugsnag.Core dll and reference it in your project (TODO add download location/link)
+- For ASP.NET MVC applications, also download the latest Bugsnag.Web dll and reference it in your project to
+access the global filter (TODO add download location/link).
+
+Bugsnag for .NET depends only on the `JSON.net` library and needs to be referenced, the nuget package can be found [here](https://www.nuget.org/packages/Newtonsoft.Json/).
+
+Quick Reference Guide
+---------------------
+
+Import the Bugnsnag core library into your application 
+
+```c#
+using Bugsnag.Core;
+```
+
+Create and instance of the client using your api key.
+```c#
+var bugsnag = new Client("your-api-key-goes-here");
+```
+
+Thats it...you will be catching and reporting on uncaught exceptions.
+
+
+
+
+
+
+
