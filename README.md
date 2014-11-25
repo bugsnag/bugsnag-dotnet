@@ -14,7 +14,6 @@ The Bugsnag Notifier for .NET gives you instant notification of exceptions throw
 
 How to Install
 --------------
-
 ### Using Nuget (Recommended)
     TODO
 
@@ -52,6 +51,10 @@ bugsnag.StopAutoNotify();
 // To start auto notification
 bugsnag.StartAutoNotify();
 ```
+Note that the API key used by the client can be examined at any time
+```c#
+string apiKey = bugsnag.Config.ApiKey;
+```
 
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
@@ -81,4 +84,47 @@ Severity is displayed in the dashboard and can be used to filter the error list.
 By default all crashes (or unhandled exceptions) are set to `Severity.Error` and all
 `bugsnag.Notify()` calls default to `Severity.Warning`.
 
+Additional Configuration
+------------------------
+#### Application Settings
+The client can be configured with specific application settings which can be used to determine when and what information to send. Application settings can be set at any time, but are normally set after the client is created.
+
+##### Application Version
+Used to attach the version number of the application which generated the error. If the application version is set and an error is resolved in the dashboard the error will not be unresolved until a crash is seen in a newer version of the app.
+```c#
+bugsnag.Config.AppVersion = "5.0.1";
+```
+
+##### Release Stage
+Represents the current release stage for the application. This needs to be set manually.
+```c#
+bugsnag.Config.ReleaseStage = "staging";
+```
+By default, the client will report on all errors regardless of the release stage. However, you can filter out errors from certain stages. To specify which stages you want to notify on, use the following method.
+```c#
+bugsnag.Config.SetNotifyReleaseStages("development","production");
+```
+If you want to switch back to reporting on all release stages call this method.
+```c#
+bugsnag.Config.NotifyOnAllReleaseStages();
+```
+
+#####  Endpoint URL
+All notifications are send to the Endpoint URL. By default, this is set to `notify.bugsnag.com`, however this can be overridden.
+```c#
+bugsnag.Config.Endpoint = "myserver.bugsnag.com";
+```
+Notification are sent using SSL by default. However, this can be disabled
+```c#
+bugsnag.Config.UseSsl = false;
+```
+
+#### Notification Settings
+The client can be configured to provide additional information based on the current error or process that is running at the time. These settings can be set any time.
+
+#### Context
+The concept of "contexts" is used to help display and group your errors. Contexts represent what was happening in your application at the time an error occurs.
+```c#
+bugsnag.Config.Context = "DataAccess";
+```
 
