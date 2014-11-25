@@ -284,7 +284,7 @@ namespace Bugsnag.Core.Test
             mockNotifier.VerifyAll();
         }
 
-        [Theory]
+        [Fact]
         public void Notify_CallingNotifyFromExceptionAndMetaDataWithoutSeverityDefaultToWarning()
         {
             // Arrange
