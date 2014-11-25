@@ -1,6 +1,6 @@
-﻿using Bugsnag.Core;
-using System;
+﻿using System;
 using System.Web.Mvc;
+using Bugsnag.Core;
 
 namespace Bugsnag.Web
 {

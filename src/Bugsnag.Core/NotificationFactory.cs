@@ -1,5 +1,5 @@
-﻿using Bugsnag.Core.Payload;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Bugsnag.Core.Payload;
 
 namespace Bugsnag.Core
 {
@@ -65,7 +65,8 @@ namespace Bugsnag.Core
                 ServicePack = Profiler.ServicePack,
                 OSArchitecture = Profiler.OSArchitecture,
                 ProcessorCount = Profiler.ProcessorCount,
-                MachineName = Profiler.MachineName
+                MachineName = Profiler.MachineName,
+                HostName = Profiler.HostName
             };
 
             var eventInfo = new EventInfo

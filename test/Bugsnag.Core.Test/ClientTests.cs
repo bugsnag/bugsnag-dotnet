@@ -301,7 +301,7 @@ namespace Bugsnag.Core.Test
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
                                                              y.Severity == Severity.Warning &&
-                                                             y.Metadata.MetadataStore["Tab 1"]["Tab Key 1"] == "Tab Value 1")));
+                                                             (string)y.Metadata.MetadataStore["Tab 1"]["Tab Key 1"] == "Tab Value 1")));
 
             // Act
             testClient.Notify(testExp, testMetadata);
