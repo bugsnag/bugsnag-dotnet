@@ -107,7 +107,7 @@ namespace Bugsnag.Core.Test
             testConfig.UseSsl = useSsl;
 
             // Assert
-            Assert.Equal(url, testConfig.FinalUrl.AbsoluteUri);
+            Assert.Equal(url, testConfig.EndpointUrl.AbsoluteUri);
         }
     }
 }

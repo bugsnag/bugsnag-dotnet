@@ -42,7 +42,7 @@ namespace Bugsnag.Core
         private void Send(Notification notification)
         {
             //  Post JSON to server:
-            var request = WebRequest.Create(Config.FinalUrl);
+            var request = WebRequest.Create(Config.EndpointUrl);
 
             request.Method = WebRequestMethods.Http.Post;
             request.ContentType = "application/json";

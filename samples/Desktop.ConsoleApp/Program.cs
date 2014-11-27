@@ -16,7 +16,7 @@ namespace BugsnagDemoConsole
             bugsnag.Config.ReleaseStage = "Alpha";
             bugsnag.Config.SetUser("1234", "aaaa@bbbb.com", "Aaaa Bbbb");
 
-            bugsnag.Config.StaticData.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
+            bugsnag.Config.Metadata.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
             bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
 
             bugsnag.Config.BeforeNotifyFunc = error =>
@@ -30,7 +30,7 @@ namespace BugsnagDemoConsole
             var b = new Dictionary<string, object>();
             a.Add("b", b);
             b.Add("a", a);
-            bugsnag.Config.StaticData.AddToTab("Random2", a);
+            bugsnag.Config.Metadata.AddToTab("Random2", a);
 
             // UNOBSERVED TASK EXCEPTION
             //var t = Task.Factory.StartNew(() =>

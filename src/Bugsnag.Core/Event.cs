@@ -1,8 +1,8 @@
-﻿using Bugsnag.Core.Payload;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Bugsnag.Core.Payload;
 
 namespace Bugsnag.Core
 {
@@ -68,9 +68,7 @@ namespace Bugsnag.Core
             methodInfo += "." + signature;
 
             var file = config.RemoveFileNamePrefix(frame.GetFileName());
-
-            var inProject = config.AutoDetectInProject ?
-                            !String.IsNullOrEmpty(file) :
+            var inProject = (config.AutoDetectInProject && !String.IsNullOrEmpty(file)) ||
                             config.IsInProjectNamespace(method.DeclaringType.FullName);
 
             return new StackTraceFrameInfo

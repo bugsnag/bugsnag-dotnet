@@ -27,7 +27,7 @@ Bugsnag for .NET depends only on the `JSON.net` library and needs to be referenc
 
 Quick Reference Guide
 ---------------------
-Import the Bugnsnag core library into your application 
+Import the Bugnsnag core library into your application
 ```c#
 using Bugsnag.Core;
 ```
@@ -68,8 +68,9 @@ bugsnag.Notify(new ArgumentException("Non-fatal"));
 You can also send additional meta-data with your exception:
 ```c#
 var metadata = new Metadata();
-metadata.AddToTab("Company", "Department", "Human Resources");
-metadata.AddToTab("Company", "Location", "New York");
+metadata.AddToTab("Resources", "Datastore Entries", myDataStore.Count());
+metadata.AddToTab("Resources", "Threads Running", threads.Count());
+metadata.AddToTab("Resources", "Throttling Enabled", false);
 
 bugsnag.Notify(new ArgumentException("Non-fatal"), metadata);
 ```
@@ -119,12 +120,47 @@ Notification are sent using SSL by default. However, this can be disabled
 bugsnag.Config.UseSsl = false;
 ```
 
-#### Notification Settings
+#### Additional Notification Data
 The client can be configured to provide additional information based on the current error or process that is running at the time. These settings can be set any time.
 
-#### Context
+##### Context
 The concept of "contexts" is used to help display and group your errors. Contexts represent what was happening in your application at the time an error occurs.
 ```c#
 bugsnag.Config.Context = "DataAccess";
 ```
 
+##### User Details
+The client can be configured to send the users ID, email and name with every notification. The user ID should be set to something unique to the user e.g. a generated GUID.
+```c#
+bugsnag.Config.SetUser("d7b4aadd", "anth.michaels@mycompany.com", "Anthony Michaels");
+```
+
+##### Client Metadata
+Metadata can be set directly on the client. This metadata will be sent with every error report (in addition to any metadata added to the report itself).
+```c#
+bugsnag.Config.Metadata.AddToTab("Company", "Department", "Human Resources");
+bugsnag.Config.Metadata.AddToTab("Company", "Location", "New York");
+```
+
+#### Notification Settings
+The client can be configured to restrict or modify the notifications that are sent to Bugsnag. These settings will allow you suppress specific errors, remove unnecessary information and modify the notification before its sent.
+
+##### File Prefixes
+When an exception stack trace is recorded, the file associated with each frame will be recorded, if its available. This will be the complete file path, which can lead to bloated frame entries. The paths will also reflect where the application was complied. The client can be configure to remove common file path prefixes.
+```c#
+bugsnag.Config.SetFilePrefix(@"C:\Projects\Production\MyApp\",
+                             @"C:\Projects\Development\MyApp\",
+                             @"H:\MyApp\");
+```
+##### Project Namespaces
+Bugsnag will highlight stack trace frames if they are detected as being *In Project*. The client can be configured with project namespaces. If an stack trace frame method call originates from a class that belongs to one of these project namespaces, they will be highlighted.
+```c#
+bugsnag.Config.SetFilePrefix("MyCompany.MyApp","MyCompany.MyLibrary");
+```
+##### Auto Detect In Project
+Debugging information is used to provide file paths for stack frames. Normally, this information is only available for locally built projects. Therefore, in most cases, stack frames that have file information relate to calls made within the users code. We use this fact to automatically mark these frames as *In Project* by default. This is in addition to any project namespaces that have been manually added. This behaviour can be disabled.
+```c#
+// Disable marking frames with file names as In Project
+bugsnag.Config.AutoDetectInProject = false;
+```
+If no project namespaces have been configured and auto detect has been disabled, all stack frames will be highlighted.
