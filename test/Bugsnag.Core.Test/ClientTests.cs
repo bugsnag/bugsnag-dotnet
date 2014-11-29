@@ -338,6 +338,63 @@ namespace Bugsnag.Core.Test
         }
 
         [Fact]
+        public void Notify_WillNotUseCallbackIfReleaseStageIsToBeIgnored()
+        {
+            // Arrange
+            var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
+            var mockConfig = new Mock<IConfiguration>();
+            var testClient = new Client("123456", false, mockConfig.Object, mockNotifier.Object, null);
+            var testExp = new StackOverflowException("Test Stack Overflow");
+            var testEvent = new Event(testExp);
+
+            var hasCallbackRan = false;
+            mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(false);
+            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
+            {
+                hasCallbackRan = true;
+                return false;
+            });
+
+            // Act
+            testClient.Notify(testEvent);
+
+            // Assert
+            Assert.False(hasCallbackRan);
+            mockNotifier.VerifyAll();
+        }
+
+        [Fact]
+        public void Notify_WillTryToNotifyIfCallbackExceptions()
+        {
+            // Arrange
+            var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
+            var mockConfig = new Mock<IConfiguration>();
+            var testClient = new Client("123456", false, mockConfig.Object, mockNotifier.Object, null);
+            var testExp = new StackOverflowException("Test Stack Overflow");
+            var testEvent = new Event(testExp);
+
+            var hasCallbackRan = false;
+            mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
+            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
+            {
+                hasCallbackRan = true;
+                Assert.Equal(testEvent, err);
+                throw new AccessViolationException("Invalid Access");
+            });
+            mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y == testEvent)));
+
+            // Act
+            testClient.Notify(testEvent);
+
+            // Assert
+            // TODO Check logger has exception details when logger has been added
+            Assert.True(hasCallbackRan);
+            mockNotifier.VerifyAll();
+        }
+
+        [Fact]
         public void HandleDefaultException_NotifyIsCalledAsPartOfDefaultHandler()
         {
             // Arrange

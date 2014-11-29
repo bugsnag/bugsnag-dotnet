@@ -37,6 +37,38 @@ var bugsnag = new Client("your-api-key-goes-here");
 ```
 Thats it...you will be reporting on uncaught exceptions by default.
 
+Adding Bugsnag to an ASP.NET MVC project
+-------------------------------------------
+The attribute `NotifyExceptionAttribute` found in the `Bugsnag.Web` assembly needs to
+be registered as a global filter. Normally, this can be done in the `App_Start > FilterConfig.cs`
+file.
+```c#
+using Bugsnag.Web;
+using System.Web.Mvc;
+
+namespace Web.MVCApp
+{
+    public class FilterConfig
+    {
+        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
+        {
+            // Register the notify attribute
+            filters.Add(new NotifyExceptionAttribute("your-api-key-goes-here"));
+
+            filters.Add(new HandleErrorAttribute());
+        }
+    }
+}
+
+```
+To configure the client, use the client property available on the attribute
+```c#
+var bugsnagAttrib = new NotifyExceptionAttribute("your-api-key-goes-here");
+
+// Access the client on the attribute to configure e.g.
+bugsnagAttrib.Client.Config.AppVersion = "0.1.2";
+```
+
 Creating the client
 ---------------------
 The client needs to be created using your API key. If you would prefer to disable the auto notification, you can create the client with auto notify turned off (on by default).
@@ -158,7 +190,7 @@ Bugsnag will highlight stack trace frames if they are detected as being *In Proj
 bugsnag.Config.SetFilePrefix("MyCompany.MyApp","MyCompany.MyLibrary");
 ```
 ##### Auto Detect In Project
-Debugging information is used to provide file paths for stack frames. Normally, this information is only available for locally built projects. Therefore, in most cases, stack frames that have file information relate to calls made within the users code. We use this fact to automatically mark these frames as *In Project* by default. This is in addition to any project namespaces that have been manually added. This behaviour can be disabled.
+Debugging information is used to provide file paths for stack frames. Normally, this information is only available for locally built projects. Therefore, in most cases, stack frames that have file information relate to calls made within the users code. We use this fact to automatically mark these frames as *In Project* by default. This is in addition to any project namespaces that have been manually added. This behavior can be disabled.
 ```c#
 // Disable marking frames with file names as In Project
 bugsnag.Config.AutoDetectInProject = false;
@@ -174,7 +206,7 @@ bugsnag.Config.SetIgnoreClasses("ArgumentNullException", "MyConfigException");
 ##### Before Notify Callback
 A custom call back function can be configured to run just before an error event is sent. The callback has full access to the error and can modify it before its sent. It also has the opportunity to prevent the error from being sent all together. The callback should take an error `Event` object as a parameter and return a boolean indicating if the event should be notified (`Func<Event,bool>`);
 
-Note that the callback will not be called if the exception class is an class being ignored via `SetIgnoreClasses()`.
+Note that the callback will not be called if the exception class is an class being ignored via `SetIgnoreClasses()` or the current release stage is one that has been configured not to be notified on via `SetNotifyReleaseStages()`.
 
 ```c#
 bugsnag.Config.BeforeNotifyCallback = error =>
@@ -199,4 +231,85 @@ bugsnag.Config.BeforeNotifyCallback = error =>
 Data associated with notifications are sent via the `Metadata` object attached to the error. Sensitive information can be filtered before its sent to Bugsnag by setting filters. Any tab entries that have keys matching these filters will have they value replaced with the text `[FILTERED]`
 ```c#
 bugsnag.Config.SetFilters("Password", "Credit Card Number");
+```
+Error Event Object
+------------------
+When an exception occurs, the details of the exception is collated and recorded into an error `Event` object. This object stores all the information about the exception that will be sent to Bugsnag. By setting this object properties, you can send additional information or modify an existing object before its sent.
+
+These error event objects can be created directly and sent to Bugsnag.
+```c#
+var error = new Event(new StackOverflowException("Too many stack levels"));
+bugsnag.Notify(error);
+```
+Note that if you create an exception without it actually being throw, as in the above example, there will be no stack trace. If this occurs, we will record and report the Call Stack Trace i.e. the stack trace relating to when the `Event` object was created.
+
+All event objects can be modified just before they are sent to Bugsnag using the [Before Notify Callback](#Before Notify Callback)
+
+The available properties available
+
+#### Exception (Read Only)
+The exception the event is representing. This needs to be provided when creating an error event and can not be modified.
+```c#
+Exception exp = error.Exception;
+```
+
+#### IsRuntimeEnding (Read Only)
+If an exception occurs that has resulted in the application crashing out (runtime ended), this flag will be true.
+```c#
+bool hasCrashed = error.IsRuntimeEnding;
+```
+
+#### CallTrace (Read Only)
+If the exception stack trace is unavailable a call stack trace will be recorded at the point the `Event` object was created. For efficiency, the call stack trace will be `null` if the exception stack trace was found.
+```c#
+StackTrace callTrace = error.CallTrace;
+```
+
+#### GroupingHash
+Sets the grouping hash used by Bugsnag.com to manually override the default grouping technique. This option is not recommended, and should only be manually set with care.
+
+Any errors that are sent to Bugsnag, that have the same grouping hash will be grouped as one.
+```c#
+error.GroupingHash = "d41d8cd98f00b204e9800998ecf8427e";
+```
+
+#### Severity
+The severity can be set directly on the event. Valid severities are `Severity.Error`, `Severity.Warning` and `Severity.Info`.
+```c#
+error.Severity = Severity.Info;
+```
+
+#### Metadata
+Additional information that you want to include with an error event is done using the Metadata property. The metadata represents tabs and tab entries that can be visualized from the Bugsnag dashboard. Each tab entry consists of a entry key and an entry value. The entry key is string, but the entry value can be any object that can serialized in JSON e.g. dictionaries, arrays, complex objects etc.
+
+Each event object will start with a blank metadata object ready to be added to. However you can create your own metadata object and set the property directly. The metadata object has methods to help you add your own data
+
+##### AddToTab
+This is the main way to add data to a Metadata object. Specify the tab, tab entry key and tab entry value you want to add. If the entry key already exists in the tab your trying to add to, the value will be overwritten with the new value. If no tab is specified, the data will be added to the "Custom Data" tab.
+```c#
+// Adds company details under the "Company Details" tab
+error.Metadata.AddToTab("Company Details", "Name", "My Company");
+error.Metadata.AddToTab("Company Details", "Phone", "01123456789012");
+error.Metadata.AddToTab("Company Details", "Email", "admin@mycompany.com");
+
+// Adds a list of developers under a single entry
+var devs = new string[]{"Bob Adams", "James Richards", "Lucy Patrick"};
+error.Metadata.AddToTab("Team", "Developers", devs);
+
+// Adds some app data to the custom data tab
+error.Metadata.AddToTab("Full Test Suite", true);
+```
+
+##### RemoveTab
+Removes a tab that exists in the metadata. Will do nothing if there is no such tab.
+```c#
+// Removes the Dev Only tab
+error.Metadata.RemoveTab("Dev Only");
+```
+
+##### RemoveTabEntry
+Removes a tab that exists in the metadata. Will do nothing if there is no such tab or tab entry.
+```c#
+// Removes the unit test result entry
+error.Metadata.RemoveTabEntry("Build Results", "Test Results");
 ```

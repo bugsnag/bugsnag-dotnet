@@ -9,16 +9,19 @@ namespace Bugsnag.Core
     public class Event
     {
         public Exception Exception { get; private set; }
-        public bool? IsRuntimeEnding { get; private set; }
-        public StackTrace CallTrace { get; set; }
+        public bool IsRuntimeEnding { get; private set; }
+        public StackTrace CallTrace { get; private set; }
 
         public string GroupingHash { get; set; }
         public Severity Severity { get; set; }
         public Metadata Metadata { get; set; }
 
-        public Event(Exception exception) : this(exception, null) { }
+        public Event(Exception exception)
+            : this(exception, false)
+        {
+        }
 
-        public Event(Exception exception, bool? runtimeEnding)
+        public Event(Exception exception, bool runtimeEnding)
         {
             Exception = exception;
             IsRuntimeEnding = runtimeEnding;

@@ -131,6 +131,7 @@ namespace Bugsnag.Core
             ignoreClasses = new List<string>();
             projectNamespaces = new List<string>();
             notifyReleaseStages = null;
+            filters = new List<string>();
         }
 
         /// <summary>
@@ -193,7 +194,7 @@ namespace Bugsnag.Core
         public string RemoveFileNamePrefix(string fileName)
         {
             var result = fileName;
-            if (result != null)
+            if (!string.IsNullOrEmpty(result))
                 filePrefixes.ForEach(x => result = result.Replace(x, string.Empty));
             return result;
         }
@@ -214,7 +215,10 @@ namespace Bugsnag.Core
         /// <returns>True if it belongs to one of the project namespaces, otherwise false</returns>
         public bool IsInProjectNamespace(string fullMethodName)
         {
-            return projectNamespaces.Any(x => fullMethodName.StartsWith(x, StringComparison.Ordinal));
+            if (string.IsNullOrEmpty(fullMethodName))
+                return false;
+
+            return projectNamespaces.Any(x => fullMethodName.StartsWith(x));
         }
 
         /// <summary>
@@ -253,9 +257,6 @@ namespace Bugsnag.Core
         /// <returns>True if the entry should be filtered, otherwise False</returns>
         public bool IsEntryFiltered(string entry)
         {
-            if (filters == null)
-                return false;
-
             return filters.Contains(entry);
         }
     }

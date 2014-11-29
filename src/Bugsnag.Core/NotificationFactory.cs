@@ -91,7 +91,7 @@ namespace Bugsnag.Core
             errInfo.Exceptions = exps;
 
             // TODO Find a way to snapshot all manage threads at this point
-            //if (Config.SendThreads)
+            // if (Config.SendThreads)
             //    errInfo.Threads = CreateThreadsInfo(Config);
 
             // Get to the inner most exception
@@ -103,8 +103,7 @@ namespace Bugsnag.Core
             const string expDetailsTabName = "Exception Details";
 
             // Record the exception details if there are any
-            if (error.IsRuntimeEnding != null)
-                expMetaData.AddToTab(expDetailsTabName, "runtimeEnding", error.IsRuntimeEnding);
+            expMetaData.AddToTab(expDetailsTabName, "runtimeEnding", error.IsRuntimeEnding);
 
             if (innerExp.HelpLink != null)
                 expMetaData.AddToTab(expDetailsTabName, "helpLink", innerExp.HelpLink);
