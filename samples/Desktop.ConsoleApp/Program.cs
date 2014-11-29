@@ -19,7 +19,7 @@ namespace BugsnagDemoConsole
             bugsnag.Config.Metadata.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
             bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
 
-            bugsnag.Config.BeforeNotifyFunc = error =>
+            bugsnag.Config.BeforeNotifyCallback = error =>
             {
                 error.Metadata.AddToTab("CallBack", "Check", true);
                 return true;

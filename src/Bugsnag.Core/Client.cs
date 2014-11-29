@@ -147,19 +147,19 @@ namespace Bugsnag.Core
             if (!Config.IsNotifyReleaseStage())
                 return;
 
-            // Call the before notify action is there is one
-            if (Config.BeforeNotifyFunc != null)
-            {
-                // Do nothing if the before notify action indicates we should ignore the error event
-                var shouldContinue = Config.BeforeNotifyFunc(errorEvent);
-                if (!shouldContinue)
-                    return;
-            }
-
             // Ignore the error if the exception it contains is one of the classes to ignore
             if (errorEvent.Exception == null ||
                 Config.IsClassToIgnore(errorEvent.Exception.GetType().Name))
                 return;
+
+            // Call the before notify action is there is one
+            if (Config.BeforeNotifyCallback != null)
+            {
+                // Do nothing if the before notify action indicates we should ignore the error event
+                var shouldContinue = Config.BeforeNotifyCallback(errorEvent);
+                if (!shouldContinue)
+                    return;
+            }
 
             notifier.Send(errorEvent);
         }

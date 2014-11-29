@@ -78,16 +78,38 @@ namespace Bugsnag.Core
         /// </summary>
         public bool AutoDetectInProject { get; set; }
 
-        public Func<Event, bool> BeforeNotifyFunc { get; set; }
+        /// <summary>
+        /// Gets or sets a custom function to run just before a notification is sent, the function
+        /// operates on an Event and returns a boolean indicating if the notification should
+        /// continue to be reported
+        /// </summary>
+        public Func<Event, bool> BeforeNotifyCallback { get; set; }
 
+        /// <summary>
+        /// Internal list of release stages we should notify on
+        /// </summary>
         private List<string> notifyReleaseStages;
 
+        /// <summary>
+        /// Internal list of file prefixes we should remove from filenames
+        /// </summary>
         private List<string> filePrefixes;
 
+        /// <summary>
+        /// Internal list of exception class names we should ignore
+        /// </summary>
         private List<string> ignoreClasses;
 
+        /// <summary>
+        /// Internal list of project namespaces
+        /// </summary>
         private List<string> projectNamespaces;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Configuration"/> class. Produces a default configuration with 
+        /// default configuration settings
+        /// </summary>
+        /// <param name="apiKey">The API key linked to a Bugsnag account</param>
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
@@ -166,9 +188,8 @@ namespace Bugsnag.Core
         public string RemoveFileNamePrefix(string fileName)
         {
             var result = fileName;
-            if (result == null)
-                return result;
-            filePrefixes.ForEach(x => result = result.Replace(x, string.Empty));
+            if (result != null)
+                filePrefixes.ForEach(x => result = result.Replace(x, string.Empty));
             return result;
         }
 
@@ -191,11 +212,21 @@ namespace Bugsnag.Core
             return projectNamespaces.Any(x => fullMethodName.StartsWith(x, StringComparison.Ordinal));
         }
 
+        /// <summary>
+        /// Sets the exception classes to ignore and not send notifications about
+        /// </summary>
+        /// <param name="classNames">The exception class names to ignore</param>
         public void SetIgnoreClasses(params string[] classNames)
         {
             ignoreClasses = classNames.ToList();
         }
 
+        /// <summary>
+        /// Indicates if an exception class should be ignored based on the previously set ignore
+        /// class list
+        /// </summary>
+        /// <param name="className">The exception class name to check</param>
+        /// <returns>True if the class should be ignored, otherwise false</returns>
         public bool IsClassToIgnore(string className)
         {
             return ignoreClasses.Contains(className);

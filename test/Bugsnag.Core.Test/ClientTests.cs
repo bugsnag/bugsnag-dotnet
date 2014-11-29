@@ -1,5 +1,5 @@
-using Moq;
 using System;
+using Moq;
 using Xunit;
 using Xunit.Extensions;
 
@@ -132,7 +132,7 @@ namespace Bugsnag.Core.Test
 
             var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
-            mockConfig.Setup(x => x.BeforeNotifyFunc).Returns(err =>
+            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
             {
                 hasCallbackRan = true;
                 Assert.Equal(testEvent, err);
@@ -158,7 +158,7 @@ namespace Bugsnag.Core.Test
 
             var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
-            mockConfig.Setup(x => x.BeforeNotifyFunc).Returns(err =>
+            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
             {
                 hasCallbackRan = true;
                 Assert.Equal(testEvent, err);
@@ -224,7 +224,7 @@ namespace Bugsnag.Core.Test
             var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
-            mockConfig.Setup(x => x.BeforeNotifyFunc).Returns(err =>
+            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
             {
                 hasCallbackRan = true;
                 Assert.Equal(testEvent, err);
@@ -307,6 +307,33 @@ namespace Bugsnag.Core.Test
             testClient.Notify(testExp, testMetadata);
 
             // Assert
+            mockNotifier.VerifyAll();
+        }
+
+        [Fact]
+        public void Notify_WillNotUseCallbackIfClassIsToBeIgnored()
+        {
+            // Arrange
+            var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
+            var mockConfig = new Mock<IConfiguration>();
+            var testClient = new Client("123456", false, mockConfig.Object, mockNotifier.Object, null);
+            var testExp = new StackOverflowException("Test Stack Overflow");
+            var testEvent = new Event(testExp);
+
+            var hasCallbackRan = false;
+            mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
+            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(true);
+            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
+            {
+                hasCallbackRan = true;
+                return false;
+            });
+
+            // Act
+            testClient.Notify(testEvent);
+
+            // Assert
+            Assert.False(hasCallbackRan);
             mockNotifier.VerifyAll();
         }
 

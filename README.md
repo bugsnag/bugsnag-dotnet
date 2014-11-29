@@ -164,3 +164,33 @@ Debugging information is used to provide file paths for stack frames. Normally, 
 bugsnag.Config.AutoDetectInProject = false;
 ```
 If no project namespaces have been configured and auto detect has been disabled, all stack frames will be highlighted.
+
+##### Ignore Exception Classes
+The client can be configured to ignore specific types of exceptions. Any errors with these types of exceptions will not be sent to Bugsnag.
+```c#
+bugsnag.Config.SetIgnoreClasses("ArgumentNullException", "MyConfigException");
+```
+
+##### Before Notify Callback
+A custom call back function can be configured to run just before an error event is sent. The callback has full access to the error and can modify it before its sent. It also has the opportunity to prevent the error from being sent all together. The callback should take an error `Event` object as a parameter and return a boolean indicating if the event should be notified (`Func<Event,bool>`);
+
+Note that the callback will not be called if the exception class is an class being ignored via `SetIgnoreClasses()`.
+
+```c#
+bugsnag.Config.BeforeNotifyCallback = error =>
+{
+    // Sets the groupingHash option
+    error.setGroupingHash("My Group");
+
+    // Elevate all warnings as errors
+    if (error.Severity == Severity.Warning)
+    {
+        error.Severity = Severity.Error;
+        error.addToTab("Reporting", "Elevated", true);
+    }
+
+    // Ignore all exceptions marked as minor
+    var isMinor = error.Exception.Message.Contains("[MINOR]");
+    return !isMinor;
+};
+```

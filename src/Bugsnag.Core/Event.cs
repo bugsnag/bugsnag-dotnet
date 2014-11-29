@@ -28,6 +28,7 @@ namespace Bugsnag.Core
             // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
             if (Exception == null || Exception.StackTrace == null)
                 CallTrace = new StackTrace(1, true);
+
         }
 
         public ExceptionInfo GenerateExceptionInfo(IConfiguration config)

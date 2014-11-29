@@ -25,8 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B25A7B43
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
 		BugsnagCodeAnalysisRules.ruleset = BugsnagCodeAnalysisRules.ruleset
+		CodeAnalysis.ps1 = CodeAnalysis.ps1
 		CustomDictionary.xml = CustomDictionary.xml
-		FxCop.ps1 = FxCop.ps1
 		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection
 EndProject

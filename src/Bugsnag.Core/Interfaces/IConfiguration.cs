@@ -130,9 +130,26 @@ namespace Bugsnag.Core
         /// </summary>
         bool AutoDetectInProject { get; set; }
 
-        Func<Event, bool> BeforeNotifyFunc { get; set; }
+        /// <summary>
+        /// Sets the exception classes to ignore and not send notifications about
+        /// </summary>
+        /// <param name="classNames">The exception class names to ignore</param>
+        void SetIgnoreClasses(params string[] classNames);
 
+        /// <summary>
+        /// Indicates if an exception class should be ignored based on the previously set ignore
+        /// class list
+        /// </summary>
+        /// <param name="className">The exception class name to check</param>
+        /// <returns>True if the class should be ignored, otherwise false</returns>
         bool IsClassToIgnore(string className);
+
+        /// <summary>
+        /// Gets or sets a custom function to run just before a notification is sent, the function
+        /// operates on an Event and returns a boolean indicating if the notification should
+        /// continue to be reported
+        /// </summary>
+        Func<Event, bool> BeforeNotifyCallback { get; set; }
         #endregion
     }
 }
