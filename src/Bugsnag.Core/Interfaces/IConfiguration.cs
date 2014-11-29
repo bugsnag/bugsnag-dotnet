@@ -150,6 +150,20 @@ namespace Bugsnag.Core
         /// continue to be reported
         /// </summary>
         Func<Event, bool> BeforeNotifyCallback { get; set; }
+
+        /// <summary>
+        /// Sets the filters that indicate entries that are sensitive 
+        /// </summary>
+        /// <param name="newFilters">The entries to filter out</param>
+        void SetFilters(params string[] newFilters);
+
+        /// <summary>
+        /// Indicates if an entry key is a entry that should be filtered
+        /// </summary>
+        /// <param name="entry">The entry to check</param>
+        /// <returns>True if the entry should be filtered, otherwise False</returns>
+        bool IsEntryFiltered(string entry);
+
         #endregion
     }
 }

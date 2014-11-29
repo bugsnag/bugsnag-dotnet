@@ -194,3 +194,9 @@ bugsnag.Config.BeforeNotifyCallback = error =>
     return !isMinor;
 };
 ```
+
+##### Filters
+Data associated with notifications are sent via the `Metadata` object attached to the error. Sensitive information can be filtered before its sent to Bugsnag by setting filters. Any tab entries that have keys matching these filters will have they value replaced with the text `[FILTERED]`
+```c#
+bugsnag.Config.SetFilters("Password", "Credit Card Number");
+```

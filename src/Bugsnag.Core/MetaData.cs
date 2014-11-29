@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TabData = System.Collections.Generic.Dictionary<string, object>;
 
@@ -83,6 +84,22 @@ namespace Bugsnag.Core
                 return;
 
             MetadataStore[tabName].Remove(tabEntryKey);
+        }
+
+        public void Filter(Func<string,bool> predicate)
+        {
+            if (predicate == null)
+                return;
+
+            foreach(var tabName in MetadataStore.Keys)
+            {
+                foreach(var tabEntry in MetadataStore[tabName].Keys)
+                {
+                    if (predicate(tabEntry))
+                        MetadataStore[tabName][tabEntry] = "[FILTERED]";
+                        
+                }
+            }
         }
 
         public static Metadata MergeMetadata(params Metadata[] data)

@@ -106,6 +106,11 @@ namespace Bugsnag.Core
         private List<string> projectNamespaces;
 
         /// <summary>
+        /// Internal list of filters for data
+        /// </summary>
+        private List<string> filters;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Configuration"/> class. Produces a default configuration with 
         /// default configuration settings
         /// </summary>
@@ -230,6 +235,28 @@ namespace Bugsnag.Core
         public bool IsClassToIgnore(string className)
         {
             return ignoreClasses.Contains(className);
+        }
+
+        /// <summary>
+        /// Sets the filters that indicate entries that are sensitive 
+        /// </summary>
+        /// <param name="newFilters">The entries to filter out</param>
+        public void SetFilters(params string[] newFilters)
+        {
+            filters = newFilters.ToList();
+        }
+
+        /// <summary>
+        /// Indicates if an entry key is a entry that should be filtered
+        /// </summary>
+        /// <param name="entry">The entry to check</param>
+        /// <returns>True if the entry should be filtered, otherwise False</returns>
+        public bool IsEntryFiltered(string entry)
+        {
+            if (filters == null)
+                return false;
+
+            return filters.Contains(entry);
         }
     }
 }

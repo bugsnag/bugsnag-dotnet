@@ -14,7 +14,7 @@ namespace Bugsnag.Core
 
         public string GroupingHash { get; set; }
         public Severity Severity { get; set; }
-        public Metadata Metadata { get; private set; }
+        public Metadata Metadata { get; set; }
 
         public Event(Exception exception) : this(exception, null) { }
 

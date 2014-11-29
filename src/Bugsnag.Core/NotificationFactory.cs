@@ -115,7 +115,10 @@ namespace Bugsnag.Core
             if (innerExp.TargetSite != null)
                 expMetaData.AddToTab(expDetailsTabName, "targetSite", innerExp.TargetSite);
 
-            errInfo.Metadata = Metadata.MergeMetadata(Config.Metadata, error.Metadata, expMetaData).MetadataStore;
+            var metaData = Metadata.MergeMetadata(Config.Metadata, error.Metadata, expMetaData);
+            metaData.Filter(Config.IsEntryFiltered);
+
+            errInfo.Metadata = metaData.MetadataStore;
 
             return errInfo;
         }
