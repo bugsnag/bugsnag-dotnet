@@ -132,7 +132,7 @@ namespace Bugsnag.Core
             var currentExp = error.Exception;
             while (currentExp != null)
             {
-                var expInfo = error.GenerateExceptionInfo(Config);
+                var expInfo = ExceptionParser.GenerateExceptionInfo(error.Exception, error.CallTrace, Config);
                 if (expInfo != null)
                     expInfos.Add(expInfo);
                 currentExp = currentExp.InnerException;

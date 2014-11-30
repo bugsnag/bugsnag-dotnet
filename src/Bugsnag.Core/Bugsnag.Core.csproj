@@ -50,6 +50,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="ExceptionParser.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />
     <Compile Include="Interfaces\IExceptionHandler.cs" />
     <Compile Include="Interfaces\INotifier.cs" />
