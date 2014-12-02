@@ -94,6 +94,21 @@ namespace Bugsnag.Core
         /// Gets the metadata to send with every error report
         /// </summary>
         Metadata Metadata { get; }
+
+        /// <summary>
+        /// Gets the root URL used to link to GitHub files, or null if links are disabled
+        /// </summary>
+        Uri GitHubRootUrl { get; }
+
+        /// <summary>
+        /// EXPERIMENTAL - Attempts to generate links to GitHub code files, highlighting the line in a stack trace frame. Assumes
+        /// that file prefixes have been removed such that appending the stack trace frame file location
+        /// to the GitHub folder will link to the correct the code file
+        /// </summary>
+        /// <param name="repo">The repository name in the format "username/repo"</param>
+        /// <param name="branch">The name of the branch</param>
+        /// <param name="folder">The folder where the source files are contained</param>
+        void LinkToGitHubContext(string repo, string branch, string folder);
         #endregion
 
         #region Notification Settings

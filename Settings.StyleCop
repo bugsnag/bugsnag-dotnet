@@ -3,6 +3,7 @@
     <BooleanProperty Name="WriteCache">False</BooleanProperty>
     <CollectionProperty Name="RecognizedWords">
       <Value>Bugsnag</Value>
+      <Value>Git</Value>
       <Value>notifier</Value>
     </CollectionProperty>
   </GlobalSettings>
