@@ -1,8 +1,9 @@
-﻿using Bugsnag.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Bugsnag.Core;
 
 namespace BugsnagDemoConsole
 {
@@ -21,7 +22,26 @@ namespace BugsnagDemoConsole
 
             bugsnag.Config.BeforeNotifyCallback = error =>
             {
-                error.Metadata.AddToTab("CallBack", "Check", true);
+                if (error.Exception == null)
+                    return true;
+                var trace = new StackTrace(error.Exception, true);
+                var frames = trace.GetFrames();
+                if (frames == null)
+                    return true;
+
+
+                foreach (var frame in frames)
+                {
+                    var info = ExceptionParser.GenerateStackTraceFrameInfo(frame, bugsnag.Config);
+                    if (!string.IsNullOrEmpty(info.File) && info.File.Contains(@"c:\GitRepos\Bugsnag-NET\"))
+                    {
+                        var file = info.File.Replace(@"c:\GitRepos\Bugsnag-NET\", "");
+                        file = file.Replace(@"\", "/");
+                        var method = info.Method.Substring(0, info.Method.IndexOf('('));
+                        error.Metadata.AddToTab("GitHub", method + "_" + info.LineNumber, "https://github.com/Codehex/Bugsnag-NET/blob/master/" + file + "#L" + info.LineNumber);
+                    }
+                }
+
                 return true;
             };
 
