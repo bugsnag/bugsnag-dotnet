@@ -27,5 +27,5 @@ before_build:
 
 after_build:
   - ps: . .\CodeAnalysis.ps1
-  - ps: analyseCodeAnalysisResults ".\src\Bugsnag.Core\bin\" + $env:CONFIGURATION  + "\Bugsnag.Core.dll.CodeAnalysisLog.xml"
-  - ps: analyseCodeAnalysisResults ".\src\Bugsnag.Web\bin\" + $env:CONFIGURATION + "\Bugsnag.Web.dll.CodeAnalysisLog.xml"
+  - ps: analyseCodeAnalysisResults (".\src\Bugsnag.Core\bin\" + $env:CONFIGURATION  + "\Bugsnag.Core.dll.CodeAnalysisLog.xml")
+  - ps: analyseCodeAnalysisResults (".\src\Bugsnag.Web\bin\" + $env:CONFIGURATION + "\Bugsnag.Web.dll.CodeAnalysisLog.xml")
