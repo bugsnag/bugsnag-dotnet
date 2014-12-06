@@ -124,7 +124,18 @@ namespace Bugsnag.Core
         {
             ApiKey = apiKey;
             AppVersion = "1.0.0";
-            ReleaseStage = "Development";
+#if DEBUG
+            ReleaseStage = "development";
+#else
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                ReleaseStage = "development";
+            }
+            else
+            {
+                RealeaseStage = "production";
+            }
+#endif
             Metadata = new Metadata();
             UseSsl = true;
             AutoDetectInProject = true;
