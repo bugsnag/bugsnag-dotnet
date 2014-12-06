@@ -133,7 +133,7 @@ namespace Bugsnag.Core
             }
             else
             {
-                RealeaseStage = "production";
+                ReleaseStage = "production";
             }
 #endif
             Metadata = new Metadata();
