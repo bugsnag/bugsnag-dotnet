@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Bugsnag.Core
 {
@@ -123,8 +124,27 @@ namespace Bugsnag.Core
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
-            AppVersion = "1.0.0";
-            ReleaseStage = "Development";
+
+            if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+            {
+                AppVersion = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+            }
+            else
+            {
+                AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            }
+#if DEBUG
+            ReleaseStage = "development";
+#else
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                ReleaseStage = "development";
+            }
+            else
+            {
+                RealeaseStage = "production";
+            }
+#endif
             Metadata = new Metadata();
             UseSsl = true;
             AutoDetectInProject = true;
