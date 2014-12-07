@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Bugsnag.Core
@@ -124,18 +125,7 @@ namespace Bugsnag.Core
         {
             ApiKey = apiKey;
             AppVersion = "1.0.0";
-#if DEBUG
-            ReleaseStage = "development";
-#else
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                ReleaseStage = "development";
-            }
-            else
-            {
-                ReleaseStage = "production";
-            }
-#endif
+            ReleaseStage = Debugger.IsAttached ? "development" : "production";
             Metadata = new Metadata();
             UseSsl = true;
             AutoDetectInProject = true;
