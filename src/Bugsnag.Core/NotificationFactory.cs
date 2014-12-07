@@ -114,7 +114,7 @@ namespace Bugsnag.Core
             if (innerExp.TargetSite != null)
                 expMetaData.AddToTab(expDetailsTabName, "targetSite", innerExp.TargetSite);
 
-            var metaData = Metadata.MergeMetadata(Config.Metadata, error.Metadata, expMetaData);
+            var metaData = Metadata.CombineMetadata(Config.Metadata, error.Metadata, expMetaData);
 
             if (Config.GitHubRootUrl != null)
             {
@@ -141,7 +141,7 @@ namespace Bugsnag.Core
                 }
 
             }
-            metaData.Filter(Config.IsEntryFiltered);
+            metaData.FilterEntries(Config.IsEntryFiltered);
 
             errInfo.Metadata = metaData.MetadataStore;
 

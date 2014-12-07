@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Bugsnag.Core
 {
@@ -21,6 +22,11 @@ namespace Bugsnag.Core
         /// Gets the configuration of the client, allowing users to config it
         /// </summary>
         public IConfiguration Config { get; private set; }
+
+        /// <summary>
+        /// The regex that validates an API key
+        /// </summary>
+        private Regex apiRegex = new Regex("^[a-fA-F0-9]{32}$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class. Will use all the default settings and will 
@@ -180,9 +186,8 @@ namespace Bugsnag.Core
         /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
         private void InitialiseClient(string apiKey, bool autoNotify)
         {
-            // TODO : Anyway to better validate key other than checking if its null or empty
-            if (string.IsNullOrEmpty(apiKey))
-                throw new ArgumentException("You must provide a Bugsnag API key");
+            if (string.IsNullOrEmpty(apiKey) || !apiRegex.IsMatch(apiKey))
+                throw new ArgumentException("You must provide a valid Bugsnag API key");
 
             // Install a default exception handler with this client
             if (autoNotify)
