@@ -175,12 +175,15 @@ namespace Bugsnag.Core.Test
             Assert.Equal("RankException", actInfo.ExceptionClass);
             Assert.True(actInfo.Description.Contains(testExp.Message));
             Assert.True(actInfo.Description.Contains("[CALL STACK]"));
+#if DEBUG
+            // We can only be certain of these frames when in Debug mode. Optimisers are enabled in Release mode 
             Assert.True(actInfo.StackTrace[0].File.EndsWith("ExceptionParserTests.cs"));
             Assert.True(actInfo.StackTrace[0].Method.Contains("CreateTrace"));
             Assert.Equal(expInProject, actInfo.StackTrace[0].InProject);
             Assert.True(actInfo.StackTrace[1].File.EndsWith("ExceptionParserTests.cs"));
             Assert.True(actInfo.StackTrace[1].Method.Contains("GenerateExceptionInfo_GeneratesInfoWithNoExceptionStackTraceButHasCallStack"));
             Assert.Equal(expInProject, actInfo.StackTrace[0].InProject);
+#endif
         }
     }
 }

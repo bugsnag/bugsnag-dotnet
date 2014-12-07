@@ -44,6 +44,10 @@ namespace Bugsnag.Core
         /// <param name="exception">The exception to report on</param>
         public Event(Exception exception)
         {
+            // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
+            if (exception == null || exception.StackTrace == null)
+                CallTrace = new StackTrace(1, true);
+
             Intialise(exception, false);
         }
 
@@ -54,6 +58,10 @@ namespace Bugsnag.Core
         /// <param name="runtimeEnding">True if the runtime is ending otherwise false</param>
         public Event(Exception exception, bool runtimeEnding)
         {
+            // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
+            if (exception == null || exception.StackTrace == null)
+                CallTrace = new StackTrace(1, true);
+
             Intialise(exception, runtimeEnding);
         }
 
@@ -68,10 +76,6 @@ namespace Bugsnag.Core
             IsRuntimeEnding = runtimeEnding;
             Severity = Severity.Error;
             Metadata = new Metadata();
-
-            // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame and this call)
-            if (Exception == null || Exception.StackTrace == null)
-                CallTrace = new StackTrace(2, true);
         }
     }
 }
