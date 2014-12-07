@@ -12,8 +12,8 @@ namespace BugsnagDemoConsole
         {
             var bugsnag = new Client("9134c4469d16f30f025a1e98f45b3ddb");
 
-            bugsnag.Config.AppVersion = "5.5.5";
-            bugsnag.Config.ReleaseStage = "Alpha";
+            //bugsnag.Config.AppVersion = "5.5.5";
+            //bugsnag.Config.ReleaseStage = "Alpha";
             bugsnag.Config.SetUser("1234", "aaaa@bbbb.com", "Aaaa Bbbb");
 
             bugsnag.Config.Metadata.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
