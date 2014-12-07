@@ -137,7 +137,7 @@ namespace Bugsnag.Core
             }
             else
             {
-                AppVersion = "1.0.0.0";
+                AppVersion = null;
             }
             ReleaseStage = "Development";
             Metadata = new Metadata();
