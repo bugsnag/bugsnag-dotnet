@@ -73,7 +73,7 @@ namespace Bugsnag.Core
             // the method comes from the configured project namespaces.
             var method = frame.GetMethod();
             var inProject = (config.AutoDetectInProject && !string.IsNullOrEmpty(file)) ||
-                            config.IsInProjectNamespace(method.DeclaringType.FullName);
+                            (method.DeclaringType != null && config.IsInProjectNamespace(method.DeclaringType.FullName));
 
             return new StackTraceFrameInfo
             {
