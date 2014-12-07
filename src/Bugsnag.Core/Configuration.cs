@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Deployment.Application;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -125,7 +126,7 @@ namespace Bugsnag.Core
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
-
+            ReleaseStage = Debugger.IsAttached ? "development" : "production";
             if (ApplicationDeployment.IsNetworkDeployed)
             {
                 // Use the applicaton version defined for the Click-Once application, if it is one
@@ -139,7 +140,6 @@ namespace Bugsnag.Core
             {
                 AppVersion = null;
             }
-            ReleaseStage = "Development";
             Metadata = new Metadata();
             UseSsl = true;
             AutoDetectInProject = true;
