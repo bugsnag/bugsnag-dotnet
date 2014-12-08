@@ -209,6 +209,7 @@ namespace Bugsnag.Core.Test
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y == testEvent)));
 
             // Act
@@ -230,6 +231,7 @@ namespace Bugsnag.Core.Test
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y == testEvent)));
 
             // Act
@@ -252,6 +254,7 @@ namespace Bugsnag.Core.Test
             // Set up the call so that we invoke the handler with our test exception immediately
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
                                                              y.Severity == Severity.Warning)));
 
@@ -277,6 +280,7 @@ namespace Bugsnag.Core.Test
             // Set up the call so that we invoke the handler with our test exception immediately
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
                                                              y.Severity == Severity.Warning &&
                                                              (string)y.Metadata.MetadataStore["Tab 1"]["Tab Key 1"] == "Tab Value 1")));
@@ -307,7 +311,6 @@ namespace Bugsnag.Core.Test
             // Assert
             mockNotifier.VerifyAll();
             mockConfig.VerifyAll();
-            Assert.True(false);
         }
 
         [Fact]
@@ -321,7 +324,6 @@ namespace Bugsnag.Core.Test
             var testEvent = new Event(testExp);
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(false);
-            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
 
             // Act
             testClient.Notify(testEvent);
@@ -346,6 +348,7 @@ namespace Bugsnag.Core.Test
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
                                                              y.IsRuntimeEnding == true &&
                                                              y.Severity == Severity.Error)));

@@ -305,7 +305,7 @@ namespace Bugsnag.Core.Test
 
             // Assert
             // TODO Check logger has exception details when logger has been added
-            Assert.True(false);
+            Assert.True(returnValue);
             Assert.True(callbackHasRun);
         }
     }
