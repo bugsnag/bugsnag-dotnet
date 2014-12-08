@@ -115,32 +115,6 @@ namespace Bugsnag.Core
                 expMetaData.AddToTab(expDetailsTabName, "targetSite", innerExp.TargetSite);
 
             var metaData = Metadata.CombineMetadata(Config.Metadata, error.Metadata, expMetaData);
-
-            if (Config.GitHubRootUrl != null)
-            {
-                var links = new List<string[]>();
-                foreach (var exp in errInfo.Exceptions)
-                {
-                    foreach (var frame in exp.StackTrace)
-                    {
-                        var linkData = ExceptionParser.GenerateGitHubLink(frame, Config);
-                        if (linkData != null)
-                            links.Add(linkData);
-                    }
-                }
-                if (links.Count != 0)
-                {
-                    for (int i = 1; i <= links.Count; i++)
-                    {
-                        metaData.AddToTab("GitHub", "Call" + i + "-Name", links[i - 1][0]);
-                        metaData.AddToTab("GitHub", "Call" + i + "-File", links[i - 1][1]);
-                        metaData.AddToTab("GitHub", "Call" + i + "-Link", links[i - 1][2]);
-                    }
-
-
-                }
-
-            }
             metaData.FilterEntries(Config.IsEntryFiltered);
 
             errInfo.Metadata = metaData.MetadataStore;

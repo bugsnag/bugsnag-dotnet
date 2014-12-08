@@ -103,27 +103,5 @@ namespace Bugsnag.Core
             var nameSpace = method.DeclaringType == null ? string.Empty : method.DeclaringType.FullName + ".";
             return nameSpace + baseSignature;
         }
-
-        /// <summary>
-        /// Generates a GitHub link summary based on a stack frame
-        /// </summary>
-        /// <param name="info">The information about the stack frame</param>
-        /// <param name="config">The configuration to use</param>
-        /// <returns>An array of strings containing the method call, filename and link to GitHub. Returns
-        /// null if a link cannot be established</returns>
-        public static string[] GenerateGitHubLink(StackTraceFrameInfo info, IConfiguration config)
-        {
-            // Return null if the parameters are invalid or we don't have a file
-            if (info == null || config == null || string.IsNullOrEmpty(info.File))
-                return null;
-
-            var filePath = info.File.Replace(@"\", "/");
-            return new[]
-            {
-                info.Method, 
-                info.File + " " + "line " + info.LineNumber,
-                config.GitHubRootUrl + filePath + "#L" + info.LineNumber
-            };
-        }
     }
 }
