@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Bugsnag.Core
 {
@@ -145,11 +146,16 @@ namespace Bugsnag.Core
         bool IsClassToIgnore(string className);
 
         /// <summary>
-        /// Gets or sets a custom function to run just before a notification is sent, the function
+        /// Sets a custom function to run just before a notification is sent, the function
         /// operates on an Event and returns a boolean indicating if the notification should
         /// continue to be reported
         /// </summary>
-        Func<Event, bool> BeforeNotifyCallback { get; set; }
+        void BeforeNotify(Func<Event, bool> callback);
+
+        /// <summary>
+        /// Runs all the configured callbacks that shouold be run before we notify an exception
+        /// </summary>
+        bool RunBeforeNotifyCallbacks(Event errorEvent);
 
         /// <summary>
         /// Sets the filters that indicate entries that are sensitive 

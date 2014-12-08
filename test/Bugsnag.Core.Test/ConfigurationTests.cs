@@ -283,5 +283,30 @@ namespace Bugsnag.Core.Test
             // Assert
             Assert.Equal(expFilterEntry, actFilterEntry);
         }
+
+        [Fact]
+        public void RunBeforeNotifyCallbacks_WillReturnIfCallbackExceptions()
+        {
+            // Arrange
+            var testConfig = new Configuration("123456");
+            var testExp = new System.Exception("Test Stack Overflow");
+            var testEvent = new Event(testExp);
+
+            bool callbackHasRun = false;
+            testConfig.BeforeNotify(err =>
+            {
+                callbackHasRun = true;
+                Assert.Equal(testEvent, err);
+                throw new System.AccessViolationException("Invalid Access");
+            });
+
+            // Act
+            bool returnValue = testConfig.RunBeforeNotifyCallbacks(testEvent);
+
+            // Assert
+            // TODO Check logger has exception details when logger has been added
+            Assert.True(false);
+            Assert.True(callbackHasRun);
+        }
     }
 }

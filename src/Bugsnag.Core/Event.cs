@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace Bugsnag.Core
 {
@@ -39,6 +40,16 @@ namespace Bugsnag.Core
         public Metadata Metadata { get; set; }
 
         /// <summary>
+        /// Gets or sets the context to be sent with the event
+        /// </summary>
+        public String Context { get; set;  }
+
+        /// <summary>
+        /// Gets the user to be sent with the event
+        /// </summary>
+        public Dictionary<String, Object> User { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Event"/> class. Assumes runtime is not ending.
         /// </summary>
         /// <param name="exception">The exception to report on</param>
@@ -47,6 +58,8 @@ namespace Bugsnag.Core
             // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
             if (exception == null || exception.StackTrace == null)
                 CallTrace = new StackTrace(1, true);
+
+            User = new Dictionary<string, object>();
 
             Intialise(exception, false);
         }
