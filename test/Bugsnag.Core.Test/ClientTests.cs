@@ -135,7 +135,7 @@ namespace Bugsnag.Core.Test
             testClient.Notify(testEvent);
 
             // Assert
-            mockConfig.Verify(x => x.RunBeforeNotifyCallbacks(testEvent), Times.Exactly(1));
+            mockConfig.VerifyAll();
         }
 
         [Fact]
