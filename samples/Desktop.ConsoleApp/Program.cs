@@ -25,9 +25,6 @@ namespace BugsnagDemoConsole
                 return true;
             };
 
-            // EXPERIMENTAL
-            //bugsnag.Config.LinkToGitHubContext("Codehex/Bugsnag-NET", "master", "");
-
             // RECURSIVE DICTIONARY
             var a = new Dictionary<string, object>();
             var b = new Dictionary<string, object>();

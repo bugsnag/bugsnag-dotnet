@@ -68,11 +68,6 @@ namespace Bugsnag.Core
         public Metadata Metadata { get; private set; }
 
         /// <summary>
-        /// Gets the root URL used to link to GitHub files, or null if links are disabled
-        /// </summary>
-        public Uri GitHubRootUrl { get; private set; }
-
-        /// <summary>
         /// Gets the endpoint URL that notifications will be send to
         /// </summary>
         public Uri EndpointUrl
@@ -152,7 +147,6 @@ namespace Bugsnag.Core
             projectNamespaces = new List<string>();
             notifyReleaseStages = null;
             filters = new List<string>();
-            GitHubRootUrl = null;
         }
 
         /// <summary>
@@ -196,22 +190,6 @@ namespace Bugsnag.Core
             UserId = userId;
             UserEmail = userEmail;
             UserName = userName;
-        }
-
-        /// <summary>
-        /// EXPERIMENTAL - Attempts to generate links to GitHub code files, highlighting the line in a stack trace frame. Assumes
-        /// that file prefixes have been removed such that appending the stack trace frame file location
-        /// to the GitHub folder will link to the correct the code file
-        /// </summary>
-        /// <param name="repo">The repository name in the format "username/repo"</param>
-        /// <param name="branch">The name of the branch</param>
-        /// <param name="folder">The folder where the source files are contained</param>
-        public void LinkToGitHubContext(string repo, string branch, string folder)
-        {
-            if (string.IsNullOrEmpty(repo) || string.IsNullOrEmpty(branch))
-                GitHubRootUrl = null;
-            else
-                GitHubRootUrl = new Uri("https://github.com/" + repo + "/blob/" + branch + "/" + (folder ?? string.Empty));
         }
 
         /// <summary>
