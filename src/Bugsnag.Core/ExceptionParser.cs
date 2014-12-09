@@ -18,13 +18,12 @@ namespace Bugsnag.Core
         /// <param name="callTrace">The call stack trace, or null if its not available</param>
         /// <param name="config">The configuration to use</param>
         /// <returns>The exception information payload to use in the notification</returns>
-        public static ExceptionInfo GenerateExceptionInfo(Exception exception, StackTrace callTrace, IConfiguration config)
+        public static ExceptionInfo GenerateExceptionInfo(Exception exception, StackTrace callTrace, Configuration config)
         {
             if (exception == null)
                 return null;
 
             StackTrace trace = null;
-            var isCallStackTrace = false;
 
             // Attempt to get stack frame from exception, if the stack trace is invalid,
             // try to use the call stack trace
@@ -35,7 +34,6 @@ namespace Bugsnag.Core
                 if (callTrace == null || callTrace.FrameCount == 0)
                     return null;
 
-                isCallStackTrace = true;
                 trace = callTrace;
             }
 
@@ -45,12 +43,12 @@ namespace Bugsnag.Core
                 return null;
 
             // Convert the frames to stack frame payloads
-            var stackFrameInfos = frames.Select(x => GenerateStackTraceFrameInfo(x, config)).ToList();
+            var stackFrameInfos = frames.Select(x => GenerateStackTraceFrameInfo(x, config)).Where(x => !x.Method.StartsWith("Bugsnag.")).ToList();
 
             return new ExceptionInfo
             {
                 ExceptionClass = exception.GetType().Name,
-                Description = exception.Message + (isCallStackTrace ? " [CALL STACK]" : string.Empty),
+                Description = exception.Message,
                 StackTrace = stackFrameInfos
             };
         }
@@ -61,7 +59,7 @@ namespace Bugsnag.Core
         /// <param name="frame">The stack frame to base the payload on</param>
         /// <param name="config">The configuration to use</param>
         /// <returns>The stack frame payload to use in notifications</returns>
-        public static StackTraceFrameInfo GenerateStackTraceFrameInfo(StackFrame frame, IConfiguration config)
+        public static StackTraceFrameInfo GenerateStackTraceFrameInfo(StackFrame frame, Configuration config)
         {
             if (frame == null || config == null)
                 return null;

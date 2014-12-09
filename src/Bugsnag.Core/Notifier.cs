@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Bugsnag.Core
 {
-    public class Notifier : INotifier
+    public class Notifier
     {
         public const string Name = ".NET Bugsnag Notifier (ALPHA)";
         public static readonly Uri Url = new Uri("https://bugsnag.com");
@@ -23,10 +23,10 @@ namespace Bugsnag.Core
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
 
-        private IConfiguration Config { get; set; }
+        private Configuration Config { get; set; }
         private NotificationFactory Factory { get; set; }
 
-        public Notifier(IConfiguration config)
+        public Notifier(Configuration config)
         {
             Config = config;
             Factory = new NotificationFactory(config);

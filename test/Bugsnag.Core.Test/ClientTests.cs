@@ -143,7 +143,7 @@ namespace Bugsnag.Core.Test
         {
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
-            var mockConfig = new Mock<IConfiguration>();
+            var mockConfig = new Mock<Configuration>();
             var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);

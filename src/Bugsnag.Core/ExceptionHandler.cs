@@ -8,7 +8,7 @@ namespace Bugsnag.Core
     /// Responsible for installing and uninstalling handlers for handling application 
     /// level uncaught exceptions
     /// </summary>
-    public class ExceptionHandler : IExceptionHandler
+    public class ExceptionHandler
     {
         /// <summary>
         /// Holds a reference to the handler to run when an unhandled exception

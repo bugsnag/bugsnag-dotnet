@@ -5,9 +5,9 @@ namespace Bugsnag.Core
 {
     public class NotificationFactory
     {
-        private IConfiguration Config { get; set; }
+        private Configuration Config { get; set; }
 
-        public NotificationFactory(IConfiguration config)
+        public NotificationFactory(Configuration config)
         {
             Config = config;
         }
@@ -75,7 +75,7 @@ namespace Bugsnag.Core
                 Device = deviceInfo,
                 Severity = errorData.Severity,
                 User = userInfo,
-                Context = Config.Context,
+                Context = Config.Context != null ? Config.Context : errorData.Context,
                 GroupingHash = errorData.GroupingHash
             };
             return eventInfo;

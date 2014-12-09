@@ -4,24 +4,24 @@ using System.Text.RegularExpressions;
 namespace Bugsnag.Core
 {
     /// <summary>
-    /// The main class used to encapsulate a single client to Bugsnag
+    /// The main class used to encapsulate a client to Bugsnag
     /// </summary>
     public class Client
     {
         /// <summary>
         /// The notifier used by the client to send notifications to Bugsnag
         /// </summary>
-        private INotifier notifier;
+        private Notifier notifier;
 
         /// <summary>
         /// The handler used to handle app level exceptions and notify Bugsnag accordingly
         /// </summary>
-        private IExceptionHandler exceptionHandler;
+        private ExceptionHandler exceptionHandler;
 
         /// <summary>
         /// Gets the configuration of the client, allowing users to config it
         /// </summary>
-        public IConfiguration Config { get; private set; }
+        public Configuration Config { get; private set; }
 
         /// <summary>
         /// The regex that validates an API key
@@ -63,9 +63,9 @@ namespace Bugsnag.Core
         /// <param name="handlerInstance">The exception handler used to attach to uncaught exceptions</param>
         public Client(string apiKey,
                       bool autoNotify,
-                      IConfiguration configInstance,
-                      INotifier notifierInstance,
-                      IExceptionHandler handlerInstance)
+                      Configuration configInstance,
+                      Notifier notifierInstance,
+                      ExceptionHandler handlerInstance)
         {
             Config = configInstance;
             notifier = notifierInstance;
@@ -95,9 +95,12 @@ namespace Bugsnag.Core
         /// <param name="exception">The exception to send to Bugsnag</param>
         public void Notify(Exception exception)
         {
-            var error = new Event(exception);
-            error.Severity = Severity.Warning;
-            Notify(error);
+            lock (Config.BugsnagMutex)
+            {
+                var error = new Event(exception);
+                error.Severity = Severity.Warning;
+                Notify(error);
+            }
         }
 
         /// <summary>

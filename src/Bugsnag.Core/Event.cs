@@ -39,6 +39,11 @@ namespace Bugsnag.Core
         public Metadata Metadata { get; set; }
 
         /// <summary>
+        /// Gets or Sets the Context associated with this error.
+        /// </summary>
+        public String Context { get; set;  }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Event"/> class. Assumes runtime is not ending.
         /// </summary>
         /// <param name="exception">The exception to report on</param>
