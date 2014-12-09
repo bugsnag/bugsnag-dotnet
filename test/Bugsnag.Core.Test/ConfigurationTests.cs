@@ -308,5 +308,69 @@ namespace Bugsnag.Core.Test
             Assert.True(returnValue);
             Assert.True(callbackHasRun);
         }
+
+        [Fact]
+        public void RunBeforeNotifyCallbacks_WillRunMultipleCallbacks()
+        {
+            // Arrange
+            var testConfig = new Configuration("123456");
+            var testExp = new System.Exception("Test Stack Overflow");
+            var testEvent = new Event(testExp);
+
+            bool firstCallbackHasRun = false;
+            bool secondCallbackHasRun = false;
+            testConfig.BeforeNotify(err =>
+            {
+                firstCallbackHasRun = true;
+                Assert.Equal(testEvent, err);
+                return true;
+            });
+            testConfig.BeforeNotify(err =>
+            {
+                secondCallbackHasRun = true;
+                Assert.Equal(testEvent, err);
+                return true;
+            });
+
+            // Act
+            bool returnValue = testConfig.RunBeforeNotifyCallbacks(testEvent);
+
+            // Assert
+            Assert.True(returnValue);
+            Assert.True(firstCallbackHasRun);
+            Assert.True(secondCallbackHasRun);
+        }
+
+        [Fact]
+        public void RunBeforeNotifyCallbacks_WillStopRunning()
+        {
+            // Arrange
+            var testConfig = new Configuration("123456");
+            var testExp = new System.Exception("Test Stack Overflow");
+            var testEvent = new Event(testExp);
+
+            bool firstCallbackHasRun = false;
+            bool secondCallbackHasRun = false;
+            testConfig.BeforeNotify(err =>
+            {
+                firstCallbackHasRun = true;
+                Assert.Equal(testEvent, err);
+                return false;
+            });
+            testConfig.BeforeNotify(err =>
+            {
+                secondCallbackHasRun = true;
+                Assert.Equal(testEvent, err);
+                return true;
+            });
+
+            // Act
+            bool returnValue = testConfig.RunBeforeNotifyCallbacks(testEvent);
+
+            // Assert
+            Assert.False(returnValue);
+            Assert.True(firstCallbackHasRun);
+            Assert.False(secondCallbackHasRun);
+        }
     }
 }
