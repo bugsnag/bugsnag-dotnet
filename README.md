@@ -203,13 +203,13 @@ The client can be configured to ignore specific types of exceptions. Any errors 
 bugsnag.Config.SetIgnoreClasses("ArgumentNullException", "MyConfigException");
 ```
 
-##### Before Notify Callback
-A custom call back function can be configured to run just before an error event is sent. The callback has full access to the error and can modify it before its sent. It also has the opportunity to prevent the error from being sent all together. The callback should take an error `Event` object as a parameter and return a boolean indicating if the event should be notified (`Func<Event,bool>`);
+##### Before Notify Callbacks
+Custom call back functions can be configured to run just before an error event is sent. These callbacks have full access to the error and can modify it before its sent. They also have the opportunity to prevent the error from being sent all together. A callback should take an error `Event` object as a parameter and return a boolean indicating if the event should be notified (`Func<Event,bool>`);
 
-Note that the callback will not be called if the exception class is an class being ignored via `SetIgnoreClasses()` or the current release stage is one that has been configured not to be notified on via `SetNotifyReleaseStages()`.
+Note that these callbacks will not be called if the exception class is an class being ignored via `SetIgnoreClasses()` or the current release stage is one that has been configured not to be notified on via `SetNotifyReleaseStages()`.
 
 ```c#
-bugsnag.Config.BeforeNotifyCallback = error =>
+bugsnag.Config.BeforeNotify(error =>
 {
     // Sets the groupingHash option
     error.setGroupingHash("My Group");
@@ -224,7 +224,7 @@ bugsnag.Config.BeforeNotifyCallback = error =>
     // Ignore all exceptions marked as minor
     var isMinor = error.Exception.Message.Contains("[MINOR]");
     return !isMinor;
-};
+});
 ```
 
 ##### Filters

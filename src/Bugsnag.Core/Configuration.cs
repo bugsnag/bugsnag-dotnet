@@ -82,11 +82,11 @@ namespace Bugsnag.Core
         public bool AutoDetectInProject { get; set; }
 
         /// <summary>
-        /// Gets or sets a custom function to run just before a notification is sent, the function
-        /// operates on an Event and returns a boolean indicating if the notification should
-        /// continue to be reported
+        /// Gets or sets a list of custom functions to run just before a notification is sent, 
+        /// the functions operate on an Event and returns a boolean indicating if the notification 
+        /// should continue to be reported
         /// </summary>
-        public Func<Event, bool> BeforeNotifyCallback { get; set; }
+        private List<Func<Event, bool>> BeforeNotifyCallbacks { get; set; }
 
         /// <summary>
         /// Internal list of release stages we should notify on
@@ -147,6 +147,7 @@ namespace Bugsnag.Core
             projectNamespaces = new List<string>();
             notifyReleaseStages = null;
             filters = new List<string>();
+            BeforeNotifyCallbacks = new List<Func<Event, bool>>();
         }
 
         /// <summary>
@@ -273,6 +274,46 @@ namespace Bugsnag.Core
         public bool IsEntryFiltered(string entry)
         {
             return filters.Contains(entry);
+        }
+
+        /// <summary>
+        /// Adds a callback to run when an event is about to be notified
+        /// </summary>
+        /// <param name="callback">The callback function to run</param>
+        public void BeforeNotify(Func<Event, bool> callback)
+        {
+            BeforeNotifyCallbacks.Add(callback);
+        }
+
+        /// <summary>
+        /// Runs all registered notification callbacks
+        /// </summary>
+        /// <param name="errorEvent">The event to run the callbacks on</param>
+        /// <returns>True if the notification should continue, otherwise false</returns>
+        public bool RunBeforeNotifyCallbacks(Event errorEvent)
+        {
+            // Call the before notify action is there is one
+            if (BeforeNotifyCallbacks != null)
+            {
+                try
+                {
+                    // Do nothing if the before notify action indicates we should ignore the error event
+                    foreach (Func<Event, bool> callback in BeforeNotifyCallbacks)
+                    {
+                        if (!callback(errorEvent))
+                            return false;
+                    }
+                }
+                catch (Exception exp)
+                {
+                    // If the callback exceptions, we will try to send the notification anyway, to give the
+                    // best possible chance of reporting the error
+
+                    // TODO : Add logger so we can record debug and error data
+                    Console.WriteLine("[Before Notify] Exception : " + exp.Message);
+                }
+            }
+            return true;
         }
     }
 }

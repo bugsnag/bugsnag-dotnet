@@ -158,24 +158,9 @@ namespace Bugsnag.Core
                 Config.IsClassToIgnore(errorEvent.Exception.GetType().Name))
                 return;
 
-            // Call the before notify action is there is one
-            if (Config.BeforeNotifyCallback != null)
-            {
-                try
-                {
-                    // Do nothing if the before notify action indicates we should ignore the error event
-                    if (!Config.BeforeNotifyCallback(errorEvent))
-                        return;
-                }
-                catch (Exception exp)
-                {
-                    // If the callback exceptions, we will try to send the notification anyway, to give the
-                    // best possible chance of reporting the error
+            if (!Config.RunBeforeNotifyCallbacks(errorEvent))
+                return;
 
-                    // TODO : Add logger so we can record debug and error data
-                    Console.WriteLine("[Before Notify] Exception : " + exp.Message);
-                }
-            }
             notifier.Send(errorEvent);
         }
 

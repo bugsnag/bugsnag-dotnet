@@ -19,11 +19,11 @@ namespace BugsnagDemoConsole
             bugsnag.Config.Metadata.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
             bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
 
-            bugsnag.Config.BeforeNotifyCallback = error =>
+            bugsnag.Config.BeforeNotify(error =>
             {
                 error.Metadata.AddToTab("Callback", "Check", true);
                 return true;
-            };
+            });
 
             // RECURSIVE DICTIONARY
             var a = new Dictionary<string, object>();

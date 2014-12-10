@@ -119,7 +119,7 @@ namespace Bugsnag.Core.Test
         }
 
         [Fact]
-        public void Notify_CheckThatBeforeNotifyCallBackIsCalled()
+        public void Notify_CheckThatBeforeNotifyCallBacksAreCalled()
         {
             // Arrange
             var mockNotifier = new Mock<INotifier>();
@@ -128,20 +128,14 @@ namespace Bugsnag.Core.Test
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
-            var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
-            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
-            {
-                hasCallbackRan = true;
-                Assert.Equal(testEvent, err);
-                return true;
-            });
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(testEvent)).Returns(true);
 
             // Act
             testClient.Notify(testEvent);
 
             // Assert
-            Assert.True(hasCallbackRan);
+            mockConfig.VerifyAll();
         }
 
         [Fact]
@@ -154,20 +148,14 @@ namespace Bugsnag.Core.Test
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
-            var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
-            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
-            {
-                hasCallbackRan = true;
-                Assert.Equal(testEvent, err);
-                return false;
-            });
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(testEvent)).Returns(false);
 
             // Act
             testClient.Notify(testEvent);
 
             // Assert
-            Assert.True(hasCallbackRan);
+            mockConfig.Verify(x => x.RunBeforeNotifyCallbacks(testEvent), Times.Exactly(1));
             mockNotifier.VerifyAll();
         }
 
@@ -219,22 +207,15 @@ namespace Bugsnag.Core.Test
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
-            var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
-            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
-            {
-                hasCallbackRan = true;
-                Assert.Equal(testEvent, err);
-                return true;
-            });
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y == testEvent)));
 
             // Act
             testClient.Notify(testEvent);
 
             // Assert
-            Assert.True(hasCallbackRan);
             mockNotifier.VerifyAll();
         }
 
@@ -250,6 +231,7 @@ namespace Bugsnag.Core.Test
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y == testEvent)));
 
             // Act
@@ -272,6 +254,7 @@ namespace Bugsnag.Core.Test
             // Set up the call so that we invoke the handler with our test exception immediately
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
                                                              y.Severity == Severity.Warning)));
 
@@ -297,6 +280,7 @@ namespace Bugsnag.Core.Test
             // Set up the call so that we invoke the handler with our test exception immediately
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
                                                              y.Severity == Severity.Warning &&
                                                              (string)y.Metadata.MetadataStore["Tab 1"]["Tab Key 1"] == "Tab Value 1")));
@@ -313,26 +297,20 @@ namespace Bugsnag.Core.Test
         {
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
-            var mockConfig = new Mock<IConfiguration>();
+            var mockConfig = new Mock<IConfiguration>(MockBehavior.Strict);
             var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
-            var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(true);
-            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
-            {
-                hasCallbackRan = true;
-                return false;
-            });
 
             // Act
             testClient.Notify(testEvent);
 
             // Assert
-            Assert.False(hasCallbackRan);
             mockNotifier.VerifyAll();
+            mockConfig.VerifyAll();
         }
 
         [Fact]
@@ -340,56 +318,19 @@ namespace Bugsnag.Core.Test
         {
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
-            var mockConfig = new Mock<IConfiguration>();
+            var mockConfig = new Mock<IConfiguration>(MockBehavior.Strict);
             var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
-            var hasCallbackRan = false;
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(false);
-            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
-            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
-            {
-                hasCallbackRan = true;
-                return false;
-            });
 
             // Act
             testClient.Notify(testEvent);
 
             // Assert
-            Assert.False(hasCallbackRan);
             mockNotifier.VerifyAll();
-        }
-
-        [Fact]
-        public void Notify_WillTryToNotifyIfCallbackExceptions()
-        {
-            // Arrange
-            var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
-            var mockConfig = new Mock<IConfiguration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
-            var testExp = new StackOverflowException("Test Stack Overflow");
-            var testEvent = new Event(testExp);
-
-            var hasCallbackRan = false;
-            mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
-            mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
-            mockConfig.Setup(x => x.BeforeNotifyCallback).Returns(err =>
-            {
-                hasCallbackRan = true;
-                Assert.Equal(testEvent, err);
-                throw new AccessViolationException("Invalid Access");
-            });
-            mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y == testEvent)));
-
-            // Act
-            testClient.Notify(testEvent);
-
-            // Assert
-            // TODO Check logger has exception details when logger has been added
-            Assert.True(hasCallbackRan);
-            mockNotifier.VerifyAll();
+            mockConfig.VerifyAll();
         }
 
         [Fact]
@@ -407,6 +348,7 @@ namespace Bugsnag.Core.Test
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
             mockConfig.Setup(x => x.IsClassToIgnore("StackOverflowException")).Returns(false);
+            mockConfig.Setup(x => x.RunBeforeNotifyCallbacks(It.IsAny<Event>())).Returns(true);
             mockNotifier.Setup(x => x.Send(It.Is<Event>(y => y.Exception == testExp &&
                                                              y.IsRuntimeEnding == true &&
                                                              y.Severity == Severity.Error)));
