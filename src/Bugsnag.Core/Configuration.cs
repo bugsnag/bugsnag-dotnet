@@ -276,12 +276,20 @@ namespace Bugsnag.Core
             return filters.Contains(entry);
         }
 
+        /// <summary>
+        /// Adds a callback to run when an event is about to be notified
+        /// </summary>
+        /// <param name="callback">The callback function to run</param>
         public void BeforeNotify(Func<Event, bool> callback)
         {
             BeforeNotifyCallbacks.Add(callback);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        /// <summary>
+        /// Runs all registered notification callbacks
+        /// </summary>
+        /// <param name="errorEvent">The event to run the callbacks on</param>
+        /// <returns>True if the notification should continue, otherwise false</returns>
         public bool RunBeforeNotifyCallbacks(Event errorEvent)
         {
             // Call the before notify action is there is one

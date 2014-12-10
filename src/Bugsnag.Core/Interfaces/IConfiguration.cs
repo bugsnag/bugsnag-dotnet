@@ -153,7 +153,7 @@ namespace Bugsnag.Core
         void BeforeNotify(Func<Event, bool> callback);
 
         /// <summary>
-        /// Runs all the configured callbacks that shouold be run before we notify an exception
+        /// Runs all the configured callbacks that should be run before we notify an exception
         /// </summary>
         bool RunBeforeNotifyCallbacks(Event errorEvent);
 
