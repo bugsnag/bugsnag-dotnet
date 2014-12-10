@@ -108,7 +108,6 @@ namespace Bugsnag.ConfigurationStorage
                 AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
             }
             AutoDetectInProject = true;
-            UserId = Environment.UserName;
             Endpoint = "notify.bugsnag.com";
         }
     }

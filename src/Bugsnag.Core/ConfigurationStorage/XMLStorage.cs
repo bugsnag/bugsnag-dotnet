@@ -5,6 +5,7 @@ namespace Bugsnag.ConfigurationStorage
 {
     class XMLStorage : ConfigurationSection, IConfigurationStorage
     {
+        //TODO:SM Add appropriate default values
         private static XMLStorage _storage = ConfigurationManager.GetSection("bugsnagConfig") as XMLStorage;
 
         public static XMLStorage Settings
@@ -15,7 +16,7 @@ namespace Bugsnag.ConfigurationStorage
             }
         }
 
-        [ConfigurationProperty("apiKey", IsRequired = true)]
+        [ConfigurationProperty("apiKey", IsRequired = true, DefaultValue = "12345678901234567890123456789012")]
         [RegexStringValidator("^[a-fA-F0-9]{32}$")]
         public string ApiKey
         {
@@ -23,7 +24,7 @@ namespace Bugsnag.ConfigurationStorage
             set { this["apiKey"] = value; }
         }
 
-        [ConfigurationProperty("appVersion", IsRequired = false)]
+        [ConfigurationProperty("appVersion", IsRequired = false, DefaultValue = null)]
         [StringValidator]
         public string AppVersion
         {
@@ -31,160 +32,129 @@ namespace Bugsnag.ConfigurationStorage
             set { this["appVersion"] = value; }
         }
 
+        [ConfigurationProperty("releaseStage", IsRequired = false, DefaultValue = null)]
+        [StringValidator]
         public string ReleaseStage
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (String)this["releaseStage"]; }
+            set { this["releaseStage"] = value; }
         }
 
+        [ConfigurationProperty("endpoint", IsRequired = false, DefaultValue = "notify.bugsnag.com")]
+        [StringValidator]
         public string Endpoint
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (String)this["endpoint"]; }
+            set { this["endpoint"] = value; }
         }
 
+        [ConfigurationProperty("userId", IsRequired = false, DefaultValue = null)]
+        [StringValidator]
         public string UserId
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (String)this["userId"]; }
+            set { this["userId"] = value; }
         }
 
+        [ConfigurationProperty("userEmail", IsRequired = false, DefaultValue = null)]
+        [StringValidator]
         public string UserEmail
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (String)this["userEmail"]; }
+            set { this["userEmail"] = value; }
         }
 
+        [ConfigurationProperty("userName", IsRequired = false, DefaultValue = null)]
+        [StringValidator]
         public string UserName
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (String)this["userName"]; }
+            set { this["userName"] = value; }
         }
 
+        [ConfigurationProperty("context", IsRequired = false, DefaultValue = null)]
+        [StringValidator]
         public string Context
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return (String)this["context"]; }
+            set { this["context"] = value; }
         }
 
+        [ConfigurationProperty("autoDetectInProject", IsRequired = false, DefaultValue = true)]
         public bool AutoDetectInProject
         {
-            get
+            get 
             {
-                throw new NotImplementedException();
+                bool? autoDetectInProject = (bool?)this["autoDetectInProject"];
+                return autoDetectInProject.HasValue ? autoDetectInProject.Value : true;
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { this["autoDetectInProject"] = value; }
         }
 
+        [ConfigurationProperty("notifyReleaseStages", IsRequired = false, DefaultValue = null)]
         public string[] NotifyReleaseStages
         {
             get
             {
-                throw new NotImplementedException();
+                String notifyReleaseStages = this["notifyReleaseStages"] as String;
+                return notifyReleaseStages != null ? notifyReleaseStages.Split(',') : null;
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { this["notifyReleaseStages"] = value; }
         }
 
+        [ConfigurationProperty("filePrefixes", IsRequired = false, DefaultValue = null)]
         public string[] FilePrefixes
         {
             get
             {
-                throw new NotImplementedException();
+                String filePrefixes = this["filePrefixes"] as String;
+                return filePrefixes != null ? filePrefixes.Split(',') : new string[] { };
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { this["filePrefixes"] = value; }
         }
 
+        [ConfigurationProperty("projectNamespaces", IsRequired = false, DefaultValue = null)]
         public string[] ProjectNamespaces
         {
             get
             {
-                throw new NotImplementedException();
+                String projectNamespaces = this["projectNamespaces"] as String;
+                return projectNamespaces != null ? projectNamespaces.Split(',') : new string[] { };
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { this["projectNamespaces"] = value; }
         }
 
+        [ConfigurationProperty("ignoreClasses", IsRequired = false, DefaultValue = null)]
         public string[] IgnoreClasses
         {
             get
             {
-                throw new NotImplementedException();
+                String ignoreClasses = this["ignoreClasses"] as String;
+                return ignoreClasses != null ? ignoreClasses.Split(',') : new string[] { };
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { this["ignoreClasses"] = value; }
         }
 
+        [ConfigurationProperty("metadataFilters", IsRequired = false, DefaultValue = null)]
         public string[] MetadataFilters
         {
             get
             {
-                throw new NotImplementedException();
+                String filters = this["metadataFilters"] as String;
+                return filters != null ? filters.Split(',') : new string[] { };
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { this["metadataFilters"] = value; }
         }
 
+        [ConfigurationProperty("autoNotify", IsRequired = false, DefaultValue = true)]
         public bool AutoNotify
         {
             get
             {
-                return true;
+                bool? autoNotify = (bool?)this["autoNotify"];
+                return autoNotify.HasValue ? autoNotify.Value : true;
             }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { this["autoNotify"] = value; }
         }
     }
 }
