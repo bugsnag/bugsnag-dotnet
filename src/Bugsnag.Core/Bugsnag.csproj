@@ -50,6 +50,7 @@
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -69,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Clients\SingletonBaseClient.cs" />
     <Compile Include="Clients\BaseClient.cs" />
+    <Compile Include="Clients\WebAPIClient.cs" />
     <Compile Include="Clients\WPFClient.cs" />
     <Compile Include="Clients\WebMVCClient.cs" />
     <Compile Include="Configuration.cs" />
