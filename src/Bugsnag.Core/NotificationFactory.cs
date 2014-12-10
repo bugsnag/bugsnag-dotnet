@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Bugsnag.Core.Payload;
+using Bugsnag.Payload;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
-    public class NotificationFactory
+    internal class NotificationFactory
     {
         private Configuration Config { get; set; }
 
@@ -55,8 +55,7 @@ namespace Bugsnag.Core
             {
                 Id = Config.UserId,
                 Email = Config.UserEmail,
-                Name = Config.UserName,
-                LoggedOnUser = Config.LoggedOnUser
+                Name = Config.UserName
             };
 
             var deviceInfo = new DeviceInfo

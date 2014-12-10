@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about the app that crashed
     /// </summary>
-    public class AppInfo
+    internal class AppInfo
     {
         /// <summary>
         /// Gets or sets the version number of the application (optional)

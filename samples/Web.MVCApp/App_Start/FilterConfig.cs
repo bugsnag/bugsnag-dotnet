@@ -1,4 +1,4 @@
-﻿using Bugsnag.Web;
+﻿using Bugsnag.Clients;
 using System.Web.Mvc;
 
 namespace Web.MVCApp
@@ -7,9 +7,8 @@ namespace Web.MVCApp
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new NotifyExceptionAttribute("9134c4469d16f30f025a1e98f45b3ddb"));
+            filters.Add(WebMVCClient.ErrorHandler());
             filters.Add(new HandleErrorAttribute());
-
         }
     }
 }

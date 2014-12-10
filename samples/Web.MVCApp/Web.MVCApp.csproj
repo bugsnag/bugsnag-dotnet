@@ -165,13 +165,9 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Bugsnag.Core\Bugsnag.Core.csproj">
+    <ProjectReference Include="..\..\src\Bugsnag.Core\Bugsnag.csproj">
       <Project>{e73060e7-8bf3-43ce-b749-6f418c12ea5b}</Project>
-      <Name>Bugsnag.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Bugsnag.Web\Bugsnag.Web.csproj">
-      <Project>{312f7f88-b78e-4efd-a5b2-e7a3305c1f33}</Project>
-      <Name>Bugsnag.Web</Name>
+      <Name>Bugsnag</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

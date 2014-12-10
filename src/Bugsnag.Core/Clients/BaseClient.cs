@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace Bugsnag.Core
+namespace Bugsnag.Clients
 {
     /// <summary>
     /// The main class used to encapsulate a client to Bugsnag
     /// </summary>
-    public class Client
+    public class BaseClient
     {
         /// <summary>
         /// The notifier used by the client to send notifications to Bugsnag
         /// </summary>
-        private Notifier notifier;
+        internal Notifier notifier;
 
         /// <summary>
         /// The handler used to handle app level exceptions and notify Bugsnag accordingly
         /// </summary>
-        private ExceptionHandler exceptionHandler;
+        internal ExceptionHandler exceptionHandler;
 
         /// <summary>
         /// Gets the configuration of the client, allowing users to config it
@@ -26,51 +26,26 @@ namespace Bugsnag.Core
         /// <summary>
         /// The regex that validates an API key
         /// </summary>
-        private Regex apiRegex = new Regex("^[a-fA-F0-9]{32}$");
+        protected Regex apiRegex = new Regex("^[a-fA-F0-9]{32}$");
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class. Will use all the default settings and will 
+        /// Initializes a new instance of the <see cref="BaseClient"/> class. Will use all the default settings and will 
         /// automatically hook into uncaught exceptions.
         /// </summary>
         /// <param name="apiKey">The Bugsnag API key to send notifications with</param>
-        public Client(string apiKey)
-            : this(apiKey, true)
+        public BaseClient(string apiKey)
+            : this(new ConfigurationStorage.BaseStorage(apiKey))
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class. Provides the option to automatically 
-        /// hook into uncaught exceptions. Uses default dependencies.
-        /// </summary>
-        /// <param name="apiKey">The Bugsnag API key to use</param>
-        /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
-        public Client(string apiKey, bool autoNotify)
-        {
-            Config = new Configuration(apiKey);
-            notifier = new Notifier(Config);
-            exceptionHandler = new ExceptionHandler();
-            InitialiseClient(apiKey, autoNotify);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class. Provides the option to automatically 
+        /// Initializes a new instance of the <see cref="BaseClient"/> class. Provides the option to automatically 
         /// hook into uncaught exceptions. Allows injection of dependant classes
         /// </summary>
-        /// <param name="apiKey">The Bugsnag API key to use</param>
-        /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
-        /// <param name="configInstance">The configuration of the client</param>
-        /// <param name="notifierInstance">The notifier used to send notifications</param>
-        /// <param name="handlerInstance">The exception handler used to attach to uncaught exceptions</param>
-        public Client(string apiKey,
-                      bool autoNotify,
-                      Configuration configInstance,
-                      Notifier notifierInstance,
-                      ExceptionHandler handlerInstance)
+        /// <param name="configStorage">The configuration of the client</param>
+        public BaseClient(ConfigurationStorage.IConfigurationStorage configStorage)
         {
-            Config = configInstance;
-            notifier = notifierInstance;
-            exceptionHandler = handlerInstance;
-            InitialiseClient(apiKey, autoNotify);
+            Intialize(configStorage);
         }
 
         /// <summary>
@@ -95,12 +70,9 @@ namespace Bugsnag.Core
         /// <param name="exception">The exception to send to Bugsnag</param>
         public void Notify(Exception exception)
         {
-            lock (Config.BugsnagMutex)
-            {
-                var error = new Event(exception);
-                error.Severity = Severity.Warning;
-                Notify(error);
-            }
+            var error = new Event(exception);
+            error.Severity = Severity.Warning;
+            Notify(error);
         }
 
         /// <summary>
@@ -170,16 +142,34 @@ namespace Bugsnag.Core
         /// <summary>
         /// Initialize the client with dependencies
         /// </summary>
-        /// <param name="apiKey">The Bugsnag API key to use</param>
-        /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
-        private void InitialiseClient(string apiKey, bool autoNotify)
+        /// <param name="configStorage">The configuration to use</param>
+        protected void Intialize(ConfigurationStorage.IConfigurationStorage configStorage)
         {
-            if (string.IsNullOrEmpty(apiKey) || !apiRegex.IsMatch(apiKey))
-                throw new ArgumentException("You must provide a valid Bugsnag API key");
+            if (string.IsNullOrEmpty(configStorage.ApiKey) || !apiRegex.IsMatch(configStorage.ApiKey))
+            {
+                Logger.Error("You must provide a valid Bugsnag API key");
+            }
+            else
+            {
+                Config = new Configuration(configStorage);
+                notifier = new Notifier(Config);
+                exceptionHandler = new ExceptionHandler();
 
-            // Install a default exception handler with this client
-            if (autoNotify)
-                StartAutoNotify();
+                // Install a default exception handler with this client
+                if (Config.AutoNotify)
+                    StartAutoNotify();
+
+                Initialized();
+            }
+        }
+
+        /// <summary>
+        /// Allows subclasses to have a centralized initialize function which is called once the base
+        /// client has finished initializing.
+        /// </summary>
+        protected void Initialized()
+        {
+            // Do Nothing
         }
 
         /// <summary>
@@ -187,7 +177,7 @@ namespace Bugsnag.Core
         /// </summary>
         /// <param name="exception">The exception to handle</param>
         /// <param name="runtimeEnding">True if the unmanaged exception handler indicates that the runtime will end</param>
-        private void HandleDefaultException(Exception exception, bool runtimeEnding)
+        protected void HandleDefaultException(Exception exception, bool runtimeEnding)
         {
             var error = new Event(exception, runtimeEnding);
             Notify(error);

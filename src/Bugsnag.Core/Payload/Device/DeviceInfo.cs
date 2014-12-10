@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about the device the app is running on
     /// </summary>
-    public class DeviceInfo
+    internal class DeviceInfo
     {
         /// <summary>
         /// Gets or sets the version of operating system (optional)

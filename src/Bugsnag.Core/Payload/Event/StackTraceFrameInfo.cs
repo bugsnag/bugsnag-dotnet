@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about a single frame of a stack trace
     /// </summary>
-    public class StackTraceFrameInfo
+    internal class StackTraceFrameInfo
     {
         /// <summary>
         /// Gets or sets the filename of the file the frame occurred (optional)

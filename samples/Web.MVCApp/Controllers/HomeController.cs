@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
-using Bugsnag.Core;
+using Bugsnag.Clients;
 
 namespace Web.MVCApp.Controllers
 {
@@ -22,7 +22,7 @@ namespace Web.MVCApp.Controllers
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-            BugsnagSingleton.Notify(new FieldAccessException("Notify call"));
+            WebMVCClient.Notify(new FieldAccessException("Notify call"));
             return View();
         }
     }

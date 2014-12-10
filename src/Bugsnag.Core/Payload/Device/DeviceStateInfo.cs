@@ -1,9 +1,9 @@
-﻿namespace Bugsnag.Core.Payload
+﻿namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about the current state of the device
     /// </summary>
-    public class DeviceStateInfo
+    internal class DeviceStateInfo
     {
         // TBD
     }

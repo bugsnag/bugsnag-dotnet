@@ -11,7 +11,7 @@ namespace Desktop.WPFApp
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            var bugsnag = new Client("9134c4469d16f30f025a1e98f45b3ddb");
+            var bugsnag = new Base("9134c4469d16f30f025a1e98f45b3ddb");
 
             bugsnag.Config.AppVersion = "6.7.8";
             bugsnag.Config.ReleaseStage = "Beta WPF";

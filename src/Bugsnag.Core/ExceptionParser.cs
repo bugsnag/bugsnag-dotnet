@@ -2,14 +2,14 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Bugsnag.Core.Payload;
+using Bugsnag.Payload;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
     /// <summary>
     /// Defines helper methods used to convert exception information into payload data
     /// </summary>
-    public static class ExceptionParser
+    internal static class ExceptionParser
     {
         /// <summary>
         /// Creates a exception information payload based on an exception

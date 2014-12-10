@@ -2,13 +2,13 @@
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
     /// <summary>
     /// Responsible for installing and uninstalling handlers for handling application 
     /// level uncaught exceptions
     /// </summary>
-    public class ExceptionHandler
+    internal class ExceptionHandler
     {
         /// <summary>
         /// Holds a reference to the handler to run when an unhandled exception

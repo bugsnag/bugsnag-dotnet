@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about the current user of the application
     /// </summary>
-    public class UserInfo
+    internal class UserInfo
     {
         /// <summary>
         /// Gets or sets the unique identifier attached to the event (optional)

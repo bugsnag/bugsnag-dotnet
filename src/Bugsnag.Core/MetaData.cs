@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TabData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
     /// <summary>
     /// Used to store custom data that can be attached to an individual event

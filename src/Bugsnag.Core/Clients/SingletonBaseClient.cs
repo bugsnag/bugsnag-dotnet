@@ -4,39 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bugsnag.Core
+namespace Bugsnag.Clients
 {
-    public static class BugsnagSingleton
+    public static class SingletonBaseClient
     {
         /// <summary>
         /// Gets the static Client if configured.
         /// </summary>
-        public static Client Client { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class. Will use all the default settings and will 
-        /// automatically hook into uncaught exceptions.
-        /// </summary>
-        /// <param name="apiKey">The Bugsnag API key to send notifications with</param>
-        public static void Start(string apiKey)
+        public static BaseClient Client { get; set; }
+        public static Configuration Config
         {
-            if (Client == null)
+            get
             {
-                Client = new Client(apiKey);
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Client"/> class. Provides the option to automatically 
-        /// hook into uncaught exceptions. Uses default dependencies.
-        /// </summary>
-        /// <param name="apiKey">The Bugsnag API key to use</param>
-        /// <param name="autoNotify">True if the client will automatically notify uncaught exceptions, otherwise false</param>
-        public static void Start(string apiKey, bool autoNotify)
-        {
-            if (Client == null)
-            {
-                Client = new Client(apiKey, autoNotify);
+                if(Client != null)
+                {
+                    return Client.Config;
+                }
+                return null;
             }
         }
 

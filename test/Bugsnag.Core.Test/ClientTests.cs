@@ -17,9 +17,9 @@ namespace Bugsnag.Core.Test
         [InlineData("ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890")]
         public void Constructor_ExceptionThrownWhenApiKeyIsInvalid(string invalidApiKey)
         {
-            Assert.Throws<ArgumentException>(() => new Client(invalidApiKey));
-            Assert.Throws<ArgumentException>(() => new Client(invalidApiKey, true));
-            Assert.Throws<ArgumentException>(() => new Client(invalidApiKey, false));
+            Assert.Throws<ArgumentException>(() => new Base(invalidApiKey));
+            Assert.Throws<ArgumentException>(() => new Base(invalidApiKey, true));
+            Assert.Throws<ArgumentException>(() => new Base(invalidApiKey, false));
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Bugsnag.Core.Test
             mockExceptionHandler.Setup(x => x.InstallHandler(It.IsAny<Action<Exception, bool>>()));
 
             // Act
-            var testClient = new Client(TestApiKey, true, null, null, mockExceptionHandler.Object);
+            var testClient = new Base(TestApiKey, true, null, null, mockExceptionHandler.Object);
 
             // Assert
             mockExceptionHandler.VerifyAll();
@@ -43,7 +43,7 @@ namespace Bugsnag.Core.Test
             var mockExceptionHandler = new Mock<IExceptionHandler>(MockBehavior.Strict);
 
             // Act
-            var testClient = new Client(TestApiKey, false, null, null, mockExceptionHandler.Object);
+            var testClient = new Base(TestApiKey, false, null, null, mockExceptionHandler.Object);
 
             // Assert
             mockExceptionHandler.VerifyAll();
@@ -56,7 +56,7 @@ namespace Bugsnag.Core.Test
         {
             // Arrange
             var mockExceptionHandler = new Mock<IExceptionHandler>();
-            var testClient = new Client(TestApiKey, autoNotify, null, null, mockExceptionHandler.Object);
+            var testClient = new Base(TestApiKey, autoNotify, null, null, mockExceptionHandler.Object);
             mockExceptionHandler.Setup(x => x.InstallHandler(It.IsAny<Action<Exception, bool>>()))
                                 .Verifiable("Install was not called");
 
@@ -74,7 +74,7 @@ namespace Bugsnag.Core.Test
         {
             // Arrange
             var mockExceptionHandler = new Mock<IExceptionHandler>();
-            var testClient = new Client(TestApiKey, autoNotify, null, null, mockExceptionHandler.Object);
+            var testClient = new Base(TestApiKey, autoNotify, null, null, mockExceptionHandler.Object);
             mockExceptionHandler.Setup(x => x.UninstallHandler()).Verifiable("Uninstall was not called");
 
             // Act
@@ -90,7 +90,7 @@ namespace Bugsnag.Core.Test
         {
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
-            var testClient = new Client(TestApiKey, false, null, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, null, mockNotifier.Object, null);
 
             // Act
             testClient.Notify(null as Event);
@@ -105,7 +105,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -124,7 +124,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>();
             var mockConfig = new Mock<IConfiguration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -144,7 +144,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<Configuration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -165,7 +165,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -185,7 +185,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testEvent = new Event(null);
 
             mockConfig.Setup(x => x.IsNotifyReleaseStage()).Returns(true);
@@ -203,7 +203,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -225,7 +225,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -248,7 +248,7 @@ namespace Bugsnag.Core.Test
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>();
             var mockExceptionHandler = new Mock<IExceptionHandler>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
             var testExp = new StackOverflowException("Test Stack Overflow");
 
             // Set up the call so that we invoke the handler with our test exception immediately
@@ -272,7 +272,7 @@ namespace Bugsnag.Core.Test
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>();
             var mockExceptionHandler = new Mock<IExceptionHandler>();
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testMetadata = new Metadata();
             testMetadata.AddToTab("Tab 1", "Tab Key 1", "Tab Value 1");
@@ -298,7 +298,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>(MockBehavior.Strict);
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -319,7 +319,7 @@ namespace Bugsnag.Core.Test
             // Arrange
             var mockNotifier = new Mock<INotifier>(MockBehavior.Strict);
             var mockConfig = new Mock<IConfiguration>(MockBehavior.Strict);
-            var testClient = new Client(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
+            var testClient = new Base(TestApiKey, false, mockConfig.Object, mockNotifier.Object, null);
             var testExp = new StackOverflowException("Test Stack Overflow");
             var testEvent = new Event(testExp);
 
@@ -354,7 +354,7 @@ namespace Bugsnag.Core.Test
                                                              y.Severity == Severity.Error)));
 
             // Act
-            var testClient = new Client(TestApiKey, true, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
+            var testClient = new Base(TestApiKey, true, mockConfig.Object, mockNotifier.Object, mockExceptionHandler.Object);
 
             // Assert
             mockNotifier.VerifyAll();

@@ -10,7 +10,7 @@ namespace BugsnagDemoConsole
     {
         static void Main(string[] args)
         {
-            var bugsnag = new Client("9134c4469d16f30f025a1e98f45b3ddb");
+            var bugsnag = new Base("9134c4469d16f30f025a1e98f45b3ddb");
 
             //bugsnag.Config.AppVersion = "5.5.5";
             //bugsnag.Config.ReleaseStage = "Alpha";

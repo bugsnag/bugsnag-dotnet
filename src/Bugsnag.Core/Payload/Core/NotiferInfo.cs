@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about the notifier used to send notifications
     /// </summary>
-    public class NotifierInfo
+    internal class NotifierInfo
     {
         /// <summary>
         /// Gets or sets the name of the notifier

@@ -1,13 +1,13 @@
-﻿using Bugsnag.Core.Payload;
+﻿using Bugsnag.Payload;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
 using System.Reflection;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
-    public class Notifier
+    internal class Notifier
     {
         public const string Name = ".NET Bugsnag Notifier (ALPHA)";
         public static readonly Uri Url = new Uri("https://bugsnag.com");
