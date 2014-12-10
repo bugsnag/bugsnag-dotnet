@@ -24,10 +24,12 @@ namespace Bugsnag.Clients
         }
 
         private static BaseClient Client;
+        public static Configuration Config;
 
         static WebMVCClient()
         {
             Client = new BaseClient(ConfigurationStorage.XMLStorage.Settings);
+            Config = Client.Config;
             Client.Config.BeforeNotify(error =>
             {
                 if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.Params != null)
@@ -48,6 +50,11 @@ namespace Bugsnag.Clients
                 }
                 return true;
             });
+        }
+
+        public static void Start()
+        {
+
         }
 
         public static BugsnagExceptionHandler ErrorHandler()

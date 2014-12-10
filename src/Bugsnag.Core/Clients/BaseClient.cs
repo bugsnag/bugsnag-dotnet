@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace Bugsnag.Clients
 {
+    //TODO:SM This should be threadsafe!
     /// <summary>
     /// The main class used to encapsulate a client to Bugsnag
     /// </summary>
@@ -162,17 +163,18 @@ namespace Bugsnag.Clients
                 if (Config.AutoNotify)
                     StartAutoNotify();
 
-                // Set up some defaults for all clients
-                if (Debugger.IsAttached) Config.ReleaseStage = "development";
-                if (ApplicationDeployment.IsNetworkDeployed)
-                {
-                    // Use the applicaton version defined for the Click-Once application, if it is one
-                    Config.AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-                }
-                else if (Assembly.GetEntryAssembly() != null)
-                {
-                    Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
-                }
+                // TODO:SM Make the XML Config respect read-only values then uncomment this!
+                //// Set up some defaults for all clients
+                //if (Debugger.IsAttached) Config.ReleaseStage = "development";
+                //if (ApplicationDeployment.IsNetworkDeployed)
+                //{
+                //    // Use the applicaton version defined for the Click-Once application, if it is one
+                //    Config.AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+                //}
+                //else if (Assembly.GetEntryAssembly() != null)
+                //{
+                //    Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                //}
 
                 Initialized();
             }

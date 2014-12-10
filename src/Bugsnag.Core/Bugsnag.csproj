@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Clients\SingletonBaseClient.cs" />
     <Compile Include="Clients\BaseClient.cs" />
+    <Compile Include="Clients\WPFClient.cs" />
     <Compile Include="Clients\WebMVCClient.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ConfigurationStorage\BaseStorage.cs" />
