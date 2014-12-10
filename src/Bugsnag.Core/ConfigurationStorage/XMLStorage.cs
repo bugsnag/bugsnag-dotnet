@@ -5,7 +5,6 @@ namespace Bugsnag.ConfigurationStorage
 {
     class XMLStorage : ConfigurationSection, IConfigurationStorage
     {
-        //TODO:SM Add appropriate default values
         private static XMLStorage _storage = ConfigurationManager.GetSection("bugsnagConfig") as XMLStorage;
 
         public static XMLStorage Settings

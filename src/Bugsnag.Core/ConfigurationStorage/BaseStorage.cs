@@ -1,9 +1,4 @@
-﻿using System;
-using System.Deployment.Application;
-using System.Diagnostics;
-using System.Reflection;
-
-namespace Bugsnag.ConfigurationStorage
+﻿namespace Bugsnag.ConfigurationStorage
 {
     public class BaseStorage : IConfigurationStorage
     {
@@ -96,19 +91,13 @@ namespace Bugsnag.ConfigurationStorage
         public BaseStorage(string apiKey)
         {
             ApiKey = apiKey;
-
-            ReleaseStage = Debugger.IsAttached ? "development" : "production";
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                // Use the applicaton version defined for the Click-Once application, if it is one
-                AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-            }
-            else if (Assembly.GetEntryAssembly() != null)
-            {
-                AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            }
             AutoDetectInProject = true;
             Endpoint = "notify.bugsnag.com";
+            AutoNotify = true;
+            IgnoreClasses = new string[] { };
+            MetadataFilters = new string[] { };
+            ProjectNamespaces = new string[] { };
+            FilePrefixes = new string[] { };
         }
     }
 }

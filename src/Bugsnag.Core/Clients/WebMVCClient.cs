@@ -57,7 +57,8 @@ namespace Bugsnag.Clients
 
         public static void Notify(Exception error)
         {
-            Client.Notify(error);
+            if (Client.Config.AutoNotify)
+                Client.Notify(error);
         }
     }
 }

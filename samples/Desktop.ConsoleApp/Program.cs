@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Bugsnag.Core;
+using Bugsnag.Clients;
 
 namespace BugsnagDemoConsole
 {
@@ -10,14 +10,14 @@ namespace BugsnagDemoConsole
     {
         static void Main(string[] args)
         {
-            var bugsnag = new Base("9134c4469d16f30f025a1e98f45b3ddb");
+            var bugsnag = new BaseClient("9134c4469d16f30f025a1e98f45b3ddb");
 
             //bugsnag.Config.AppVersion = "5.5.5";
             //bugsnag.Config.ReleaseStage = "Alpha";
             bugsnag.Config.SetUser("1234", "aaaa@bbbb.com", "Aaaa Bbbb");
 
             bugsnag.Config.Metadata.AddToTab("Random", new { key1 = "Stuff", key2 = "Other Stuff" });
-            bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
+            bugsnag.Config.FilePrefixes = new string[] {@"e:\GitHub\Bugsnag-NET\"};
 
             bugsnag.Config.BeforeNotify(error =>
             {

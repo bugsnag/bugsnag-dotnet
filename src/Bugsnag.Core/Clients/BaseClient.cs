@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Reflection;
+using System.Deployment.Application;
+using System.Diagnostics;
 
 namespace Bugsnag.Clients
 {
@@ -158,6 +161,18 @@ namespace Bugsnag.Clients
                 // Install a default exception handler with this client
                 if (Config.AutoNotify)
                     StartAutoNotify();
+
+                // Set up some defaults for all clients
+                if (Debugger.IsAttached) Config.ReleaseStage = "development";
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    // Use the applicaton version defined for the Click-Once application, if it is one
+                    Config.AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+                }
+                else if (Assembly.GetEntryAssembly() != null)
+                {
+                    Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                }
 
                 Initialized();
             }
