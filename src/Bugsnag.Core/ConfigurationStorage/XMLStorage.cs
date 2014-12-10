@@ -82,7 +82,7 @@ namespace Bugsnag.ConfigurationStorage
         [ConfigurationProperty("autoDetectInProject", IsRequired = false, DefaultValue = true)]
         public bool AutoDetectInProject
         {
-            get 
+            get
             {
                 bool? autoDetectInProject = (bool?)this["autoDetectInProject"];
                 return autoDetectInProject.HasValue ? autoDetectInProject.Value : true;
@@ -112,7 +112,7 @@ namespace Bugsnag.ConfigurationStorage
         }
         public string[] FilePrefixes
         {
-            get { return String.IsNullOrEmpty(FilePrefixesString) ? new string[] {} : FilePrefixesString.Split(','); }
+            get { return String.IsNullOrEmpty(FilePrefixesString) ? new string[] { } : FilePrefixesString.Split(','); }
             set { FilePrefixesString = String.Join(",", value); }
         }
 
@@ -165,6 +165,5 @@ namespace Bugsnag.ConfigurationStorage
             }
             set { this["autoNotify"] = value; }
         }
-
     }
 }

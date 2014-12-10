@@ -295,7 +295,6 @@ namespace Bugsnag
         /// </summary>
         /// <param name="errorEvent">The error that will be sent to Bugsnag</param>
         /// <returns>True if all callbacks returned true, false otherwise</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         internal bool RunBeforeNotifyCallbacks(Event errorEvent)
         {
             // Call the before notify action is there is one

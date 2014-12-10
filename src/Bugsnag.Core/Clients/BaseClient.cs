@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using System.Reflection;
-using System.Deployment.Application;
-using System.Diagnostics;
+using Bugsnag.ConfigurationStorage;
 
 namespace Bugsnag.Clients
 {
@@ -38,7 +36,7 @@ namespace Bugsnag.Clients
         /// </summary>
         /// <param name="apiKey">The Bugsnag API key to send notifications with</param>
         public BaseClient(string apiKey)
-            : this(new ConfigurationStorage.BaseStorage(apiKey))
+            : this(new BaseStorage(apiKey))
         {
         }
 
@@ -47,7 +45,7 @@ namespace Bugsnag.Clients
         /// hook into uncaught exceptions. Allows injection of dependant classes
         /// </summary>
         /// <param name="configStorage">The configuration of the client</param>
-        public BaseClient(ConfigurationStorage.IConfigurationStorage configStorage)
+        public BaseClient(IConfigurationStorage configStorage)
         {
             Intialize(configStorage);
         }
@@ -147,7 +145,7 @@ namespace Bugsnag.Clients
         /// Initialize the client with dependencies
         /// </summary>
         /// <param name="configStorage">The configuration to use</param>
-        protected void Intialize(ConfigurationStorage.IConfigurationStorage configStorage)
+        protected void Intialize(IConfigurationStorage configStorage)
         {
             if (string.IsNullOrEmpty(configStorage.ApiKey) || !apiRegex.IsMatch(configStorage.ApiKey))
             {
@@ -186,7 +184,7 @@ namespace Bugsnag.Clients
         /// </summary>
         protected void Initialized()
         {
-            // Do Nothing
+            // The base client doesn't need any further initialisation
         }
 
         /// <summary>

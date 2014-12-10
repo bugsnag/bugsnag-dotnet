@@ -16,7 +16,7 @@ namespace Bugsnag.Clients
         {
             get
             {
-                if(Client != null)
+                if (Client != null)
                 {
                     return Client.Config;
                 }

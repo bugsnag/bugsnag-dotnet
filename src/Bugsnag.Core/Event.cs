@@ -39,9 +39,9 @@ namespace Bugsnag
         public Metadata Metadata { get; set; }
 
         /// <summary>
-        /// Gets or Sets the Context associated with this error.
+        /// Gets or sets the Context associated with this error.
         /// </summary>
-        public String Context { get; set;  }
+        public String Context { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Event"/> class. Assumes runtime is not ending.
