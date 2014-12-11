@@ -28,7 +28,7 @@ namespace Bugsnag.Clients
 
         static WebMVCClient()
         {
-            Client = new BaseClient(ConfigurationStorage.XMLStorage.Settings);
+            Client = new BaseClient(ConfigurationStorage.ConfigSection.Settings);
             Config = Client.Config;
             Client.Config.BeforeNotify(error =>
             {

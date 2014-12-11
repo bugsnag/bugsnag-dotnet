@@ -3,11 +3,11 @@ using System.Configuration;
 
 namespace Bugsnag.ConfigurationStorage
 {
-    class XMLStorage : ConfigurationSection, IConfigurationStorage
+    class ConfigSection : ConfigurationSection, IConfigurationStorage
     {
-        private static XMLStorage _storage = ConfigurationManager.GetSection("bugsnagConfig") as XMLStorage;
+        private static ConfigSection _storage = ConfigurationManager.GetSection("bugsnagConfig") as ConfigSection;
 
-        public static XMLStorage Settings
+        public static ConfigSection Settings
         {
             get
             {
