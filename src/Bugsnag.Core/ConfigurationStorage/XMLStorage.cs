@@ -15,155 +15,241 @@ namespace Bugsnag.ConfigurationStorage
             }
         }
 
+        private string _apiKey;
         [ConfigurationProperty("apiKey", IsRequired = true, DefaultValue = "12345678901234567890123456789012")]
         [RegexStringValidator("^[a-fA-F0-9]{32}$")]
         public string ApiKey
         {
-            get { return (String)this["apiKey"]; }
-            set { this["apiKey"] = value; }
+            get { return _apiKey == null ? (String)this["apiKey"] : _apiKey; }
+            set { _apiKey = value; }
         }
 
+        private string _appVersion;
         [ConfigurationProperty("appVersion", IsRequired = false)]
         [StringValidator]
         public string AppVersion
         {
-            get { return (String)this[new ConfigurationProperty("appVersion", typeof(string), null)]; }
-            set { this["appVersion"] = value; }
+            get { return _appVersion == null ? (String)this[new ConfigurationProperty("appVersion", typeof(string), null)] : _appVersion; }
+            set { _appVersion = value; }
         }
 
+        private string _releaseStage;
         [ConfigurationProperty("releaseStage", IsRequired = false)]
         [StringValidator]
         public string ReleaseStage
         {
-            get { return (String)this[new ConfigurationProperty("releaseStage", typeof(string), null)]; }
-            set { this["releaseStage"] = value; }
+            get { return _releaseStage == null ? (String)this[new ConfigurationProperty("releaseStage", typeof(string), null)] : _releaseStage; }
+            set { _releaseStage = value; }
         }
 
+        private string _endpoint;
         [ConfigurationProperty("endpoint", IsRequired = false, DefaultValue = "notify.bugsnag.com")]
         [StringValidator]
         public string Endpoint
         {
-            get { return (String)this["endpoint"]; }
-            set { this["endpoint"] = value; }
+            get { return _endpoint == null ? (String)this["endpoint"] : _endpoint; }
+            set { _endpoint = value; }
         }
 
+        private string _userId;
         [ConfigurationProperty("userId", IsRequired = false)]
         [StringValidator]
         public string UserId
         {
-            get { return (String)this[new ConfigurationProperty("userId", typeof(string), null)]; }
-            set { this["userId"] = value; }
+            get { return _userId == null ? (String)this[new ConfigurationProperty("userId", typeof(string), null)] : _userId; }
+            set { _userId = value; }
         }
 
+        private string _userEmail;
         [ConfigurationProperty("userEmail", IsRequired = false)]
         [StringValidator]
         public string UserEmail
         {
-            get { return (String)this[new ConfigurationProperty("userEmail", typeof(string), null)]; }
-            set { this["userEmail"] = value; }
+            get { return _userEmail == null ? (String)this[new ConfigurationProperty("userEmail", typeof(string), null)] : _userEmail; }
+            set { _userEmail = value; }
         }
 
+        private string _userName;
         [ConfigurationProperty("userName", IsRequired = false)]
         [StringValidator]
         public string UserName
         {
-            get { return (String)this[new ConfigurationProperty("userName", typeof(string), null)]; }
-            set { this["userName"] = value; }
+            get { return _userName == null ? (String)this[new ConfigurationProperty("userName", typeof(string), null)] : _userName; }
+            set { _userName = value; }
         }
 
+        private string _context;
         [ConfigurationProperty("context", IsRequired = false)]
         [StringValidator]
         public string Context
         {
-            get { return (String)this[new ConfigurationProperty("context", typeof(string), null)]; }
-            set { this["context"] = value; }
+            get { return _context == null ? (String)this[new ConfigurationProperty("context", typeof(string), null)] : _context; }
+            set { _context = value; }
         }
 
+        private bool? _autoDetectInProject;
         [ConfigurationProperty("autoDetectInProject", IsRequired = false, DefaultValue = true)]
         public bool AutoDetectInProject
         {
             get
             {
-                bool? autoDetectInProject = (bool?)this["autoDetectInProject"];
-                return autoDetectInProject.HasValue ? autoDetectInProject.Value : true;
+                if (_autoDetectInProject.HasValue)
+                {
+                    return _autoDetectInProject.Value;
+                }
+                else
+                {
+                    _autoDetectInProject = (bool?)this["autoDetectInProject"];
+                    return _autoDetectInProject.HasValue ? _autoDetectInProject.Value : true;
+                }
             }
-            set { this["autoDetectInProject"] = value; }
+            set { _autoDetectInProject = value; }
         }
 
-        [ConfigurationProperty("notifyReleaseStages", IsRequired = false, DefaultValue = "")]
-        [StringValidator]
-        public string NotifyReleaseStagesString
-        {
-            get { return (String)this["notifyReleaseStages"]; }
-            set { this["notifyReleaseStages"] = value; }
-        }
-        public string[] NotifyReleaseStages
-        {
-            get { return String.IsNullOrEmpty(NotifyReleaseStagesString) ? null : NotifyReleaseStagesString.Split(','); }
-            set { NotifyReleaseStagesString = String.Join(",", value); }
-        }
-
-        [ConfigurationProperty("filePrefixes", IsRequired = false, DefaultValue = "")]
-        [StringValidator]
-        public string FilePrefixesString
-        {
-            get { return (String)this["filePrefixes"]; }
-            set { this["filePrefixes"] = value; }
-        }
-        public string[] FilePrefixes
-        {
-            get { return String.IsNullOrEmpty(FilePrefixesString) ? new string[] { } : FilePrefixesString.Split(','); }
-            set { FilePrefixesString = String.Join(",", value); }
-        }
-
-        [ConfigurationProperty("projectNamespaces", IsRequired = false, DefaultValue = "")]
-        [StringValidator]
-        public string ProjectNamespacesString
-        {
-            get { return (String)this["projectNamespaces"]; }
-            set { this["projectNamespaces"] = value; }
-        }
-        public string[] ProjectNamespaces
-        {
-            get { return String.IsNullOrEmpty(ProjectNamespacesString) ? new string[] { } : ProjectNamespacesString.Split(','); }
-            set { ProjectNamespacesString = String.Join(",", value); }
-        }
-
-        [ConfigurationProperty("ignoreClasses", IsRequired = false, DefaultValue = "")]
-        [StringValidator]
-        public string IgnoreClassesString
-        {
-            get { return (String)this["ignoreClasses"]; }
-            set { this["ignoreClasses"] = value; }
-        }
-        public string[] IgnoreClasses
-        {
-            get { return String.IsNullOrEmpty(IgnoreClassesString) ? new string[] { } : IgnoreClassesString.Split(','); }
-            set { IgnoreClassesString = String.Join(",", value); }
-        }
-
-        [ConfigurationProperty("metadataFilters", IsRequired = false, DefaultValue = "")]
-        [StringValidator]
-        public string MetadataFiltersString
-        {
-            get { return (String)this["metadataFilters"]; }
-            set { this["metadataFilters"] = value; }
-        }
-        public string[] MetadataFilters
-        {
-            get { return String.IsNullOrEmpty(MetadataFiltersString) ? new string[] { } : MetadataFiltersString.Split(','); }
-            set { MetadataFiltersString = String.Join(",", value); }
-        }
-
+        private bool? _autoNotify;
         [ConfigurationProperty("autoNotify", IsRequired = false, DefaultValue = true)]
         public bool AutoNotify
         {
             get
             {
-                bool? autoNotify = (bool?)this["autoNotify"];
-                return autoNotify.HasValue ? autoNotify.Value : true;
+                if (_autoNotify.HasValue)
+                {
+                    return _autoNotify.Value;
+                }
+                else
+                {
+                    _autoNotify = (bool?)this["autoNotify"];
+                    return _autoNotify.HasValue ? _autoNotify.Value : true;
+                }
             }
-            set { this["autoNotify"] = value; }
+            set { _autoNotify = value; }
+        }
+
+        [ConfigurationProperty("notifyReleaseStages", IsRequired = false, DefaultValue = "")]
+        [StringValidator]
+        private string NotifyReleaseStagesString
+        {
+            get { return (String)this["notifyReleaseStages"]; }
+        }
+        private string[] _notifyReleaseStages;
+        public string[] NotifyReleaseStages
+        {
+            get
+            {
+                if (_notifyReleaseStages == null)
+                {
+                    if (String.IsNullOrEmpty(NotifyReleaseStagesString))
+                    {
+                        return null;
+                    }
+                    else 
+                    {
+                        _notifyReleaseStages = NotifyReleaseStagesString.Split(',');
+                        return _notifyReleaseStages;
+                    }
+                }
+                else
+                {
+                    return _notifyReleaseStages;
+                }
+            }
+            set { _notifyReleaseStages = value; }
+        }
+
+        [ConfigurationProperty("filePrefixes", IsRequired = false, DefaultValue = "")]
+        [StringValidator]
+        private string FilePrefixesString
+        {
+            get { return (String)this["filePrefixes"]; }
+        }
+        private string[] _filePrefixes;
+        public string[] FilePrefixes
+        {
+            get
+            {
+                if (_filePrefixes == null)
+                {
+                    _filePrefixes = String.IsNullOrEmpty(FilePrefixesString) ? new string[] { } : FilePrefixesString.Split(',');
+                    return _filePrefixes;
+                }
+                else
+                {
+                    return _filePrefixes;
+                }
+            }
+            set { _filePrefixes = value; }
+        }
+
+        [ConfigurationProperty("projectNamespaces", IsRequired = false, DefaultValue = "")]
+        [StringValidator]
+        private string ProjectNamespacesString
+        {
+            get { return (String)this["projectNamespaces"]; }
+        }
+        private string[] _projectNamespaces;
+        public string[] ProjectNamespaces
+        {
+            get
+            {
+                if (_projectNamespaces == null)
+                {
+                    _projectNamespaces = String.IsNullOrEmpty(ProjectNamespacesString) ? new string[] { } : ProjectNamespacesString.Split(',');
+                    return _projectNamespaces;
+                }
+                else
+                {
+                    return _projectNamespaces;
+                }
+            }
+            set { _projectNamespaces = value; }
+        }
+
+        [ConfigurationProperty("ignoreClasses", IsRequired = false, DefaultValue = "")]
+        [StringValidator]
+        private string IgnoreClassesString
+        {
+            get { return (String)this["ignoreClasses"]; }
+        }
+        private string[] _ignoreClasses;
+        public string[] IgnoreClasses
+        {
+            get
+            {
+                if (_ignoreClasses == null)
+                {
+                    _ignoreClasses = String.IsNullOrEmpty(IgnoreClassesString) ? new string[] { } : IgnoreClassesString.Split(',');
+                    return _ignoreClasses;
+                }
+                else
+                {
+                    return _ignoreClasses;
+                }
+            }
+            set { _ignoreClasses = value; }
+        }
+
+        [ConfigurationProperty("metadataFilters", IsRequired = false, DefaultValue = "")]
+        [StringValidator]
+        private string MetadataFiltersString
+        {
+            get { return (String)this["metadataFilters"]; }
+        }
+        private string[] _metadataFilters;
+        public string[] MetadataFilters
+        {
+            get
+            {
+                if (_metadataFilters == null)
+                {
+                    _metadataFilters = String.IsNullOrEmpty(MetadataFiltersString) ? new string[] { } : MetadataFiltersString.Split(',');
+                    return _metadataFilters;
+                }
+                else
+                {
+                    return _metadataFilters;
+                }
+            }
+            set { _metadataFilters = value; }
         }
     }
 }
