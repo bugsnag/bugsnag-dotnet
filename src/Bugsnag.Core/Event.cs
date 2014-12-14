@@ -44,6 +44,21 @@ namespace Bugsnag
         public String Context { get; set; }
 
         /// <summary>
+        /// Gets or sets the user id associated with this error.
+        /// </summary>
+        public String UserId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user name associated with this error.
+        /// </summary>
+        public String UserName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user email associated with this error.
+        /// </summary>
+        public String UserEmail { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Event"/> class. Assumes runtime is not ending.
         /// </summary>
         /// <param name="exception">The exception to report on</param>

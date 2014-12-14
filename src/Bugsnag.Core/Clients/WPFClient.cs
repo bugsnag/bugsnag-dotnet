@@ -4,8 +4,8 @@ namespace Bugsnag.Clients
 {
     public static class WPFClient
     {
-        private static BaseClient Client;
         public static Configuration Config;
+        private static BaseClient Client;
 
         static WPFClient()
         {
@@ -13,7 +13,6 @@ namespace Bugsnag.Clients
             Config = Client.Config;
             Client.Config.BeforeNotify(error =>
             {
-                return true;
             });
         }
 

@@ -7,7 +7,6 @@ using Bugsnag.ConfigurationStorage;
 
 namespace Bugsnag.Clients
 {
-    //TODO:SM This should be threadsafe!
     /// <summary>
     /// The main class used to encapsulate a client to Bugsnag
     /// </summary>
@@ -31,7 +30,7 @@ namespace Bugsnag.Clients
         /// <summary>
         /// The regex that validates an API key
         /// </summary>
-        protected Regex apiRegex = new Regex("^[a-fA-F0-9]{32}$");
+        private Regex apiRegex = new Regex("^[a-fA-F0-9]{32}$");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseClient"/> class. Will use all the default settings and will 
@@ -50,7 +49,7 @@ namespace Bugsnag.Clients
         /// <param name="configStorage">The configuration of the client</param>
         public BaseClient(IConfigurationStorage configStorage)
         {
-            Intialize(configStorage);
+            Initialize(configStorage);
         }
 
         /// <summary>
@@ -138,6 +137,9 @@ namespace Bugsnag.Clients
                 Config.IsClassToIgnore(errorEvent.Exception.GetType().Name))
                 return;
 
+            Config.RunInternalBeforeNotifyCallbacks(errorEvent);
+            Config.AddConfigToEvent(errorEvent);
+
             if (!Config.RunBeforeNotifyCallbacks(errorEvent))
                 return;
 
@@ -148,9 +150,9 @@ namespace Bugsnag.Clients
         /// Initialize the client with dependencies
         /// </summary>
         /// <param name="configStorage">The configuration to use</param>
-        protected void Intialize(IConfigurationStorage configStorage)
+        protected void Initialize(IConfigurationStorage configStorage)
         {
-            if (string.IsNullOrEmpty(configStorage.ApiKey) || !apiRegex.IsMatch(configStorage.ApiKey))
+            if (configStorage == null || string.IsNullOrEmpty(configStorage.ApiKey) || !apiRegex.IsMatch(configStorage.ApiKey))
             {
                 Logger.Error("You must provide a valid Bugsnag API key");
             }
@@ -164,17 +166,19 @@ namespace Bugsnag.Clients
                 if (Config.AutoNotify)
                     StartAutoNotify();
 
-                // TODO:SM Make the XML Config respect read-only values then uncomment this!
                 //// Set up some defaults for all clients
-                if (Debugger.IsAttached) Config.ReleaseStage = "development";
-                if (ApplicationDeployment.IsNetworkDeployed)
+                if (Debugger.IsAttached && String.IsNullOrEmpty(Config.ReleaseStage)) Config.ReleaseStage = "development";
+                if (String.IsNullOrEmpty(Config.AppVersion))
                 {
-                    // Use the applicaton version defined for the Click-Once application, if it is one
-                    Config.AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-                }
-                else if (Assembly.GetEntryAssembly() != null)
-                {
-                    Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                    if (ApplicationDeployment.IsNetworkDeployed)
+                    {
+                        // Use the applicaton version defined for the Click-Once application, if it is one
+                        Config.AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+                    }
+                    else if (Assembly.GetEntryAssembly() != null)
+                    {
+                        Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                    }
                 }
 
                 Initialized();

@@ -3,11 +3,6 @@
     public interface IConfigurationStorage
     {
         /// <summary>
-        /// Gets the API key used to send notifications to a specific Bugsnag account
-        /// </summary>
-        string ApiKey { get; set; }
-
-        /// <summary>
         /// Gets or sets the application version
         /// </summary>
         string AppVersion { get; set; }
@@ -18,22 +13,17 @@
         string ReleaseStage { get; set; }
 
         /// <summary>
-        /// Gets or sets the endpoint that defines where to send the notifications
-        /// </summary>
-        string Endpoint { get; set; }
-
-        /// <summary>
-        /// Gets the unique identifier used to identify a user
+        /// Gets or sets the unique identifier used to identify a user
         /// </summary>
         string UserId { get; set; }
 
         /// <summary>
-        /// Gets the users email
+        /// Gets or sets the users email
         /// </summary>
         string UserEmail { get; set; }
 
         /// <summary>
-        /// Gets the users human readable name
+        /// Gets or sets the users human readable name
         /// </summary>
         string UserName { get; set; }
 
@@ -41,6 +31,16 @@
         /// Gets or sets the context to apply to the subsequent notifications
         /// </summary>
         string Context { get; set; }
+
+        /// <summary>
+        /// Gets or sets the API key used to send notifications to a specific Bugsnag account
+        /// </summary>
+        string ApiKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the endpoint that defines where to send the notifications
+        /// </summary>
+        string Endpoint { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether we are auto detecting method calls as 
@@ -60,8 +60,8 @@
         string[] NotifyReleaseStages { get; set; }
 
         /// <summary>
-        /// Gets or Sets a list of prefixes to strip from filenames in the stacktrace. Helps
-        /// with grouping errors from different build envs or machines by ensuring the stack
+        /// Gets or Sets a list of prefixes to strip from filenames in the stack trace. Helps
+        /// with grouping errors from different build environments or machines by ensuring the stack
         /// trace looks similar.
         /// </summary>
         string[] FilePrefixes { get; set; }

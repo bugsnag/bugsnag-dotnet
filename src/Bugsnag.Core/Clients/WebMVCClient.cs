@@ -23,8 +23,8 @@ namespace Bugsnag.Clients
             }
         }
 
-        private static BaseClient Client;
         public static Configuration Config;
+        private static BaseClient Client;
 
         static WebMVCClient()
         {
@@ -48,7 +48,6 @@ namespace Bugsnag.Clients
                         error.Context = HttpContext.Current.Request.Path.ToString();
                     }
                 }
-                return true;
             });
         }
 

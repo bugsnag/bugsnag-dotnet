@@ -179,6 +179,12 @@ namespace Bugsnag
         protected List<Func<Event, bool>> BeforeNotifyCallbacks { get; set; }
 
         /// <summary>
+        /// Gets or sets a list of internal functions to run just before a notification is sent, 
+        /// the functions operate on an Event. 
+        /// </summary>
+        protected List<Action<Event>> InternalBeforeNotifyCallbacks { get; set; }
+
+        /// <summary>
         /// Gets or Sets the Storage backend for the Configuration
         /// </summary>
         protected IConfigurationStorage Storage { get; set; }
@@ -203,6 +209,7 @@ namespace Bugsnag
             Storage = storage;
             Metadata = new Metadata();
             BeforeNotifyCallbacks = new List<Func<Event, bool>>();
+            InternalBeforeNotifyCallbacks = new List<Action<Event>>();
         }
 
         /// <summary>
@@ -225,6 +232,16 @@ namespace Bugsnag
         public void BeforeNotify(Func<Event, bool> callback)
         {
             BeforeNotifyCallbacks.Add(callback);
+        }
+
+        /// <summary>
+        /// Add an internal beforeNotify callback. These are run before any user defined
+        /// callbacks so the user can always override default derived values.
+        /// </summary>
+        /// <param name="callback">The callback to be called before notifying Bugsnag</param>
+        internal void BeforeNotify(Action<Event> callback)
+        {
+            InternalBeforeNotifyCallbacks.Add(callback);
         }
 
         /// <summary>
@@ -291,23 +308,54 @@ namespace Bugsnag
         }
 
         /// <summary>
+        /// Runs the internal before notify callbacks which are configured by the notifier itself
+        /// to add some default values.
+        /// </summary>
+        /// <param name="errorEvent">The event that will be sent to bugsnag</param>
+        internal void RunInternalBeforeNotifyCallbacks(Event errorEvent)
+        {
+            // Do nothing if the before notify action indicates we should ignore the error event
+            foreach (Action<Event> callback in InternalBeforeNotifyCallbacks)
+            {
+                try
+                {
+                    callback(errorEvent);
+                }
+                catch (Exception exp)
+                {
+                    // If the callback exceptions, we will try to send the notification anyway, to give the
+                    // best possible chance of reporting the error
+                    Logger.Warning("[Before Notify] Exception : " + exp.ToString());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copy into the Event the information from the config.
+        /// </summary>
+        /// <param name="errorEvent">The event to add the info to</param>
+        internal void AddConfigToEvent(Event errorEvent)
+        {
+            if (!String.IsNullOrEmpty(Context)) errorEvent.Context = Context;
+            if (!String.IsNullOrEmpty(UserId)) errorEvent.UserId = UserId;
+            if (!String.IsNullOrEmpty(UserName)) errorEvent.UserName = UserName;
+            if (!String.IsNullOrEmpty(UserEmail)) errorEvent.UserEmail = UserEmail;
+        }
+
+        /// <summary>
         /// Runs all the before notify callbacks with the supplied error.
         /// </summary>
         /// <param name="errorEvent">The error that will be sent to Bugsnag</param>
         /// <returns>True if all callbacks returned true, false otherwise</returns>
         internal bool RunBeforeNotifyCallbacks(Event errorEvent)
         {
-            // Call the before notify action is there is one
-            if (BeforeNotifyCallbacks != null)
+            // Do nothing if the before notify action indicates we should ignore the error event
+            foreach (Func<Event, bool> callback in BeforeNotifyCallbacks)
             {
                 try
                 {
-                    // Do nothing if the before notify action indicates we should ignore the error event
-                    foreach (Func<Event, bool> callback in BeforeNotifyCallbacks)
-                    {
-                        if (!callback(errorEvent))
-                            return false;
-                    }
+                    if (!callback(errorEvent))
+                        return false;
                 }
                 catch (Exception exp)
                 {

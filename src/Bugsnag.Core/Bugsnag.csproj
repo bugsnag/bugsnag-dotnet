@@ -77,7 +77,7 @@
     <Compile Include="Clients\WebMVCClient.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ConfigurationStorage\BaseStorage.cs" />
-    <Compile Include="ConfigurationStorage\XMLStorage.cs" />
+    <Compile Include="ConfigurationStorage\ConfigSection.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="ExceptionHandler.cs" />

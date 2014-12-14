@@ -60,8 +60,8 @@
         public string[] NotifyReleaseStages { get; set; }
 
         /// <summary>
-        /// Gets or Sets a list of prefixes to strip from filenames in the stacktrace. Helps
-        /// with grouping errors from different build envs or machines by ensuring the stack
+        /// Gets or Sets a list of prefixes to strip from filenames in the stack trace. Helps
+        /// with grouping errors from different build environments or machines by ensuring the stack
         /// trace looks similar.
         /// </summary>
         public string[] FilePrefixes { get; set; }

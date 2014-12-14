@@ -53,9 +53,9 @@ namespace Bugsnag
 
             var userInfo = new UserInfo
             {
-                Id = Config.UserId,
-                Email = Config.UserEmail,
-                Name = Config.UserName
+                Id = errorData.UserId,
+                Email = errorData.UserEmail,
+                Name = errorData.UserName
             };
 
             var deviceInfo = new DeviceInfo
@@ -74,7 +74,7 @@ namespace Bugsnag
                 Device = deviceInfo,
                 Severity = errorData.Severity,
                 User = userInfo,
-                Context = Config.Context != null ? Config.Context : errorData.Context,
+                Context = errorData.Context,
                 GroupingHash = errorData.GroupingHash
             };
             return eventInfo;

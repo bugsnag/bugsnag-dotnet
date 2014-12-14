@@ -20,8 +20,8 @@ namespace Bugsnag.ConfigurationStorage
         [RegexStringValidator("^[a-fA-F0-9]{32}$")]
         public string ApiKey
         {
-            get { return _apiKey == null ? (String)this["apiKey"] : _apiKey; }
-            set { _apiKey = value; }
+            get { return this._apiKey == null ? (String)this["apiKey"] : this._apiKey; }
+            set { this._apiKey = value; }
         }
 
         private string _appVersion;
@@ -29,8 +29,8 @@ namespace Bugsnag.ConfigurationStorage
         [StringValidator]
         public string AppVersion
         {
-            get { return _appVersion == null ? (String)this[new ConfigurationProperty("appVersion", typeof(string), null)] : _appVersion; }
-            set { _appVersion = value; }
+            get { return this._appVersion == null ? (String)this[new ConfigurationProperty("appVersion", typeof(string), null)] : this._appVersion; }
+            set { this._appVersion = value; }
         }
 
         private string _releaseStage;
@@ -38,8 +38,8 @@ namespace Bugsnag.ConfigurationStorage
         [StringValidator]
         public string ReleaseStage
         {
-            get { return _releaseStage == null ? (String)this[new ConfigurationProperty("releaseStage", typeof(string), null)] : _releaseStage; }
-            set { _releaseStage = value; }
+            get { return this._releaseStage == null ? (String)this[new ConfigurationProperty("releaseStage", typeof(string), null)] : this._releaseStage; }
+            set { this._releaseStage = value; }
         }
 
         private string _endpoint;
@@ -47,8 +47,8 @@ namespace Bugsnag.ConfigurationStorage
         [StringValidator]
         public string Endpoint
         {
-            get { return _endpoint == null ? (String)this["endpoint"] : _endpoint; }
-            set { _endpoint = value; }
+            get { return this._endpoint == null ? (String)this["endpoint"] : this._endpoint; }
+            set { this._endpoint = value; }
         }
 
         private string _userId;
@@ -56,8 +56,8 @@ namespace Bugsnag.ConfigurationStorage
         [StringValidator]
         public string UserId
         {
-            get { return _userId == null ? (String)this[new ConfigurationProperty("userId", typeof(string), null)] : _userId; }
-            set { _userId = value; }
+            get { return this._userId == null ? (String)this[new ConfigurationProperty("userId", typeof(string), null)] : this._userId; }
+            set { this._userId = value; }
         }
 
         private string _userEmail;
@@ -65,8 +65,8 @@ namespace Bugsnag.ConfigurationStorage
         [StringValidator]
         public string UserEmail
         {
-            get { return _userEmail == null ? (String)this[new ConfigurationProperty("userEmail", typeof(string), null)] : _userEmail; }
-            set { _userEmail = value; }
+            get { return this._userEmail == null ? (String)this[new ConfigurationProperty("userEmail", typeof(string), null)] : this._userEmail; }
+            set { this._userEmail = value; }
         }
 
         private string _userName;
@@ -74,8 +74,8 @@ namespace Bugsnag.ConfigurationStorage
         [StringValidator]
         public string UserName
         {
-            get { return _userName == null ? (String)this[new ConfigurationProperty("userName", typeof(string), null)] : _userName; }
-            set { _userName = value; }
+            get { return this._userName == null ? (String)this[new ConfigurationProperty("userName", typeof(string), null)] : this._userName; }
+            set { this._userName = value; }
         }
 
         private string _context;
@@ -83,8 +83,8 @@ namespace Bugsnag.ConfigurationStorage
         [StringValidator]
         public string Context
         {
-            get { return _context == null ? (String)this[new ConfigurationProperty("context", typeof(string), null)] : _context; }
-            set { _context = value; }
+            get { return this._context == null ? (String)this[new ConfigurationProperty("context", typeof(string), null)] : this._context; }
+            set { this._context = value; }
         }
 
         private bool? _autoDetectInProject;
@@ -93,17 +93,17 @@ namespace Bugsnag.ConfigurationStorage
         {
             get
             {
-                if (_autoDetectInProject.HasValue)
+                if (this._autoDetectInProject.HasValue)
                 {
-                    return _autoDetectInProject.Value;
+                    return this._autoDetectInProject.Value;
                 }
                 else
                 {
-                    _autoDetectInProject = (bool?)this["autoDetectInProject"];
-                    return _autoDetectInProject.HasValue ? _autoDetectInProject.Value : true;
+                    this._autoDetectInProject = (bool?)this["autoDetectInProject"];
+                    return this._autoDetectInProject.HasValue ? this._autoDetectInProject.Value : true;
                 }
             }
-            set { _autoDetectInProject = value; }
+            set { this._autoDetectInProject = value; }
         }
 
         private bool? _autoNotify;
@@ -112,17 +112,17 @@ namespace Bugsnag.ConfigurationStorage
         {
             get
             {
-                if (_autoNotify.HasValue)
+                if (this._autoNotify.HasValue)
                 {
-                    return _autoNotify.Value;
+                    return this._autoNotify.Value;
                 }
                 else
                 {
-                    _autoNotify = (bool?)this["autoNotify"];
-                    return _autoNotify.HasValue ? _autoNotify.Value : true;
+                    this._autoNotify = (bool?)this["autoNotify"];
+                    return this._autoNotify.HasValue ? this._autoNotify.Value : true;
                 }
             }
-            set { _autoNotify = value; }
+            set { this._autoNotify = value; }
         }
 
         [ConfigurationProperty("notifyReleaseStages", IsRequired = false, DefaultValue = "")]
@@ -136,24 +136,24 @@ namespace Bugsnag.ConfigurationStorage
         {
             get
             {
-                if (_notifyReleaseStages == null)
+                if (this._notifyReleaseStages == null)
                 {
-                    if (String.IsNullOrEmpty(NotifyReleaseStagesString))
+                    if (String.IsNullOrEmpty(this.NotifyReleaseStagesString))
                     {
                         return null;
                     }
                     else 
                     {
-                        _notifyReleaseStages = NotifyReleaseStagesString.Split(',');
-                        return _notifyReleaseStages;
+                        this._notifyReleaseStages = this.NotifyReleaseStagesString.Split(',');
+                        return this._notifyReleaseStages;
                     }
                 }
                 else
                 {
-                    return _notifyReleaseStages;
+                    return this._notifyReleaseStages;
                 }
             }
-            set { _notifyReleaseStages = value; }
+            set { this._notifyReleaseStages = value; }
         }
 
         [ConfigurationProperty("filePrefixes", IsRequired = false, DefaultValue = "")]
@@ -167,17 +167,17 @@ namespace Bugsnag.ConfigurationStorage
         {
             get
             {
-                if (_filePrefixes == null)
+                if (this._filePrefixes == null)
                 {
-                    _filePrefixes = String.IsNullOrEmpty(FilePrefixesString) ? new string[] { } : FilePrefixesString.Split(',');
-                    return _filePrefixes;
+                    this._filePrefixes = String.IsNullOrEmpty(this.FilePrefixesString) ? new string[] { } : this.FilePrefixesString.Split(',');
+                    return this._filePrefixes;
                 }
                 else
                 {
-                    return _filePrefixes;
+                    return this._filePrefixes;
                 }
             }
-            set { _filePrefixes = value; }
+            set { this._filePrefixes = value; }
         }
 
         [ConfigurationProperty("projectNamespaces", IsRequired = false, DefaultValue = "")]
@@ -191,17 +191,17 @@ namespace Bugsnag.ConfigurationStorage
         {
             get
             {
-                if (_projectNamespaces == null)
+                if (this._projectNamespaces == null)
                 {
-                    _projectNamespaces = String.IsNullOrEmpty(ProjectNamespacesString) ? new string[] { } : ProjectNamespacesString.Split(',');
-                    return _projectNamespaces;
+                    this._projectNamespaces = String.IsNullOrEmpty(this.ProjectNamespacesString) ? new string[] { } : this.ProjectNamespacesString.Split(',');
+                    return this._projectNamespaces;
                 }
                 else
                 {
-                    return _projectNamespaces;
+                    return this._projectNamespaces;
                 }
             }
-            set { _projectNamespaces = value; }
+            set { this._projectNamespaces = value; }
         }
 
         [ConfigurationProperty("ignoreClasses", IsRequired = false, DefaultValue = "")]
@@ -215,17 +215,17 @@ namespace Bugsnag.ConfigurationStorage
         {
             get
             {
-                if (_ignoreClasses == null)
+                if (this._ignoreClasses == null)
                 {
-                    _ignoreClasses = String.IsNullOrEmpty(IgnoreClassesString) ? new string[] { } : IgnoreClassesString.Split(',');
-                    return _ignoreClasses;
+                    this._ignoreClasses = String.IsNullOrEmpty(this.IgnoreClassesString) ? new string[] { } : this.IgnoreClassesString.Split(',');
+                    return this._ignoreClasses;
                 }
                 else
                 {
-                    return _ignoreClasses;
+                    return this._ignoreClasses;
                 }
             }
-            set { _ignoreClasses = value; }
+            set { this._ignoreClasses = value; }
         }
 
         [ConfigurationProperty("metadataFilters", IsRequired = false, DefaultValue = "")]
@@ -239,17 +239,17 @@ namespace Bugsnag.ConfigurationStorage
         {
             get
             {
-                if (_metadataFilters == null)
+                if (this._metadataFilters == null)
                 {
-                    _metadataFilters = String.IsNullOrEmpty(MetadataFiltersString) ? new string[] { } : MetadataFiltersString.Split(',');
-                    return _metadataFilters;
+                    this._metadataFilters = String.IsNullOrEmpty(this.MetadataFiltersString) ? new string[] { } : this.MetadataFiltersString.Split(',');
+                    return this._metadataFilters;
                 }
                 else
                 {
-                    return _metadataFilters;
+                    return this._metadataFilters;
                 }
             }
-            set { _metadataFilters = value; }
+            set { this._metadataFilters = value; }
         }
     }
 }
