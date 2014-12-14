@@ -1,6 +1,5 @@
-﻿using Bugsnag.Clients;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
+using Bugsnag.Clients;
 
 namespace Desktop.WPFApp
 {
@@ -11,9 +10,7 @@ namespace Desktop.WPFApp
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            //WPFClient.Config.SetUser("2222", "cccc@dddd.com", "CCcc Dddd");
-            //WPFClient.Config.FilePrefixes = new string[] {@"e:\GitHub\Bugsnag-NET\"};
-
+            WPFClient.Start();
             base.OnStartup(e);
 
         }

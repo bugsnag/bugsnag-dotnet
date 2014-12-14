@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Bugsnag.ConfigurationStorage;
 
 namespace Bugsnag
@@ -266,10 +265,12 @@ namespace Bugsnag
         {
             var result = fileName;
             if (!string.IsNullOrEmpty(result))
+            {
                 foreach (string prefix in FilePrefixes)
                 {
                     result = result.Replace(prefix, string.Empty);
                 }
+            }
             return result;
         }
 

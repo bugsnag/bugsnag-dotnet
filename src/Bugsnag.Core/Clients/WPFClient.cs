@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Windows;
 
 namespace Bugsnag.Clients
 {
@@ -13,6 +15,11 @@ namespace Bugsnag.Clients
             Config = Client.Config;
             Client.Config.BeforeNotify(error =>
             {
+                var currWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
+                if (currWindow != null)
+                {
+                    error.Context = currWindow.Title;
+                }
             });
         }
 
