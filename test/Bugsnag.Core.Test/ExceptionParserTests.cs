@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using Moq;
 using Xunit;
 using Xunit.Extensions;
 
@@ -8,6 +7,8 @@ namespace Bugsnag.Core.Test
 {
     public class ExceptionParserTests
     {
+        public const string TestApiKey = "ABCDEF1234567890ABCDEF1234567890";
+
         #region Test Classes and Methods
 
         public class TestClass
@@ -79,11 +80,11 @@ namespace Bugsnag.Core.Test
         public void GenerateExceptionInfo_NullIfNoStackTraceOnExceptionAndNoCallStack()
         {
             // Arrange
-            var testConfig = new Mock<IConfiguration>();
+            var testConfig = new Configuration(TestApiKey);
             var exp = new SystemException("System Error");
 
             // Act
-            var actInfo = ExceptionParser.GenerateExceptionInfo(exp, null, testConfig.Object);
+            var actInfo = ExceptionParser.GenerateExceptionInfo(exp, null, testConfig);
 
             // Assert
             Assert.Null(actInfo);
@@ -93,11 +94,11 @@ namespace Bugsnag.Core.Test
         public void GenerateExceptionInfo_NullIfExceptionIsNull()
         {
             // Arrange
-            var testConfig = new Mock<IConfiguration>();
+            var testConfig = new Configuration(TestApiKey);
 
             // Act
-            var actInfoWithCall = ExceptionParser.GenerateExceptionInfo(null, new StackTrace(), testConfig.Object);
-            var actInfoWithoutCall = ExceptionParser.GenerateExceptionInfo(null, null, testConfig.Object);
+            var actInfoWithCall = ExceptionParser.GenerateExceptionInfo(null, new StackTrace(), testConfig);
+            var actInfoWithoutCall = ExceptionParser.GenerateExceptionInfo(null, null, testConfig);
 
             // Assert
             Assert.Null(actInfoWithCall);
@@ -120,11 +121,11 @@ namespace Bugsnag.Core.Test
             bool expInProject)
         {
             // Arrange
-            var testConfig = new Mock<IConfiguration>();
-            testConfig.Setup(x => x.AutoDetectInProject).Returns(autoInProject);
-            testConfig.Setup(x => x.IsInProjectNamespace("Bugsnag.Core.Test.ExceptionParserTests"))
-                .Returns(projectNamespace);
-            testConfig.Setup(x => x.RemoveFileNamePrefix(It.IsAny<string>())).Returns((string x) => x);
+            var testConfig = new Configuration(TestApiKey);
+
+            testConfig.AutoDetectInProject = autoInProject;
+            if (projectNamespace)
+                testConfig.ProjectNamespaces = new[] { "Bugsnag.Core.Test.ExceptionParserTests" };
 
             RankException testExp;
             try
@@ -137,7 +138,7 @@ namespace Bugsnag.Core.Test
             }
 
             // Act
-            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, useCallStack ? new StackTrace() : null, testConfig.Object);
+            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, useCallStack ? new StackTrace() : null, testConfig);
 
             // Assert
             Assert.NotNull(actInfo);
@@ -159,16 +160,15 @@ namespace Bugsnag.Core.Test
             bool expInProject)
         {
             // Arrange
-            var testConfig = new Mock<IConfiguration>();
-            testConfig.Setup(x => x.AutoDetectInProject).Returns(autoInProject);
-            testConfig.Setup(x => x.IsInProjectNamespace("Bugsnag.Core.Test.ExceptionParserTests"))
-                .Returns(projectNamespace);
-            testConfig.Setup(x => x.RemoveFileNamePrefix(It.IsAny<string>())).Returns((string x) => x);
+            var testConfig = new Configuration(TestApiKey);
+            testConfig.AutoDetectInProject = autoInProject;
+            if (projectNamespace)
+                testConfig.ProjectNamespaces = new[] { "Bugsnag.Core.Test.ExceptionParserTests" };
 
             var testExp = new RankException("Test Rank Exp");
 
             // Act
-            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, CreateTrace(), testConfig.Object);
+            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, CreateTrace(), testConfig);
 
             // Assert
             Assert.NotNull(actInfo);

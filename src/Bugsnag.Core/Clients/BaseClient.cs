@@ -172,7 +172,7 @@ namespace Bugsnag.Clients
                 {
                     if (ApplicationDeployment.IsNetworkDeployed)
                     {
-                        // Use the applicaton version defined for the Click-Once application, if it is one
+                        // Use the application version defined for the Click-Once application, if it is one
                         Config.AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
                     }
                     else if (Assembly.GetEntryAssembly() != null)
