@@ -144,9 +144,12 @@ namespace Bugsnag.Core.Test
             Assert.NotNull(actInfo);
             Assert.Equal("RankException", actInfo.ExceptionClass);
             Assert.True(actInfo.Description.Contains(testExp.Message));
+#if DEBUG
+            // We can only be certain of this frame when in Debug mode. Optimisers are enabled in Release mode
             Assert.True(actInfo.StackTrace[0].File.EndsWith("ExceptionParserTests.cs"));
             Assert.Equal("TestNamespace.TestClass.ThrowException()", actInfo.StackTrace[0].Method);
             Assert.Equal(expInProject, actInfo.StackTrace[0].InProject);
+#endif
         }
 
         [Theory]
