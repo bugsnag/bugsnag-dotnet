@@ -204,7 +204,7 @@ bugsnag.Config.SetIgnoreClasses("ArgumentNullException", "MyConfigException");
 ```
 
 ##### Before Notify Callbacks
-Custom call back functiosn can be configured to run just before an error event is sent. These callbacks have full access to the error and can modify it before its sent. They also have the opportunity to prevent the error from being sent all together. A callback should take an error `Event` object as a parameter and return a boolean indicating if the event should be notified (`Func<Event,bool>`);
+Custom call back functions can be configured to run just before an error event is sent. These callbacks have full access to the error and can modify it before its sent. They also have the opportunity to prevent the error from being sent all together. A callback should take an error `Event` object as a parameter and return a boolean indicating if the event should be notified (`Func<Event,bool>`);
 
 Note that these callbacks will not be called if the exception class is an class being ignored via `SetIgnoreClasses()` or the current release stage is one that has been configured not to be notified on via `SetNotifyReleaseStages()`.
 
