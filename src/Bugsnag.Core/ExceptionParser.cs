@@ -43,7 +43,8 @@ namespace Bugsnag
                 return null;
 
             // Convert the frames to stack frame payloads
-            var stackFrameInfos = frames.Select(x => GenerateStackTraceFrameInfo(x, config)).Where(x => !x.Method.StartsWith("Bugsnag.")).ToList();
+            var stackFrameInfos = frames.Select(x => GenerateStackTraceFrameInfo(x, config))
+                                        .Where(x => !x.Method.StartsWith("Bugsnag.")).ToList();
 
             return new ExceptionInfo
             {

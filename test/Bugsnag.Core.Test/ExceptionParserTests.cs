@@ -125,12 +125,12 @@ namespace Bugsnag.Core.Test
 
             testConfig.AutoDetectInProject = autoInProject;
             if (projectNamespace)
-                testConfig.ProjectNamespaces = new[] { "Bugsnag.Core.Test.ExceptionParserTests" };
+                testConfig.ProjectNamespaces = new[] { "TestNamespace" };
 
-            RankException testExp;
+            RankException testExp = null;
             try
             {
-                throw new RankException("Test Rank Exp");
+                TestNamespace.TestClass.ThrowException();
             }
             catch (Exception exp)
             {
@@ -145,7 +145,7 @@ namespace Bugsnag.Core.Test
             Assert.Equal("RankException", actInfo.ExceptionClass);
             Assert.True(actInfo.Description.Contains(testExp.Message));
             Assert.True(actInfo.StackTrace[0].File.EndsWith("ExceptionParserTests.cs"));
-            Assert.True(actInfo.StackTrace[0].Method.Contains("GenerateExceptionInfo_GeneratesInfoWithExceptionStackTrace"));
+            Assert.Equal("TestNamespace.TestClass.ThrowException()", actInfo.StackTrace[0].Method);
             Assert.Equal(expInProject, actInfo.StackTrace[0].InProject);
         }
 
@@ -174,16 +174,18 @@ namespace Bugsnag.Core.Test
             Assert.NotNull(actInfo);
             Assert.Equal("RankException", actInfo.ExceptionClass);
             Assert.True(actInfo.Description.Contains(testExp.Message));
-            Assert.True(actInfo.Description.Contains("[CALL STACK]"));
-#if DEBUG
-            // We can only be certain of these frames when in Debug mode. Optimisers are enabled in Release mode 
-            Assert.True(actInfo.StackTrace[0].File.EndsWith("ExceptionParserTests.cs"));
-            Assert.True(actInfo.StackTrace[0].Method.Contains("CreateTrace"));
-            Assert.Equal(expInProject, actInfo.StackTrace[0].InProject);
-            Assert.True(actInfo.StackTrace[1].File.EndsWith("ExceptionParserTests.cs"));
-            Assert.True(actInfo.StackTrace[1].Method.Contains("GenerateExceptionInfo_GeneratesInfoWithNoExceptionStackTraceButHasCallStack"));
-            Assert.Equal(expInProject, actInfo.StackTrace[0].InProject);
-#endif
+            Assert.True(actInfo.StackTrace.Count > 0);
+        }
+    }
+}
+
+namespace TestNamespace
+{
+    public static class TestClass
+    {
+        public static void ThrowException()
+        {
+            throw new RankException("Test Rank Exp");
         }
     }
 }

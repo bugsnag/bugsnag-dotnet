@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Text.RegularExpressions;
+using System.Deployment.Application;
 using System.Diagnostics;
 using System.Reflection;
-using System.Deployment.Application;
+using System.Text.RegularExpressions;
 using Bugsnag.ConfigurationStorage;
 
 namespace Bugsnag.Clients
@@ -155,6 +155,7 @@ namespace Bugsnag.Clients
             if (configStorage == null || string.IsNullOrEmpty(configStorage.ApiKey) || !apiRegex.IsMatch(configStorage.ApiKey))
             {
                 Logger.Error("You must provide a valid Bugsnag API key");
+                throw new ArgumentException("You must provide a valid Bugsnag API key");
             }
             else
             {
