@@ -167,7 +167,7 @@ namespace Bugsnag
         /// </summary>
         public Uri EndpointUrl
         {
-            get { return new Uri("https://" + Endpoint); }
+            get { return new Uri(Endpoint); }
         }
 
         /// <summary>

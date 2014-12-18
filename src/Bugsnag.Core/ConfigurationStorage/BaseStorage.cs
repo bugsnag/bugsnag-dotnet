@@ -92,7 +92,7 @@
         {
             ApiKey = apiKey;
             AutoDetectInProject = true;
-            Endpoint = "notify.bugsnag.com";
+            Endpoint = "https://notify.bugsnag.com";
             AutoNotify = true;
             IgnoreClasses = new string[] { };
             MetadataFilters = new string[] { };

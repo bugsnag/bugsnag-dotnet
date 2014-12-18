@@ -43,7 +43,7 @@ namespace Bugsnag.ConfigurationStorage
         }
 
         private string _endpoint;
-        [ConfigurationProperty("endpoint", IsRequired = false, DefaultValue = "notify.bugsnag.com")]
+        [ConfigurationProperty("endpoint", IsRequired = false, DefaultValue = "https://notify.bugsnag.com")]
         [StringValidator]
         public string Endpoint
         {
@@ -142,7 +142,7 @@ namespace Bugsnag.ConfigurationStorage
                     {
                         return null;
                     }
-                    else 
+                    else
                     {
                         this._notifyReleaseStages = this.NotifyReleaseStagesString.Split(',');
                         return this._notifyReleaseStages;

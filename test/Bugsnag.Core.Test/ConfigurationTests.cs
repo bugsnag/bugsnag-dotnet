@@ -20,15 +20,15 @@ namespace Bugsnag.Core.Test
         }
 
         [Theory]
-        [InlineData("another.point.com", "https://another.point.com/")]
-        [InlineData("end.random.com", "https://end.random.com/")]
-        public void EndpointUrl_UrlIsCreatedCorrectly(string endpoint, string url)
+        [InlineData("https://another.point.com/")]
+        [InlineData("https://end.random.com/")]
+        public void EndpointUrl_UrlIsCreatedCorrectly(string url)
         {
             // Arrange
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.Endpoint = endpoint;
+            testConfig.Endpoint = url;
 
             // Assert
             Assert.Equal(url, testConfig.EndpointUrl.AbsoluteUri);
@@ -65,7 +65,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.NotifyReleaseStages = new[] {"stage 1", "stage 2", "stage 4", "stage 7"};
+            testConfig.NotifyReleaseStages = new[] { "stage 1", "stage 2", "stage 4", "stage 7" };
             testConfig.ReleaseStage = stage;
 
             // Assert
@@ -119,7 +119,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.FilePrefixes = new[]{@"C:\MyProj\", @"H:\", @"C:\MyOtherProj\Data"};
+            testConfig.FilePrefixes = new[] { @"C:\MyProj\", @"H:\", @"C:\MyOtherProj\Data" };
             var actFileName = testConfig.RemoveFileNamePrefix(fileName);
 
             // Assert
@@ -156,7 +156,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.ProjectNamespaces = new[]{"ComA", "ComC"};
+            testConfig.ProjectNamespaces = new[] { "ComA", "ComC" };
             var actInProject = testConfig.IsInProjectNamespace(methodName);
 
             // Assert
@@ -197,7 +197,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.IgnoreClasses = new[] {"Class2", "Class5"};
+            testConfig.IgnoreClasses = new[] { "Class2", "Class5" };
             var actIgnoreClass = testConfig.IsClassToIgnore(className);
 
             // Assert
