@@ -101,7 +101,7 @@
     <Compile Include="Payload\Event\StackTraceFrameInfo.cs" />
     <Compile Include="Payload\Event\ThreadInfo.cs" />
     <Compile Include="Payload\Notification.cs" />
-    <Compile Include="Profiler.cs" />
+    <Compile Include="Diagnostics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

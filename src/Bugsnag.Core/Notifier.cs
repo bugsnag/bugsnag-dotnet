@@ -9,8 +9,8 @@ namespace Bugsnag
 {
     internal class Notifier
     {
-        public const string Name = ".NET Bugsnag Notifier (ALPHA)";
-        public static readonly Uri Url = new Uri("https://bugsnag.com");
+        public const string Name = ".NET Bugsnag Notifier";
+        public static readonly Uri Url = new Uri("https://github.com/bugsnag/bugsnag-net");
 
         public static readonly string Version =
             Assembly.GetExecutingAssembly().GetName().Version.ToString(3);

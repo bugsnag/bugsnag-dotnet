@@ -7,7 +7,7 @@ namespace Bugsnag
     /// <summary>
     /// Helper class used to profile the machine / device the application is running on
     /// </summary>
-    internal static class Profiler
+    internal static class Diagnostics
     {
         /// <summary>
         /// The version of the operating system the application is running

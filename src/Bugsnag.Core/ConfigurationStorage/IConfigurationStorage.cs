@@ -51,7 +51,7 @@
         /// <summary>
         /// Gets or Sets whether the notifier should register to automatically sent uncaught exceptions.
         /// </summary>
-        bool AutoNotify { get; set; }
+        bool AutoNotify { get; set;  }
 
         /// <summary>
         /// Gets or Sets the list of Release Stages to notify Bugsnag of errors in. If this is null

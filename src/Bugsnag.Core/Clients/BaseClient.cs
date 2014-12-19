@@ -167,7 +167,7 @@ namespace Bugsnag.Clients
                 if (Config.AutoNotify)
                     StartAutoNotify();
 
-                //// Set up some defaults for all clients
+                // Set up some defaults for all clients
                 if (Debugger.IsAttached && String.IsNullOrEmpty(Config.ReleaseStage)) Config.ReleaseStage = "development";
                 if (String.IsNullOrEmpty(Config.AppVersion))
                 {

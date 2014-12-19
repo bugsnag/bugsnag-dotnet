@@ -47,8 +47,8 @@ namespace Bugsnag
             {
                 Version = Config.AppVersion,
                 ReleaseStage = Config.ReleaseStage,
-                AppArchitecture = Profiler.AppArchitecture,
-                ClrVersion = Profiler.ClrVersion
+                AppArchitecture = Diagnostics.AppArchitecture,
+                ClrVersion = Diagnostics.ClrVersion
             };
 
             var userInfo = new UserInfo
@@ -60,12 +60,12 @@ namespace Bugsnag
 
             var deviceInfo = new DeviceInfo
             {
-                OSVersion = Profiler.DetectedOSVersion,
-                ServicePack = Profiler.ServicePack,
-                OSArchitecture = Profiler.OSArchitecture,
-                ProcessorCount = Profiler.ProcessorCount,
-                MachineName = Profiler.MachineName,
-                HostName = Profiler.HostName
+                OSVersion = Diagnostics.DetectedOSVersion,
+                ServicePack = Diagnostics.ServicePack,
+                OSArchitecture = Diagnostics.OSArchitecture,
+                ProcessorCount = Diagnostics.ProcessorCount,
+                MachineName = Diagnostics.MachineName,
+                HostName = Diagnostics.HostName
             };
 
             var eventInfo = new EventInfo
@@ -89,9 +89,7 @@ namespace Bugsnag
 
             errInfo.Exceptions = exps;
 
-            // TODO Find a way to snapshot all manage threads at this point
-            // if (Config.SendThreads)
-            //    errInfo.Threads = CreateThreadsInfo(Config);
+            // TODO Find a way to snapshot all managed threads at this point
 
             // Get to the inner most exception
             var innerExp = error.Exception;

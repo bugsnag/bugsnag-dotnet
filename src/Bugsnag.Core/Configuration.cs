@@ -102,7 +102,7 @@ namespace Bugsnag
             set
             {
                 Storage.AutoNotify = value;
-                //TODO:SM Should emit event to client
+                //TODO Should emit event to client to properly support this after initialisation
             }
         }
 
