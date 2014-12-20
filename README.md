@@ -5,10 +5,11 @@ Bugsnag Notifier for .NET
 
 The Bugsnag Notifier for .NET gives you instant notification of exceptions thrown from your .NET applications. The notifier hooks into various handlers so any uncaught exceptions in your app will be sent to your Bugsnag dashboard.
 
+The Bugsnag Notifier supports all .NET applications with specialized support for ASP.NET MVC applications, WPF applications and WebAPI applications.
+
 - The majority of exceptions are handled by hooking into the `AppDomain.CurrentDomain.UnhandledException` event.
 - Exceptions that occur in a `Task` are silently discarded if the are unobserved. We hook into the `TaskScheduler.UnobservedTaskException` so they can be reported ([Task Exception Handling in .NET 4.5](http://blogs.msdn.com/b/pfxteam/archive/2011/09/28/task-exception-handling-in-net-4-5.aspx)).
-- The handler uses the `[HandleProcessCorruptedStateExceptions]` attribute to enable reporting on corrupted state exceptions such as memory access violation exceptions ([CorruptedStateExceptions in .NET](http://dailydotnettips.com/2013/09/23/corruptedstateexceptions-in-net-a-way-to-handle/)) .
-- An exception filter `NotifyExceptionAttribute` to use as a global filter is provided for handling exceptions in ASP.NET MVC applications.
+- The handler uses the `[HandleProcessCorruptedStateExceptions]` attribute to enable reporting on corrupted state exceptions such as memory access violation exceptions ([CorruptedStateExceptions in .NET](http://dailydotnettips.com/2013/09/23/corruptedstateexceptions-in-net-a-way-to-handle/)).
 
 [Bugsnag](https://bugsnag.com) captures errors in real-time from your websites and mobile applications, helping you to understand and resolve them as fast as possible. [Create a free account](https://bugsnag.com) to start capturing errors from your applications.
 
@@ -19,21 +20,33 @@ How to Install
 
 ### Manual Library Reference
 
-- Download the latest Bugsnag.Core dll and reference it in your project (TODO add download location/link)
-- For ASP.NET MVC applications, also download the latest Bugsnag.Web dll and reference it in your project to
-access the global filter (TODO add download location/link).
+- Download the latest Bugsnag.dll and reference it in your project
 
 Bugsnag for .NET depends only on the `JSON.net` library and needs to be referenced, the nuget package can be found [here](https://www.nuget.org/packages/Newtonsoft.Json/).
 
 Quick Reference Guide
 ---------------------
-Import the Bugnsnag core library into your application
+
+### ASP.NET MVC Applications
+
+Import the Bugnsnag clients into your application
 ```c#
-using Bugsnag.Core;
+using Bugsnag.Clients;
 ```
-Create an instance of the client using your API key.
+Configure the Bugsnag integration inside your `Web.config` file
+
+```xml
+<configuration>
+  <configSections>
+    <section name="bugsnagConfig" type="Bugsnag.ConfigurationStorage.ConfigSection, Bugsnag" />
+  </configSections>
+  <bugsnagConfig apiKey="APIKEY_HERE" />
+</configuration>
+````
+
+Inside the `RegisterGlobalFilters` function add the `WebMVCClient` error handler.
 ```c#
-var bugsnag = new Client("your-api-key-goes-here");
+filters.Add(WebMVCClient.ErrorHandler());
 ```
 Thats it...you will be reporting on uncaught exceptions by default.
 
