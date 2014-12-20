@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about a single managed thread
     /// </summary>
-    public class ThreadInfo
+    internal class ThreadInfo
     {
         /// <summary>
         /// Gets or sets a unique identifier for the thread

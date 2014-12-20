@@ -1,117 +1,192 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Deployment.Application;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
+using Bugsnag.ConfigurationStorage;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
     /// <summary>
     /// Defines the configuration for a sending notifications to Bugsnag
     /// </summary>
-    public class Configuration : IConfiguration
+    public class Configuration : IConfigurationStorage
     {
+        #region IConfigurationStorage
         /// <summary>
         /// Gets the API key used to send notifications to a specific Bugsnag account
         /// </summary>
-        public string ApiKey { get; private set; }
+        public string ApiKey
+        {
+            get { return Storage.ApiKey; }
+            set { Storage.ApiKey = value; }
+        }
 
         /// <summary>
         /// Gets or sets the application version
         /// </summary>
-        public string AppVersion { get; set; }
+        public string AppVersion
+        {
+            get { return Storage.AppVersion; }
+            set { Storage.AppVersion = value; }
+        }
 
         /// <summary>
         /// Gets or sets the release stage of the application
         /// </summary>
-        public string ReleaseStage { get; set; }
+        public string ReleaseStage
+        {
+            get { return Storage.ReleaseStage; }
+            set { Storage.ReleaseStage = value; }
+        }
 
         /// <summary>
         /// Gets or sets the endpoint that defines where to send the notifications
         /// </summary>
-        public string Endpoint { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the notifications should be sent using SSL
-        /// </summary>
-        public bool UseSsl { get; set; }
+        public string Endpoint
+        {
+            get { return Storage.Endpoint; }
+            set { Storage.Endpoint = value; }
+        }
 
         /// <summary>
         /// Gets the unique identifier used to identify a user
         /// </summary>
-        public string UserId { get; private set; }
+        public string UserId
+        {
+            get { return Storage.UserId; }
+            set { Storage.UserId = value; }
+        }
 
         /// <summary>
         /// Gets the users email
         /// </summary>
-        public string UserEmail { get; private set; }
+        public string UserEmail
+        {
+            get { return Storage.UserEmail; }
+            set { Storage.UserEmail = value; }
+        }
 
         /// <summary>
         /// Gets the users human readable name
         /// </summary>
-        public string UserName { get; private set; }
-
-        /// <summary>
-        /// Gets the current logged in user name
-        /// </summary>
-        public string LoggedOnUser { get; private set; }
+        public string UserName
+        {
+            get { return Storage.UserName; }
+            set { Storage.UserName = value; }
+        }
 
         /// <summary>
         /// Gets or sets the context to apply to the subsequent notifications
         /// </summary>
-        public string Context { get; set; }
-
-        /// <summary>
-        /// Gets the metadata to send with every error report
-        /// </summary>
-        public Metadata Metadata { get; private set; }
-
-        /// <summary>
-        /// Gets the endpoint URL that notifications will be send to
-        /// </summary>
-        public Uri EndpointUrl
+        public string Context
         {
-            get { return new Uri((UseSsl ? @"https://" : "http://") + Endpoint); }
+            get { return Storage.Context; }
+            set { Storage.Context = value; }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether we are auto detecting method calls as 
         /// in project calls in stack traces
         /// </summary>
-        public bool AutoDetectInProject { get; set; }
+        public bool AutoDetectInProject
+        {
+            get { return Storage.AutoDetectInProject; }
+            set { Storage.AutoDetectInProject = value; }
+        }
+
+        /// <summary>
+        /// Gets or Sets whether the notifier should register to automatically sent uncaught exceptions.
+        /// </summary>
+        public bool AutoNotify
+        {
+            get { return Storage.AutoNotify; }
+            set
+            {
+                Storage.AutoNotify = value;
+                //TODO Should emit event to client to properly support this after initialisation
+            }
+        }
+
+        /// <summary>
+        /// Gets or Sets the list of Release Stages to notify Bugsnag of errors in. If this is null
+        /// then Bugsnag will notify on all Release Stages.
+        /// </summary>
+        public string[] NotifyReleaseStages
+        {
+            get { return Storage.NotifyReleaseStages; }
+            set { Storage.NotifyReleaseStages = value; }
+        }
+
+        /// <summary>
+        /// Gets or Sets a list of prefixes to strip from filenames in the stacktrace. Helps
+        /// with grouping errors from different build envs or machines by ensuring the stack
+        /// trace looks similar.
+        /// </summary>
+        public string[] FilePrefixes
+        {
+            get { return Storage.FilePrefixes; }
+            set { Storage.FilePrefixes = value; }
+        }
+
+        /// <summary>
+        /// Gets or Sets a list of namespaces to be considered in project. Helps with grouping
+        /// as well as being highlighted in the Bugsnag dashboard.
+        /// </summary>
+        public string[] ProjectNamespaces
+        {
+            get { return Storage.ProjectNamespaces; }
+            set { Storage.ProjectNamespaces = value; }
+        }
+
+        /// <summary>
+        /// Gets or Sets the list of error classes not to be notified to Bugsnag.
+        /// </summary>
+        public string[] IgnoreClasses
+        {
+            get { return Storage.IgnoreClasses; }
+            set { Storage.IgnoreClasses = value; }
+        }
+
+        /// <summary>
+        /// Gets or Sets the list of keys not to be sent to Bugsnag. Add values to this list to
+        /// prevent sensitive information being sent to Bugsnag.
+        /// </summary>
+        public string[] MetadataFilters
+        {
+            get { return Storage.MetadataFilters; }
+            set { Storage.MetadataFilters = value; }
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the metadata to send with every error report
+        /// </summary>
+        public Metadata Metadata { get; protected set; }
+
+        /// <summary>
+        /// Gets the endpoint URL that notifications will be send to
+        /// </summary>
+        public Uri EndpointUrl
+        {
+            get { return new Uri(Endpoint); }
+        }
 
         /// <summary>
         /// Gets or sets a list of custom functions to run just before a notification is sent, 
         /// the functions operate on an Event and returns a boolean indicating if the notification 
         /// should continue to be reported
         /// </summary>
-        private List<Func<Event, bool>> BeforeNotifyCallbacks { get; set; }
+        protected List<Func<Event, bool>> BeforeNotifyCallbacks { get; set; }
 
         /// <summary>
-        /// Internal list of release stages we should notify on
+        /// Gets or sets a list of internal functions to run just before a notification is sent, 
+        /// the functions operate on an Event. 
         /// </summary>
-        private List<string> notifyReleaseStages;
+        protected List<Action<Event>> InternalBeforeNotifyCallbacks { get; set; }
 
         /// <summary>
-        /// Internal list of file prefixes we should remove from filenames
+        /// Gets or Sets the Storage backend for the Configuration
         /// </summary>
-        private List<string> filePrefixes;
-
-        /// <summary>
-        /// Internal list of exception class names we should ignore
-        /// </summary>
-        private List<string> ignoreClasses;
-
-        /// <summary>
-        /// Internal list of project namespaces
-        /// </summary>
-        private List<string> projectNamespaces;
-
-        /// <summary>
-        /// Internal list of filters for data
-        /// </summary>
-        private List<string> filters;
+        protected IConfigurationStorage Storage { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Configuration"/> class. Produces a default configuration with 
@@ -119,65 +194,21 @@ namespace Bugsnag.Core
         /// </summary>
         /// <param name="apiKey">The API key linked to a Bugsnag account</param>
         public Configuration(string apiKey)
+            : this(new BaseStorage(apiKey))
         {
-            ApiKey = apiKey;
-            ReleaseStage = Debugger.IsAttached ? "development" : "production";
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                // Use the applicaton version defined for the Click-Once application, if it is one
-                AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-            }
-            else if (Assembly.GetEntryAssembly() != null)
-            {
-                AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            }
-            else
-            {
-                AppVersion = null;
-            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Configuration"/> class. Uses the passed
+        /// configuration storage to populate its settings.
+        /// </summary>
+        /// <param name="storage">The storage to use for settings.</param>
+        public Configuration(IConfigurationStorage storage)
+        {
+            Storage = storage;
             Metadata = new Metadata();
-            UseSsl = true;
-            AutoDetectInProject = true;
-            UserId = Environment.UserName;
-            LoggedOnUser = Environment.UserDomainName + "\\" + Environment.UserName;
-            Context = null;
-            Endpoint = "notify.bugsnag.com";
-            filePrefixes = new List<string>();
-            ignoreClasses = new List<string>();
-            projectNamespaces = new List<string>();
-            notifyReleaseStages = null;
-            filters = new List<string>();
             BeforeNotifyCallbacks = new List<Func<Event, bool>>();
-        }
-
-        /// <summary>
-        /// Specifies the release stages that notifications should be sent
-        /// </summary>
-        /// <param name="releaseStages">The stages to notify on</param>
-        public void SetNotifyReleaseStages(params string[] releaseStages)
-        {
-            notifyReleaseStages = releaseStages.ToList();
-        }
-
-        /// <summary>
-        /// Resets any restrictions and notifies on all release stages
-        /// </summary>
-        public void NotifyOnAllReleaseStages()
-        {
-            notifyReleaseStages = null;
-        }
-
-        /// <summary>
-        /// Detects if the current release stage is a stage that should be notified on
-        /// </summary>
-        /// <returns>True if we should notify, otherwise false</returns>
-        public bool IsNotifyReleaseStage()
-        {
-            // Notify if no restrictions have been set or the release stage hasn't been set
-            if (notifyReleaseStages == null || ReleaseStage == null)
-                return true;
-
-            return notifyReleaseStages.Any(x => x == ReleaseStage);
+            InternalBeforeNotifyCallbacks = new List<Action<Event>>();
         }
 
         /// <summary>
@@ -194,12 +225,35 @@ namespace Bugsnag.Core
         }
 
         /// <summary>
-        /// Sets the file prefixes that should be removed from frame file paths
+        /// Adds a BeforeNotify callback to be called before an error is sent to Bugsnag
         /// </summary>
-        /// <param name="prefixes">The prefixes to remove</param>
-        public void SetFilePrefix(params string[] prefixes)
+        /// <param name="callback">The callback to be called before notifying Bugsnag</param>
+        public void BeforeNotify(Func<Event, bool> callback)
         {
-            filePrefixes = prefixes.ToList();
+            BeforeNotifyCallbacks.Add(callback);
+        }
+
+        /// <summary>
+        /// Add an internal beforeNotify callback. These are run before any user defined
+        /// callbacks so the user can always override default derived values.
+        /// </summary>
+        /// <param name="callback">The callback to be called before notifying Bugsnag</param>
+        internal void BeforeNotify(Action<Event> callback)
+        {
+            InternalBeforeNotifyCallbacks.Add(callback);
+        }
+
+        /// <summary>
+        /// Detects if the current release stage is a stage that should be notified on
+        /// </summary>
+        /// <returns>True if we should notify, otherwise false</returns>
+        internal bool IsNotifyReleaseStage()
+        {
+            // Notify if no restrictions have been set or the release stage hasn't been set
+            if (NotifyReleaseStages == null || ReleaseStage == null)
+                return true;
+
+            return NotifyReleaseStages.Any(x => x == ReleaseStage);
         }
 
         /// <summary>
@@ -207,21 +261,17 @@ namespace Bugsnag.Core
         /// </summary>
         /// <param name="fileName">The filename to modify</param>
         /// <returns>The filename with the prefixes removed</returns>
-        public string RemoveFileNamePrefix(string fileName)
+        internal string RemoveFileNamePrefix(string fileName)
         {
             var result = fileName;
             if (!string.IsNullOrEmpty(result))
-                filePrefixes.ForEach(x => result = result.Replace(x, string.Empty));
+            {
+                foreach (string prefix in FilePrefixes)
+                {
+                    result = result.Replace(prefix, string.Empty);
+                }
+            }
             return result;
-        }
-
-        /// <summary>
-        /// Sets the project namespaces used to detect local method calls
-        /// </summary>
-        /// <param name="namespaces">The project namespaces</param>
-        public void SetProjectNamespaces(params string[] namespaces)
-        {
-            projectNamespaces = namespaces.ToList();
         }
 
         /// <summary>
@@ -229,21 +279,12 @@ namespace Bugsnag.Core
         /// </summary>
         /// <param name="fullMethodName">The fully qualified method name</param>
         /// <returns>True if it belongs to one of the project namespaces, otherwise false</returns>
-        public bool IsInProjectNamespace(string fullMethodName)
+        internal bool IsInProjectNamespace(string fullMethodName)
         {
             if (string.IsNullOrEmpty(fullMethodName))
                 return false;
 
-            return projectNamespaces.Any(x => fullMethodName.StartsWith(x));
-        }
-
-        /// <summary>
-        /// Sets the exception classes to ignore and not send notifications about
-        /// </summary>
-        /// <param name="classNames">The exception class names to ignore</param>
-        public void SetIgnoreClasses(params string[] classNames)
-        {
-            ignoreClasses = classNames.ToList();
+            return ProjectNamespaces.Any(x => fullMethodName.StartsWith(x));
         }
 
         /// <summary>
@@ -252,18 +293,9 @@ namespace Bugsnag.Core
         /// </summary>
         /// <param name="className">The exception class name to check</param>
         /// <returns>True if the class should be ignored, otherwise false</returns>
-        public bool IsClassToIgnore(string className)
+        internal bool IsClassToIgnore(string className)
         {
-            return ignoreClasses.Contains(className);
-        }
-
-        /// <summary>
-        /// Sets the filters that indicate entries that are sensitive 
-        /// </summary>
-        /// <param name="newFilters">The entries to filter out</param>
-        public void SetFilters(params string[] newFilters)
-        {
-            filters = newFilters.ToList();
+            return IgnoreClasses.Contains(className);
         }
 
         /// <summary>
@@ -271,46 +303,66 @@ namespace Bugsnag.Core
         /// </summary>
         /// <param name="entry">The entry to check</param>
         /// <returns>True if the entry should be filtered, otherwise False</returns>
-        public bool IsEntryFiltered(string entry)
+        internal bool IsEntryFiltered(string entry)
         {
-            return filters.Contains(entry);
+            return MetadataFilters.Contains(entry);
         }
 
         /// <summary>
-        /// Adds a callback to run when an event is about to be notified
+        /// Runs the internal before notify callbacks which are configured by the notifier itself
+        /// to add some default values.
         /// </summary>
-        /// <param name="callback">The callback function to run</param>
-        public void BeforeNotify(Func<Event, bool> callback)
+        /// <param name="errorEvent">The event that will be sent to bugsnag</param>
+        internal void RunInternalBeforeNotifyCallbacks(Event errorEvent)
         {
-            BeforeNotifyCallbacks.Add(callback);
-        }
-
-        /// <summary>
-        /// Runs all registered notification callbacks
-        /// </summary>
-        /// <param name="errorEvent">The event to run the callbacks on</param>
-        /// <returns>True if the notification should continue, otherwise false</returns>
-        public bool RunBeforeNotifyCallbacks(Event errorEvent)
-        {
-            // Call the before notify action is there is one
-            if (BeforeNotifyCallbacks != null)
+            // Do nothing if the before notify action indicates we should ignore the error event
+            foreach (Action<Event> callback in InternalBeforeNotifyCallbacks)
             {
                 try
                 {
-                    // Do nothing if the before notify action indicates we should ignore the error event
-                    foreach (Func<Event, bool> callback in BeforeNotifyCallbacks)
-                    {
-                        if (!callback(errorEvent))
-                            return false;
-                    }
+                    callback(errorEvent);
                 }
                 catch (Exception exp)
                 {
                     // If the callback exceptions, we will try to send the notification anyway, to give the
                     // best possible chance of reporting the error
+                    Logger.Warning("[Before Notify] Exception : " + exp.ToString());
+                }
+            }
+        }
 
-                    // TODO : Add logger so we can record debug and error data
-                    Console.WriteLine("[Before Notify] Exception : " + exp.Message);
+        /// <summary>
+        /// Copy into the Event the information from the config.
+        /// </summary>
+        /// <param name="errorEvent">The event to add the info to</param>
+        internal void AddConfigToEvent(Event errorEvent)
+        {
+            if (!String.IsNullOrEmpty(Context)) errorEvent.Context = Context;
+            if (!String.IsNullOrEmpty(UserId)) errorEvent.UserId = UserId;
+            if (!String.IsNullOrEmpty(UserName)) errorEvent.UserName = UserName;
+            if (!String.IsNullOrEmpty(UserEmail)) errorEvent.UserEmail = UserEmail;
+        }
+
+        /// <summary>
+        /// Runs all the before notify callbacks with the supplied error.
+        /// </summary>
+        /// <param name="errorEvent">The error that will be sent to Bugsnag</param>
+        /// <returns>True if all callbacks returned true, false otherwise</returns>
+        internal bool RunBeforeNotifyCallbacks(Event errorEvent)
+        {
+            // Do nothing if the before notify action indicates we should ignore the error event
+            foreach (Func<Event, bool> callback in BeforeNotifyCallbacks)
+            {
+                try
+                {
+                    if (!callback(errorEvent))
+                        return false;
+                }
+                catch (Exception exp)
+                {
+                    // If the callback exceptions, we will try to send the notification anyway, to give the
+                    // best possible chance of reporting the error
+                    Logger.Warning("[Before Notify] Exception : " + exp.ToString());
                 }
             }
             return true;

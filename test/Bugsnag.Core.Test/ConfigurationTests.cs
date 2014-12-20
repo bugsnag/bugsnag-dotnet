@@ -20,18 +20,15 @@ namespace Bugsnag.Core.Test
         }
 
         [Theory]
-        [InlineData("another.point.com", true, "https://another.point.com/")]
-        [InlineData("another.point.com", false, "http://another.point.com/")]
-        [InlineData("end.random.com", true, "https://end.random.com/")]
-        [InlineData("end.random.com", false, "http://end.random.com/")]
-        public void EndpointUrl_UrlIsCreatedCorrectly(string endpoint, bool useSsl, string url)
+        [InlineData("https://another.point.com/")]
+        [InlineData("https://end.random.com/")]
+        public void EndpointUrl_UrlIsCreatedCorrectly(string url)
         {
             // Arrange
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.Endpoint = endpoint;
-            testConfig.UseSsl = useSsl;
+            testConfig.Endpoint = url;
 
             // Assert
             Assert.Equal(url, testConfig.EndpointUrl.AbsoluteUri);
@@ -49,7 +46,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.SetNotifyReleaseStages("stage 1", "stage 2", "stage 4", "stage 7");
+            testConfig.NotifyReleaseStages = new[] { "stage 1", "stage 2", "stage 4", "stage 7" };
             testConfig.ReleaseStage = stage;
 
             // Assert
@@ -68,31 +65,11 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.SetNotifyReleaseStages("stage 1", "stage 2", "stage 4", "stage 7");
+            testConfig.NotifyReleaseStages = new[] { "stage 1", "stage 2", "stage 4", "stage 7" };
             testConfig.ReleaseStage = stage;
 
             // Assert
             Assert.False(testConfig.IsNotifyReleaseStage());
-        }
-
-        [Theory]
-        [InlineData("stage 4")]
-        [InlineData("stage 5")]
-        [InlineData("stage 6")]
-        [InlineData("")]
-        public void ReleaseStage_ClearingReleaseStagesCauseAllStagesToNotify(string stage)
-        {
-            // Arrange
-            var testConfig = new Configuration("123456");
-
-            // Act
-            testConfig.SetNotifyReleaseStages("stage 1", "stage 2", "stage 3");
-            testConfig.ReleaseStage = stage;
-            Assert.False(testConfig.IsNotifyReleaseStage());
-            testConfig.NotifyOnAllReleaseStages();
-
-            // Assert
-            Assert.True(testConfig.IsNotifyReleaseStage());
         }
 
         [Theory]
@@ -125,13 +102,9 @@ namespace Bugsnag.Core.Test
 
             // Act
             var actFileName = testConfig.RemoveFileNamePrefix(fileName);
-            testConfig.SetFilePrefix(@"C:\MyProj\", @"H:\", @"C:\MyOtherProj\Data");
-            testConfig.SetFilePrefix();
-            var actFileNameAfterReset = testConfig.RemoveFileNamePrefix(fileName);
 
             // Assert
             Assert.Equal(fileName, actFileName);
-            Assert.Equal(fileName, actFileNameAfterReset);
         }
 
         [Theory]
@@ -146,7 +119,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.SetFilePrefix(@"C:\MyProj\", @"H:\", @"C:\MyOtherProj\Data");
+            testConfig.FilePrefixes = new[] { @"C:\MyProj\", @"H:\", @"C:\MyOtherProj\Data" };
             var actFileName = testConfig.RemoveFileNamePrefix(fileName);
 
             // Assert
@@ -166,13 +139,9 @@ namespace Bugsnag.Core.Test
 
             // Act
             var actInProject = testConfig.IsInProjectNamespace(methodName);
-            testConfig.SetProjectNamespaces("ComA", "ComC");
-            testConfig.SetProjectNamespaces();
-            var actInProjectAfterReset = testConfig.IsInProjectNamespace(methodName);
 
             // Assert
             Assert.False(actInProject);
-            Assert.False(actInProjectAfterReset);
         }
 
         [Theory]
@@ -187,7 +156,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.SetProjectNamespaces("ComA", "ComC");
+            testConfig.ProjectNamespaces = new[] { "ComA", "ComC" };
             var actInProject = testConfig.IsInProjectNamespace(methodName);
 
             // Assert
@@ -209,13 +178,9 @@ namespace Bugsnag.Core.Test
 
             // Act
             var actIgnoreClass = testConfig.IsClassToIgnore(className);
-            testConfig.SetIgnoreClasses("Class2", "Class5");
-            testConfig.SetIgnoreClasses();
-            var actIgnoreClassAfterReset = testConfig.IsClassToIgnore(className);
 
             // Assert
             Assert.False(actIgnoreClass);
-            Assert.False(actIgnoreClassAfterReset);
         }
 
         [Theory]
@@ -232,7 +197,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.SetIgnoreClasses("Class2", "Class5");
+            testConfig.IgnoreClasses = new[] { "Class2", "Class5" };
             var actIgnoreClass = testConfig.IsClassToIgnore(className);
 
             // Assert
@@ -254,13 +219,9 @@ namespace Bugsnag.Core.Test
 
             // Act
             var actFilterEntry = testConfig.IsEntryFiltered(entryKey);
-            testConfig.SetFilters("Class2", "Class5");
-            testConfig.SetIgnoreClasses();
-            var actFilterEntryAfterReset = testConfig.IsEntryFiltered(entryKey);
 
             // Assert
             Assert.False(actFilterEntry);
-            Assert.False(actFilterEntryAfterReset);
         }
 
         [Theory]
@@ -277,7 +238,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration("123456");
 
             // Act
-            testConfig.SetFilters("Entry1", "Entry3", "Entry5");
+            testConfig.MetadataFilters = new[] { "Entry1", "Entry3", "Entry5" };
             var actFilterEntry = testConfig.IsEntryFiltered(entryKey);
 
             // Assert
@@ -304,7 +265,6 @@ namespace Bugsnag.Core.Test
             bool returnValue = testConfig.RunBeforeNotifyCallbacks(testEvent);
 
             // Assert
-            // TODO Check logger has exception details when logger has been added
             Assert.True(returnValue);
             Assert.True(callbackHasRun);
         }

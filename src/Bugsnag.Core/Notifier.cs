@@ -1,16 +1,16 @@
-﻿using Bugsnag.Core.Payload;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using Bugsnag.Payload;
+using Newtonsoft.Json;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
-    public class Notifier : INotifier
+    internal class Notifier
     {
-        public const string Name = ".NET Bugsnag Notifier (ALPHA)";
-        public static readonly Uri Url = new Uri("https://bugsnag.com");
+        public const string Name = ".NET Bugsnag Notifier";
+        public static readonly Uri Url = new Uri("https://github.com/bugsnag/bugsnag-net");
 
         public static readonly string Version =
             Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
@@ -23,10 +23,10 @@ namespace Bugsnag.Core
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
 
-        private IConfiguration Config { get; set; }
+        private Configuration Config { get; set; }
         private NotificationFactory Factory { get; set; }
 
-        public Notifier(IConfiguration config)
+        public Notifier(Configuration config)
         {
             Config = config;
             Factory = new NotificationFactory(config);

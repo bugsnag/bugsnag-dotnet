@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Bugsnag.Core")]
+[assembly: AssemblyTitle("Bugsnag")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Bugsnag.Core")]
+[assembly: AssemblyProduct("Bugsnag")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -35,3 +36,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.2.6")]
 [assembly: AssemblyFileVersion("1.2.6")]
 [assembly: CLSCompliant(false)]
+[assembly: InternalsVisibleTo("Bugsnag.Core.Test")]

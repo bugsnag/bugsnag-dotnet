@@ -2,12 +2,12 @@
 using Newtonsoft.Json;
 using TabData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Contains information about a single event contained in the notification 
     /// </summary>
-    public class EventInfo
+    internal class EventInfo
     {
         /// <summary>
         /// Gets the current version of the payload describing the event

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Bugsnag.Core.Payload
+namespace Bugsnag.Payload
 {
     /// <summary>
     /// Represents a single notification object to send to Bugsnag
     /// </summary>
-    public class Notification
+    internal class Notification
     {
         /// <summary>
         /// Gets or sets the API key associated with the Bugsnag account to send the notification to

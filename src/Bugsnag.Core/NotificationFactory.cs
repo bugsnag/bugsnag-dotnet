@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using Bugsnag.Core.Payload;
+using Bugsnag.Payload;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
-    public class NotificationFactory
+    internal class NotificationFactory
     {
-        private IConfiguration Config { get; set; }
+        private Configuration Config { get; set; }
 
-        public NotificationFactory(IConfiguration config)
+        public NotificationFactory(Configuration config)
         {
             Config = config;
         }
@@ -47,26 +47,25 @@ namespace Bugsnag.Core
             {
                 Version = Config.AppVersion,
                 ReleaseStage = Config.ReleaseStage,
-                AppArchitecture = Profiler.AppArchitecture,
-                ClrVersion = Profiler.ClrVersion
+                AppArchitecture = Diagnostics.AppArchitecture,
+                ClrVersion = Diagnostics.ClrVersion
             };
 
             var userInfo = new UserInfo
             {
-                Id = Config.UserId,
-                Email = Config.UserEmail,
-                Name = Config.UserName,
-                LoggedOnUser = Config.LoggedOnUser
+                Id = errorData.UserId,
+                Email = errorData.UserEmail,
+                Name = errorData.UserName
             };
 
             var deviceInfo = new DeviceInfo
             {
-                OSVersion = Profiler.DetectedOSVersion,
-                ServicePack = Profiler.ServicePack,
-                OSArchitecture = Profiler.OSArchitecture,
-                ProcessorCount = Profiler.ProcessorCount,
-                MachineName = Profiler.MachineName,
-                HostName = Profiler.HostName
+                OSVersion = Diagnostics.DetectedOSVersion,
+                ServicePack = Diagnostics.ServicePack,
+                OSArchitecture = Diagnostics.OSArchitecture,
+                ProcessorCount = Diagnostics.ProcessorCount,
+                MachineName = Diagnostics.MachineName,
+                HostName = Diagnostics.HostName
             };
 
             var eventInfo = new EventInfo
@@ -75,7 +74,7 @@ namespace Bugsnag.Core
                 Device = deviceInfo,
                 Severity = errorData.Severity,
                 User = userInfo,
-                Context = Config.Context,
+                Context = errorData.Context,
                 GroupingHash = errorData.GroupingHash
             };
             return eventInfo;
@@ -90,9 +89,7 @@ namespace Bugsnag.Core
 
             errInfo.Exceptions = exps;
 
-            // TODO Find a way to snapshot all manage threads at this point
-            // if (Config.SendThreads)
-            //    errInfo.Threads = CreateThreadsInfo(Config);
+            // TODO Find a way to snapshot all managed threads at this point
 
             // Get to the inner most exception
             var innerExp = error.Exception;

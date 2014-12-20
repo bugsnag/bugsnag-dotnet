@@ -1,6 +1,5 @@
-﻿using Bugsnag.Core;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
+using Bugsnag.Clients;
 
 namespace Desktop.WPFApp
 {
@@ -11,13 +10,7 @@ namespace Desktop.WPFApp
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            var bugsnag = new Client("9134c4469d16f30f025a1e98f45b3ddb");
-
-            bugsnag.Config.AppVersion = "6.7.8";
-            bugsnag.Config.ReleaseStage = "Beta WPF";
-            bugsnag.Config.SetUser("2222", "cccc@dddd.com", "CCcc Dddd");
-            bugsnag.Config.SetFilePrefix(@"e:\GitHub\Bugsnag-NET\");
-
+            WPFClient.Start();
             base.OnStartup(e);
 
         }

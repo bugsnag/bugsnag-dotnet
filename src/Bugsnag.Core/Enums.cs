@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Bugsnag.Core
+namespace Bugsnag
 {
     /// <summary>
     /// Defines the levels of severity an event can be
