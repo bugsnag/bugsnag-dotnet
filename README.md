@@ -33,7 +33,7 @@ Configure the Bugsnag integration inside your `Web.config` file
   <bugsnagConfig apiKey="your-api-key-goes-here" />
 </configuration>
 ```
-**Note:** Please see [Configuration]() for details on other configuration you can set.
+**Note:** Please see [Configuration](#Additional Configuration) for details on other configuration you can set.
 
 Import the Bugnsnag clients namespace into your application
 ```c#
@@ -59,7 +59,7 @@ Configure the Bugsnag integration inside your `Web.config` file
   <bugsnagConfig apiKey="your-api-key-goes-here" />
 </configuration>
 ```
-**Note:** Please see [Configuration]() for details on other configuration you can set.
+**Note:** Please see [Configuration](#Additional Configuration) for details on other configuration you can set.
 
 Import the Bugnsnag clients namespace into your application
 ```c#
@@ -85,7 +85,7 @@ Configure the Bugsnag integration inside your `App.config` file
   <bugsnagConfig apiKey="your-api-key-goes-here" />
 </configuration>
 ```
-**Note:** Please see [Configuration]() for details on other configuration you can set.
+**Note:** Please see [Configuration](#Additional Configuration) for details on other configuration you can set.
 
 Import the Bugnsnag clients namespace into your application
 ```c#
