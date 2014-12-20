@@ -109,10 +109,10 @@ Firstly import the `Bugsang.Clients` namespace.
 using Bugsnag.Clients;
 ```
 
-The client needs to be created using your API key. If you would prefer to disable the auto notification, you can create the client with auto notify turned off (on by default).
+The client needs to be created using your API key.
 
 ```c#
-var bugsnag = new BaseClient("your-api-key-goes-here", false);
+var bugsnag = new BaseClient("your-api-key-goes-here");
 ```
 
 Send Non-Fatal Exceptions to Bugsnag
