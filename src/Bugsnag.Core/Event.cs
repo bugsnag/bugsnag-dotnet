@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Bugsnag
 {
     /// <summary>
-    /// Contains all the information needed to report a single exception 
+    /// Contains all the information needed to report a single exception
     /// </summary>
     public class Event
     {
@@ -21,7 +21,7 @@ namespace Bugsnag
         /// <summary>
         /// Gets the call stack trace of when event was created
         /// </summary>
-        public StackTrace CallTrace { get; private set; }
+        internal StackTrace CallTrace { get; private set; }
 
         /// <summary>
         /// Gets or sets the grouping hash value used to identify similar events
