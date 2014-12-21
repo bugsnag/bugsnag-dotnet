@@ -8,11 +8,12 @@ The Bugsnag Notifier for .NET gives you instant notification of exceptions throw
 How to Install
 --------------
 ### Using Nuget (Recommended)
-    TODO
+
+- Install the Bugsnag package from Nuget.
 
 ### Manual Library Reference
 
-- Download the latest Bugsnag.dll and reference it in your project
+- Download the latest [Bugsnag.dll](https://github.com/bugsnag/bugsnag-dotnet/releases) and reference it in your project
 
 Bugsnag for .NET depends only on the `JSON.net` library and needs to be referenced, the nuget package can be found [here](https://www.nuget.org/packages/Newtonsoft.Json/).
 
