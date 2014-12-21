@@ -30,8 +30,22 @@ namespace Bugsnag.Clients
 
         public static void Notify(Exception error)
         {
-            if (Client.Config.AutoNotify)
-                Client.Notify(error);
+            Client.Notify(error);
+        }
+
+        public static void Notify(Exception error, Metadata metadata)
+        {
+            Client.Notify(error, metadata);
+        }
+
+        public static void Notify(Exception error, Severity severity)
+        {
+            Client.Notify(error, severity);
+        }
+
+        public static void Notify(Exception error, Severity severity, Metadata metadata)
+        {
+            Client.Notify(error, severity, metadata);
         }
     }
 }

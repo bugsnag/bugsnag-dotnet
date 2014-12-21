@@ -19,7 +19,8 @@ namespace Bugsnag.Clients
                 if (context == null || context.Exception == null)
                     return;
 
-                Client.Notify(context.Exception);
+                if (Config.AutoNotify)
+                    Client.Notify(context.Exception);
             }
         }
 
@@ -43,9 +44,14 @@ namespace Bugsnag.Clients
                             error.Metadata.AddToTab("Request", reqParams.GetKey(i), dataValues);
                     }
 
-                    if (error.Context == null && HttpContext.Current.Request.Path != null)
+                    if (String.IsNullOrEmpty(error.Context) && HttpContext.Current.Request.Path != null)
                     {
                         error.Context = HttpContext.Current.Request.Path.ToString();
+                    }
+
+                    if (String.IsNullOrEmpty(error.UserId))
+                    {
+                        error.UserId = HttpContext.Current.Request.UserHostAddress;
                     }
                 }
             });
@@ -63,8 +69,22 @@ namespace Bugsnag.Clients
 
         public static void Notify(Exception error)
         {
-            if (Client.Config.AutoNotify)
-                Client.Notify(error);
+            Client.Notify(error);
+        }
+
+        public static void Notify(Exception error, Metadata metadata)
+        {
+            Client.Notify(error, metadata);
+        }
+
+        public static void Notify(Exception error, Severity severity)
+        {
+            Client.Notify(error, severity);
+        }
+
+        public static void Notify(Exception error, Severity severity, Metadata metadata)
+        {
+            Client.Notify(error, severity, metadata);
         }
     }
 }
