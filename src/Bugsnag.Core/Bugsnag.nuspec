@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/bugsnag/bugsnag-dotnet</projectUrl>
     <iconUrl>https://bugsnag.com/images/logo-mark.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>The Bugsnag .NET notifier</description>
     <releaseNotes></releaseNotes>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="6.0.1" />
