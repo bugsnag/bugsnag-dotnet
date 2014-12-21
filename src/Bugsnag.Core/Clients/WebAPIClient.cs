@@ -51,7 +51,18 @@ namespace Bugsnag.Clients
 
                     if (String.IsNullOrEmpty(error.UserId))
                     {
-                        error.UserId = HttpContext.Current.Request.UserHostAddress;
+                        if (!String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                        {
+                            error.UserId = HttpContext.Current.User.Identity.Name;
+                        }
+                        else if (HttpContext.Current.Session != null && !String.IsNullOrEmpty(HttpContext.Current.Session.SessionID))
+                        {
+                            error.UserId = HttpContext.Current.Session.SessionID;
+                        }
+                        else
+                        {
+                            error.UserId = HttpContext.Current.Request.UserHostAddress;
+                        }
                     }
                 }
             });
