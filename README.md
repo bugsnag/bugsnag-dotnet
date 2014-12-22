@@ -35,6 +35,7 @@ Configure the Bugsnag integration inside your `Web.config` file
 **Note:** Please see [Configuration](#Additional Configuration) for details on other configuration you can set.
 
 Import the Bugnsnag clients namespace into your application
+
 ```c#
 using Bugsnag.Clients;
 ```
@@ -44,6 +45,7 @@ Inside the `RegisterGlobalFilters` function add the `WebMVCClient` error handler
 ```c#
 filters.Add(WebMVCClient.ErrorHandler());
 ```
+
 Thats it...you will be reporting on uncaught exceptions by default!
 
 ### Web API Applications
@@ -61,6 +63,7 @@ Configure the Bugsnag integration inside your `Web.config` file
 **Note:** Please see [Configuration](#Additional Configuration) for details on other configuration you can set.
 
 Import the Bugnsnag clients namespace into your application
+
 ```c#
 using Bugsnag.Clients;
 ```
@@ -87,6 +90,7 @@ Configure the Bugsnag integration inside your `App.config` file
 **Note:** Please see [Configuration](#Additional Configuration) for details on other configuration you can set.
 
 Import the Bugnsnag clients namespace into your application
+
 ```c#
 using Bugsnag.Clients;
 ```
@@ -96,6 +100,7 @@ Inside the `OnStartup` function call the `WPFClient.Start()` method. Normally, t
 ```c#
 WPFClient.Start();
 ```
+
 Thats it...you will be reporting on uncaught exceptions by default!
 
 ### Other .NET Applications
@@ -155,16 +160,19 @@ The client can be configured with specific application settings which can be use
 
 ##### Application Version
 Used to attach the version number of the application which generated the error. If the application version is set and an error is resolved in the dashboard the error will not be unresolved until a crash is seen in a newer version of the app.
+
 ```c#
 bugsnag.Config.AppVersion = "5.0.1";
 ```
 
 ##### Release Stage
 Represents the current release stage for the application. This needs to be set manually.
+
 ```c#
 bugsnag.Config.ReleaseStage = "staging";
 ```
 By default, the client will report on all errors regardless of the release stage. However, you can filter out errors from certain stages. To specify which stages you want to notify on, use the following method.
+
 ```c#
 bugsnag.Config.SetNotifyReleaseStages("development","production");
 ```
@@ -174,6 +182,7 @@ The client can be configured to provide additional information based on the curr
 
 ##### Context
 The concept of "contexts" is used to help display what was happening in your app at the time of the error
+
 ```c#
 bugsnag.Config.Context = "DataAccess";
 ```
@@ -187,6 +196,7 @@ bugsnag.Config.SetUser("d7b4aadd", "anth.michaels@mycompany.com", "Anthony Micha
 
 ##### Client Metadata
 Metadata can be set directly on the client. This metadata will be sent with every error report (in addition to any metadata added to the report itself).
+
 ```c#
 bugsnag.Config.Metadata.AddToTab("Company", "Department", "Human Resources");
 bugsnag.Config.Metadata.AddToTab("Company", "Location", "New York");
@@ -197,6 +207,7 @@ The client can be configured to restrict or modify the notifications that are se
 
 ##### File Prefixes
 When an exception stack trace is recorded, the file associated with each frame will be recorded, if its available. This will be the complete file path, which can lead to bloated frame entries. The paths will also reflect where the application was complied. The client can be configure to remove common file path prefixes.
+
 ```c#
 bugsnag.Config.SetFilePrefix(@"C:\Projects\Production\MyApp\",
                              @"C:\Projects\Development\MyApp\",
@@ -207,6 +218,7 @@ bugsnag.Config.SetFilePrefix(@"C:\Projects\Production\MyApp\",
 
 ##### Project Namespaces
 Bugsnag will highlight stack trace frames if they are detected as being *In Project*. The client can be configured with project namespaces. If a stack trace frame method call originates from a class that belongs to one of these project namespaces, they will be highlighted.
+
 ```c#
 bugsnag.Config.SetProjectNamespaces("MyCompany.MyApp","MyCompany.MyLibrary");
 ```
@@ -254,12 +266,14 @@ bugsnag.Config.BeforeNotify(error =>
 
 ##### Filters
 Data associated with notifications are sent via the `Metadata` object attached to the error. Sensitive information can be filtered before its sent to Bugsnag by setting filters. Any tab entries that have keys matching these filters will have they value replaced with the text `[FILTERED]`
+
 ```c#
 bugsnag.Config.SetFilters("Password", "Credit Card Number");
 ```
 
 #####  Endpoint URL
 All notifications are send to the Endpoint URL. By default, this is set to `http://notify.bugsnag.com`, however this can be overridden.
+
 ```c#
 bugsnag.Config.Endpoint = "http://myserver.bugsnag.com";
 ```
@@ -274,12 +288,14 @@ The available properties available
 
 #### Exception (Read Only)
 The exception the event is representing. This needs to be provided when creating an error event and can not be modified.
+
 ```c#
 Exception exp = error.Exception;
 ```
 
 #### IsRuntimeEnding (Read Only)
 If an exception occurs that has resulted in the application crashing out (runtime ended), this flag will be true.
+
 ```c#
 bool hasCrashed = error.IsRuntimeEnding;
 ```
@@ -288,12 +304,14 @@ bool hasCrashed = error.IsRuntimeEnding;
 Sets the grouping hash used by Bugsnag.com to manually override the default grouping technique. This option is not recommended, and should only be manually set with care.
 
 Any errors that are sent to Bugsnag, that have the same grouping hash will be grouped as one.
+
 ```c#
 error.GroupingHash = "d41d8cd98f00b204e9800998ecf8427e";
 ```
 
 #### Severity
 The severity can be set directly on the event. Valid severities are `Severity.Error`, `Severity.Warning` and `Severity.Info`.
+
 ```c#
 error.Severity = Severity.Info;
 ```
@@ -305,6 +323,7 @@ Each event object will start with a blank metadata object ready to be added to. 
 
 ##### AddToTab
 This is the main way to add data to a Metadata object. Specify the tab, tab entry key and tab entry value you want to add. If the entry key already exists in the tab your trying to add to, the value will be overwritten with the new value. If no tab is specified, the data will be added to the "Custom Data" tab.
+
 ```c#
 // Adds company details under the "Company Details" tab
 error.Metadata.AddToTab("Company Details", "Name", "My Company");
@@ -321,6 +340,7 @@ error.Metadata.AddToTab("Full Test Suite", true);
 
 ##### RemoveTab
 Removes a tab that exists in the metadata.
+
 ```c#
 // Removes the Dev Only tab
 error.Metadata.RemoveTab("Dev Only");
@@ -328,6 +348,7 @@ error.Metadata.RemoveTab("Dev Only");
 
 ##### RemoveTabEntry
 Removes a tab that exists in the metadata.
+
 ```c#
 // Removes the unit test result entry
 error.Metadata.RemoveTabEntry("Build Results", "Test Results");
