@@ -27,15 +27,16 @@ namespace Bugsnag.Test.FunctionalTests
 
             while (true)
             {
-                var context = await listener.GetContextAsync();
                 try
                 {
+                    var context = await listener.GetContextAsync();
                     messageQueue.Enqueue(ProcessJsonRequest(context));
-                }
-                finally
-                {
                     context.Response.StatusCode = 200;
                     context.Response.Close();
+                }
+                catch
+                {
+                    return;
                 }
             }
         }
