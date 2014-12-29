@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Xunit;
 using Xunit.Extensions;
 
-namespace Bugsnag.Core.Test
+namespace Bugsnag.Test
 {
     public class ExceptionParserTests
     {
@@ -49,11 +49,11 @@ namespace Bugsnag.Core.Test
         #endregion
 
         [Theory]
-        [InlineData("Calculate", "Bugsnag.Core.Test.ExceptionParserTests.Calculate(String string1, Int32 integer2)")]
-        [InlineData("Addition", "Bugsnag.Core.Test.ExceptionParserTests.Addition(Int64 long1, Int64 long2)")]
-        [InlineData("Subtraction", "Bugsnag.Core.Test.ExceptionParserTests.Subtraction(UInt32[] unsigned)")]
-        [InlineData("Nothing", "Bugsnag.Core.Test.ExceptionParserTests.Nothing()")]
-        [InlineData("Multiplication", "Bugsnag.Core.Test.ExceptionParserTests.Multiplication(TestClass testClass)")]
+        [InlineData("Calculate", "Bugsnag.Test.ExceptionParserTests.Calculate(String string1, Int32 integer2)")]
+        [InlineData("Addition", "Bugsnag.Test.ExceptionParserTests.Addition(Int64 long1, Int64 long2)")]
+        [InlineData("Subtraction", "Bugsnag.Test.ExceptionParserTests.Subtraction(UInt32[] unsigned)")]
+        [InlineData("Nothing", "Bugsnag.Test.ExceptionParserTests.Nothing()")]
+        [InlineData("Multiplication", "Bugsnag.Test.ExceptionParserTests.Multiplication(TestClass testClass)")]
         public void GenerateMethodSignature_GeneratesSignaturesCorrectly(string methodName, string expSignature)
         {
             // Arrange
@@ -166,7 +166,7 @@ namespace Bugsnag.Core.Test
             var testConfig = new Configuration(TestApiKey);
             testConfig.AutoDetectInProject = autoInProject;
             if (projectNamespace)
-                testConfig.ProjectNamespaces = new[] { "Bugsnag.Core.Test.ExceptionParserTests" };
+                testConfig.ProjectNamespaces = new[] { "Bugsnag.Test.ExceptionParserTests" };
 
             var testExp = new RankException("Test Rank Exp");
 

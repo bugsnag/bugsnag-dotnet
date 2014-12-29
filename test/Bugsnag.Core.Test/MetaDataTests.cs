@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Xunit;
 using Xunit.Extensions;
 
-namespace Bugsnag.Core.Test
+namespace Bugsnag.Test
 {
     public class MetadataTests
     {

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Extensions;
 
-namespace Bugsnag.Core.Test.FunctionalTests
+namespace Bugsnag.Test.FunctionalTests
 {
     public class BasicClientTests
     {
@@ -52,9 +52,8 @@ namespace Bugsnag.Core.Test.FunctionalTests
             JObject json;
             using (var server = new TestServer(client))
             {
-                server.ListenForResponse();
                 client.Notify(exp);
-                json = server.Response();
+                json = server.GetLastResponse();
             }
 
             // Assert
