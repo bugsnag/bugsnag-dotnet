@@ -1,54 +1,72 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 using Bugsnag.Clients;
 using Newtonsoft.Json.Linq;
 
-namespace Bugsnag.Core.Test.FunctionalTests
+namespace Bugsnag.Test.FunctionalTests
 {
     public class TestServer : IDisposable
     {
         private HttpListener listener;
-        public Task<JObject> LastJsonResponse;
+        private ConcurrentQueue<JObject> messageQueue;
 
         public TestServer(BaseClient client)
         {
             client.Config.Endpoint = "http://localhost:8181/";
+            messageQueue = new ConcurrentQueue<JObject>();
+            Start();
+        }
+
+        public async void Start()
+        {
             listener = new HttpListener();
             listener.Prefixes.Add("http://localhost:8181/");
             listener.Start();
-        }
 
-        public void ListenForResponse()
-        {
-            LastJsonResponse = listener.GetContextAsync().ContinueWith(x =>
+            while (true)
             {
-                var json = GetJsonObjectFromRequest(x.Result.Request);
-                x.Result.Response.Close();
-                return json;
-            });
+                try
+                {
+                    var context = await listener.GetContextAsync();
+                    messageQueue.Enqueue(ProcessJsonRequest(context));
+                    context.Response.StatusCode = 200;
+                    context.Response.Close();
+                }
+                catch
+                {
+                    return;
+                }
+            }
         }
 
-        private JObject GetJsonObjectFromRequest(HttpListenerRequest request)
+        public void Stop()
+        {
+            if (listener != null)
+                listener.Abort();
+        }
+
+        private JObject ProcessJsonRequest(HttpListenerContext context)
         {
             string body = "";
-            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+            using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 body = reader.ReadToEnd();
             }
             return JObject.Parse(body);
         }
 
-        public JObject Response()
+        public JObject GetLastResponse()
         {
-            LastJsonResponse.Wait(100);
-            return LastJsonResponse.Result;
+            JObject result = null;
+            messageQueue.TryDequeue(out result);
+            return result;
         }
 
         public void Dispose()
         {
-            listener.Abort();
+            Stop();
         }
     }
 }
