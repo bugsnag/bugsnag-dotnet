@@ -168,19 +168,18 @@ namespace Bugsnag.Clients
 
                 // Set up some defaults for all clients
                 if (Debugger.IsAttached && String.IsNullOrEmpty(Config.ReleaseStage)) Config.ReleaseStage = "development";
-                if (String.IsNullOrEmpty(Config.AppVersion))
-                {
 #if !MONO
-                    if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
-                    {
-                        // Use the application version defined for the Click-Once application, if it is one
-                        Config.AppVersion = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-                    }
+                // Use the application version defined for the Click-Once application, if it is one
+                if (String.IsNullOrEmpty(Config.AppVersion) && 
+                    System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+                {
+                    
+                    Config.AppVersion = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+                }
 #endif
-                    if (String.IsNullOrEmpty(Config.AppVersion) && Assembly.GetEntryAssembly() != null)
-                    {
-                        Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
-                    }
+                if (String.IsNullOrEmpty(Config.AppVersion) && Assembly.GetEntryAssembly() != null)
+                {
+                    Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
                 }
 
                 Initialized();
