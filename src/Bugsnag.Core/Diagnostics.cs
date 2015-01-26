@@ -17,7 +17,7 @@ namespace Bugsnag
         /// <summary>
         /// The service pack installed on the operating system
         /// </summary>
-        public static readonly string ServicePack = Environment.OSVersion.ServicePack;
+        public static readonly string ServicePack = Environment.OSVersion.ServicePack == "" ? null : Environment.OSVersion.ServicePack;
 
         /// <summary>
         /// Determines if the application is a 32 bit or a 64 bit process
@@ -63,6 +63,9 @@ namespace Bugsnag
                     return GetWin32WindowsVersion();
                 case System.PlatformID.Win32NT:
                     return GetWin32NTVersion();
+                case System.PlatformID.Unix:
+                case System.PlatformID.MacOSX:
+                    return UnixOrMacVersion();
                 default:
                     return "UNKNOWN";
             }
@@ -141,6 +144,41 @@ namespace Bugsnag
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Determines the OS version if on a UNIX based system
+        /// </summary>
+        /// <returns></returns>
+        private static string UnixOrMacVersion()
+        {
+            if (RunTerminalCommand("uname") == "Darwin")
+            {
+                var osName = RunTerminalCommand("sw_vers", "-productName");
+                var osVersion = RunTerminalCommand("sw_vers", "-productVersion");
+                return osName + " (" + osVersion + ")";
+            }
+            return "UNIX";
+        }
+
+        /// <summary>
+        /// Executes a command with arguments, used to send terminal commands in UNIX systems
+        /// </summary>
+        /// <param name="cmd">The command to send</param>
+        /// <param name="args">The arguments to send</param>
+        /// <returns>The returned output</returns>
+        private static string RunTerminalCommand(string cmd, string args = null)
+        {
+            var proc = new System.Diagnostics.Process();
+            proc.EnableRaisingEvents = false;
+            proc.StartInfo.FileName = cmd;
+            proc.StartInfo.Arguments = args;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.Start();
+            proc.WaitForExit();
+            var output = proc.StandardOutput.ReadToEnd();
+            return output.Trim();
         }
     }
 }
