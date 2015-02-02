@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Deployment.Application;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -169,17 +168,18 @@ namespace Bugsnag.Clients
 
                 // Set up some defaults for all clients
                 if (Debugger.IsAttached && String.IsNullOrEmpty(Config.ReleaseStage)) Config.ReleaseStage = "development";
-                if (String.IsNullOrEmpty(Config.AppVersion))
+#if !MONO
+                // Use the application version defined for the Click-Once application, if it is one
+                if (String.IsNullOrEmpty(Config.AppVersion) && 
+                    System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
                 {
-                    if (ApplicationDeployment.IsNetworkDeployed)
-                    {
-                        // Use the application version defined for the Click-Once application, if it is one
-                        Config.AppVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
-                    }
-                    else if (Assembly.GetEntryAssembly() != null)
-                    {
-                        Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
-                    }
+                    
+                    Config.AppVersion = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+                }
+#endif
+                if (String.IsNullOrEmpty(Config.AppVersion) && Assembly.GetEntryAssembly() != null)
+                {
+                    Config.AppVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
                 }
 
                 Initialized();
