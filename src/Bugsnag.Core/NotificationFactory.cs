@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Bugsnag.Payload;
 
 namespace Bugsnag
 {
     internal class NotificationFactory
     {
+        private const string ExpDetailsTabName = "Exception Details";
+
         private Configuration Config { get; set; }
 
         public NotificationFactory(Configuration config)
@@ -19,7 +23,7 @@ namespace Bugsnag
             if (eventInfo == null)
                 return null;
 
-            notification.Events.Add(eventInfo);
+            notification.Events.AddRange(eventInfo);
             return notification;
         }
 
@@ -75,66 +79,98 @@ namespace Bugsnag
                 Severity = errorData.Severity,
                 User = userInfo,
                 Context = errorData.Context,
-                GroupingHash = errorData.GroupingHash
+                GroupingHash = errorData.GroupingHash,
+                Exceptions = new List<ExceptionInfo>()
             };
             return eventInfo;
         }
 
-        private EventInfo CreateErrorEventInfo(Event error)
+        private List<EventInfo> CreateErrorEventInfo(Event error)
         {
-            var errInfo = CreateEventInfoBase(error);
-            var exps = CreateExceptionsInfo(error);
-            if (exps == null)
-                return null;
+            var baseEvent = CreateEventInfoBase(error);
+            var allEvents = new List<EventInfo> { baseEvent };
+            RecursiveAddExceptionInfo(error, error.Exception, error.CallTrace, allEvents, baseEvent);
+            return allEvents;
+        }
 
-            errInfo.Exceptions = exps;
+        /// <summary>
+        /// Starting with an exception, will recursively add exception infos to event infos.
+        /// If an aggregate exception is encountered, an event info will be created for every inner exception
+        /// to ensure no information is lost.
+        /// </summary>
+        /// <param name="error">The error to create new event infos</param>
+        /// <param name="exp">The exception to add to the current event</param>
+        /// <param name="callStack">The stack of notify call</param>
+        /// <param name="allEventInfos">The current status of all event infos created</param>
+        /// <param name="currentEvent">The current event info to add the exception to</param>
+        private void RecursiveAddExceptionInfo(Event error,
+                                               Exception exp,
+                                               StackTrace callStack,
+                                               List<EventInfo> allEventInfos,
+                                               EventInfo currentEvent)
+        {
+            // If we have no more exceptions, return the generated event infos
+            if (exp == null) return;
 
-            // TODO Find a way to snapshot all managed threads at this point
+            // Parse the exception and add it to the current event info stack
+            var expInfo = ExceptionParser.GenerateExceptionInfo(exp, callStack, Config);
+            if (expInfo != null)
+                currentEvent.Exceptions.Add(expInfo);
 
-            // Get to the inner most exception
-            var innerExp = error.Exception;
-            while (innerExp.InnerException != null)
-                innerExp = innerExp.InnerException;
+            // If the exception has no inner exception, then we are finished. Generate metadata for the last exception
+            // and set the final metadata for the event info
+            if (exp.InnerException == null)
+            {
+                FinaliseEventInfo(currentEvent, error, exp);
+            }
+            else
+            {
+                // Check if the current exception contains more than 1 inner exception
+                // if it does, then clone new events for every inner exception and recurse through them seperately
+                var aggExp = exp as AggregateException;
+                if (aggExp != null && aggExp.InnerExceptions.Count > 1)
+                {
+                    allEventInfos.Remove(currentEvent);
+                    foreach (var inner in aggExp.InnerExceptions)
+                    {
+                        var newEvent = CreateEventInfoBase(error);
+                        newEvent.Exceptions = new List<ExceptionInfo>(currentEvent.Exceptions);
+                        allEventInfos.Add(newEvent);
+                        RecursiveAddExceptionInfo(error, inner, callStack, allEventInfos, newEvent);
+                    }
+                }
+                else
+                {
+                    // Otherwise just move to the next inner exception
+                    RecursiveAddExceptionInfo(error, exp.InnerException, callStack, allEventInfos, currentEvent);
+                }
+            }
+        }
 
+        /// <summary>
+        /// Finalises the event info by adding final metadata 
+        /// </summary>
+        /// <param name="eventInfo">The event info to finalise</param>
+        /// <param name="error">The responsible event</param>
+        /// <param name="lastException">The root exception of the event info</param>
+        private void FinaliseEventInfo(EventInfo eventInfo, Event error, Exception lastException)
+        {
             var expMetaData = new Metadata();
-            const string expDetailsTabName = "Exception Details";
 
-            // Record the exception details if there are any
-            expMetaData.AddToTab(expDetailsTabName, "runtimeEnding", error.IsRuntimeEnding);
+            expMetaData.AddToTab(ExpDetailsTabName, "runtimeEnding", error.IsRuntimeEnding);
 
-            if (innerExp.HelpLink != null)
-                expMetaData.AddToTab(expDetailsTabName, "helpLink", innerExp.HelpLink);
+            if (lastException.HelpLink != null)
+                expMetaData.AddToTab(ExpDetailsTabName, "helpLink", lastException.HelpLink);
 
-            if (innerExp.Source != null)
-                expMetaData.AddToTab(expDetailsTabName, "source", innerExp.Source);
+            if (lastException.Source != null)
+                expMetaData.AddToTab(ExpDetailsTabName, "source", lastException.Source);
 
-            if (innerExp.TargetSite != null)
-                expMetaData.AddToTab(expDetailsTabName, "targetSite", innerExp.TargetSite);
+            if (lastException.TargetSite != null)
+                expMetaData.AddToTab(ExpDetailsTabName, "targetSite", lastException.TargetSite);
 
             var metaData = Metadata.CombineMetadata(Config.Metadata, error.Metadata, expMetaData);
             metaData.FilterEntries(Config.IsEntryFiltered);
-
-            errInfo.Metadata = metaData.MetadataStore;
-
-            return errInfo;
-        }
-
-        private List<ExceptionInfo> CreateExceptionsInfo(Event error)
-        {
-            // Create a list of exception information
-            var expInfos = new List<ExceptionInfo>();
-
-            // Keep track of the current exception your trying to add. As we add an exception, we will
-            // move to the inner exception and so on, until all the exceptions in a nested exception is recorded
-            var currentExp = error.Exception;
-            while (currentExp != null)
-            {
-                var expInfo = ExceptionParser.GenerateExceptionInfo(error.Exception, error.CallTrace, Config);
-                if (expInfo != null)
-                    expInfos.Add(expInfo);
-                currentExp = currentExp.InnerException;
-            }
-            return expInfos.Count == 0 ? null : expInfos;
+            eventInfo.Metadata = metaData.MetadataStore;
         }
     }
 }
