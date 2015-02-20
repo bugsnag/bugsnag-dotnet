@@ -347,7 +347,7 @@ error.Metadata.RemoveTab("Dev Only");
 ```
 
 ##### RemoveTabEntry
-Removes a tab that exists in the metadata.
+Removes a tab entry that exists in the metadata.
 
 ```c#
 // Removes the unit test result entry

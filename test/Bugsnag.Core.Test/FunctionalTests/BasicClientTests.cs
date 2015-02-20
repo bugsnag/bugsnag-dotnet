@@ -9,34 +9,15 @@ namespace Bugsnag.Test.FunctionalTests
 {
     public class BasicClientTests
     {
-        public const string TestApiKey = "ABCDEF1234567890ABCDEF1234567890";
-
-        public static readonly RankException TestException1;
-        public static readonly SystemException TestException2;
-
-        static BasicClientTests()
-        {
-            // Initialise test exceptions
-            try
-            {
-                throw new RankException("Rank Test");
-            }
-            catch (RankException e)
-            {
-                TestException1 = e;
-            }
-
-            TestException2 = new SystemException("System Test Exception");
-        }
-
         public static IEnumerable<object[]> ExceptionData
         {
             get
             {
                 return new[]
                 {
-                    new object[] {TestException1},
-                    new object[] {TestException2}
+                    new object[] {StaticData.TestThrowException},
+                    new object[] {StaticData.TestCreatedException},
+                    new object[] {StaticData.TestInnerException}
                 };
             }
         }
@@ -46,7 +27,7 @@ namespace Bugsnag.Test.FunctionalTests
         public void CheckBasicPropertiesOfNotifications(Exception exp)
         {
             // Arrange
-            var client = new BaseClient(TestApiKey);
+            var client = new BaseClient(StaticData.TestApiKey);
 
             // Act
             JObject json;
@@ -57,7 +38,7 @@ namespace Bugsnag.Test.FunctionalTests
             }
 
             // Assert
-            Assert.Equal(TestApiKey, json["apiKey"]);
+            Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
             Assert.Equal(Notifier.Name, json["notifier"]["name"]);
             Assert.Equal(Notifier.Version, json["notifier"]["version"]);
             Assert.Equal(Notifier.Url.AbsoluteUri, json["notifier"]["url"]);
@@ -67,13 +48,13 @@ namespace Bugsnag.Test.FunctionalTests
         public void DefaultSeverityForManuallyNotifiedExceptionsIsWarning()
         {
             // Arrange
-            var client = new BaseClient(TestApiKey);
+            var client = new BaseClient(StaticData.TestApiKey);
 
             // Act
             JObject json;
             using (var server = new TestServer(client))
             {
-                client.Notify(TestException1);
+                client.Notify(StaticData.TestThrowException);
                 json = server.GetLastResponse();
             }
 
@@ -88,13 +69,13 @@ namespace Bugsnag.Test.FunctionalTests
         public void SeveritySetManuallyIsUsedInTheNotification(Severity severity, string expJsonString)
         {
             // Arrange
-            var client = new BaseClient(TestApiKey);
+            var client = new BaseClient(StaticData.TestApiKey);
 
             // Act
             JObject json;
             using (var server = new TestServer(client))
             {
-                client.Notify(TestException1, severity);
+                client.Notify(StaticData.TestThrowException, severity);
                 json = server.GetLastResponse();
             }
 
@@ -106,7 +87,7 @@ namespace Bugsnag.Test.FunctionalTests
         public void AddSimpleMetadataToANotifications()
         {
             // Arrange
-            var client = new BaseClient(TestApiKey);
+            var client = new BaseClient(StaticData.TestApiKey);
             var testMetadata = new Metadata();
             testMetadata.AddToTab("Test Tab 1", "Key 1", "Value 1");
             testMetadata.AddToTab("Test Tab 1", "Key 2", "Value 2");
@@ -116,7 +97,7 @@ namespace Bugsnag.Test.FunctionalTests
             JObject json;
             using (var server = new TestServer(client))
             {
-                client.Notify(TestException1, testMetadata);
+                client.Notify(StaticData.TestThrowException, testMetadata);
                 json = server.GetLastResponse();
             }
 
