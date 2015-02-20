@@ -83,20 +83,18 @@ namespace Bugsnag.Test.FunctionalTests
 
             // Assert
             Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
-            Assert.Equal(3, json["events"].Count());
+            Assert.Equal(1, json["events"].Count());
 
             // Check that 3 events are created, each having the Aggregate exception as the root exception
-            var task1Exps = json["events"].First(x => x["exceptions"][1]["errorClass"].Value<string>() == "FieldAccessException");
-            var task2Exps = json["events"].First(x => x["exceptions"][1]["errorClass"].Value<string>() == "StackOverflowException");
-            var task3Exps = json["events"].First(x => x["exceptions"][1]["errorClass"].Value<string>() == "AccessViolationException");
+            var task1Exps = json["events"][0]["exceptions"].First(x => x["errorClass"].Value<string>() == "FieldAccessException");
+            var task2Exps = json["events"][0]["exceptions"].First(x => x["errorClass"].Value<string>() == "StackOverflowException");
+            var task3Exps = json["events"][0]["exceptions"].First(x => x["errorClass"].Value<string>() == "AccessViolationException");
 
-            Assert.Equal("AggregateException", task1Exps["exceptions"][0]["errorClass"]);
-            Assert.Equal("AggregateException", task2Exps["exceptions"][0]["errorClass"]);
-            Assert.Equal("AggregateException", task3Exps["exceptions"][0]["errorClass"]);
+            Assert.Equal("AggregateException", json["events"][0]["exceptions"][0]["errorClass"]);
 
-            Assert.Equal("Task 1 Exception", task1Exps["exceptions"][1]["message"]);
-            Assert.Equal("Task 2 Exception", task2Exps["exceptions"][1]["message"]);
-            Assert.Equal("Task 3 Exception", task3Exps["exceptions"][1]["message"]);
+            Assert.Equal("Task 1 Exception", task1Exps["message"]);
+            Assert.Equal("Task 2 Exception", task2Exps["message"]);
+            Assert.Equal("Task 3 Exception", task3Exps["message"]);
         }
     }
 }
