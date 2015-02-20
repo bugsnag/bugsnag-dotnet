@@ -10,6 +10,16 @@ namespace Bugsnag
     internal static class Diagnostics
     {
         /// <summary>
+        /// Enum holding the different types of OS
+        /// </summary>
+        public enum OsType
+        {
+            Server,
+            Desktop,
+            Unknown
+        }
+
+        /// <summary>
         /// The version of the operating system the application is running
         /// </summary>
         public static readonly string DetectedOSVersion = GetOSInfo();
@@ -111,14 +121,44 @@ namespace Bugsnag
                         return "Windows Server 2008";
 
                     if (Environment.OSVersion.Version.Minor == 1)
-                        return IsServerVersion() ? "Windows Server 2008 R2" : "Windows 7";
+                    {
+                        switch (GetOsType())
+                        {
+                            case OsType.Desktop:
+                                return "Windows 7";
+                            case OsType.Server:
+                                return "Windows Server 2008 R2";
+                            case OsType.Unknown:
+                                return "Windows 7 / Server 2008 R2";
+                        }
+                    }
 
                     if (Environment.OSVersion.Version.Minor == 2)
-                        return IsServerVersion() ? "Windows Server 2012" : "Windows 8";
+                    {
+                        switch (GetOsType())
+                        {
+                            case OsType.Desktop:
+                                return "Windows 8";
+                            case OsType.Server:
+                                return "Windows Server 2012";
+                            case OsType.Unknown:
+                                return "Windows 8 / Server 2012";
+                        }
+                    }
+
 
                     if (Environment.OSVersion.Version.Minor == 3)
-                        return IsServerVersion() ? "Windows Server 2012 R2" : "Windows 8.1";
-
+                    {
+                        switch (GetOsType())
+                        {
+                            case OsType.Desktop:
+                                return "Windows 8.1";
+                            case OsType.Server:
+                                return "Windows Server 2012 R2";
+                            case OsType.Unknown:
+                                return "Windows 8 / Server 2012 R2";
+                        }
+                    }
                     return "UNKNOWN";
                 default:
                     return "UNKNOWN";
@@ -129,21 +169,29 @@ namespace Bugsnag
         /// Determines if the current operating system is the server version 
         /// </summary>
         /// <returns>True if the current operating system is the server version, otherwise false</returns>
-        private static bool IsServerVersion()
+        private static OsType GetOsType()
         {
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
+            try
             {
-                foreach (var managementObject in searcher.Get())
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
                 {
-                    // ProductType will be one of:
-                    // 1: Workstation
-                    // 2: Domain Controller
-                    // 3: Server
-                    uint productType = (uint)managementObject.GetPropertyValue("ProductType");
-                    return productType != 1;
+                    foreach (var managementObject in searcher.Get())
+                    {
+                        // ProductType will be one of:
+                        // 1: Workstation
+                        // 2: Domain Controller
+                        // 3: Server
+                        uint productType = (uint)managementObject.GetPropertyValue("ProductType");
+                        return (productType != 1 ? OsType.Server : OsType.Desktop);
+                    }
                 }
             }
-            return false;
+            catch (UnauthorizedAccessException exp)
+            {
+                // If we don't have permssions to query the WMI, then indicate we don't know the OS type
+                return OsType.Unknown;
+            }
+            return OsType.Desktop;
         }
 
         /// <summary>
