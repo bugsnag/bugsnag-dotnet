@@ -170,10 +170,9 @@ namespace Bugsnag.Clients
                 if (Debugger.IsAttached && String.IsNullOrEmpty(Config.ReleaseStage)) Config.ReleaseStage = "development";
 #if !MONO
                 // Use the application version defined for the Click-Once application, if it is one
-                if (String.IsNullOrEmpty(Config.AppVersion) && 
+                if (String.IsNullOrEmpty(Config.AppVersion) &&
                     System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
                 {
-                    
                     Config.AppVersion = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
                 }
 #endif

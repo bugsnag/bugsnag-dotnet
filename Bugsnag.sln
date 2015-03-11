@@ -18,13 +18,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B25A7B43-2D72-4970-8BBC-AF0C36DF1576}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
-		CodeAnalysis.ps1 = CodeAnalysis.ps1
-		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Desktop.ConsoleApp", "samples\Desktop.ConsoleApp\Desktop.ConsoleApp.csproj", "{8185E14D-779D-486E-8827-F45EF6007F4B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.Test", "test\Bugsnag.Test\Bugsnag.Test.csproj", "{8539FD93-F93E-4F3B-ACC5-C0C665C7C02B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{08779F05-5A3C-4A34-AE50-C53E36A91998}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
