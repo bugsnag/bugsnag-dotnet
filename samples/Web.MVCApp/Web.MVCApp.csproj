@@ -179,7 +179,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Bugsnag.Core\Bugsnag.csproj">
+    <ProjectReference Include="..\..\src\Bugsnag\Bugsnag.csproj">
       <Project>{e73060e7-8bf3-43ce-b749-6f418c12ea5b}</Project>
       <Name>Bugsnag</Name>
     </ProjectReference>

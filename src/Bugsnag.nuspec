@@ -6,7 +6,7 @@
     <title>Bugsnag .NET Notifier</title>
     <authors>snmaynard</authors>
     <owners>snmaynard</owners>
-    <licenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE</licenseUrl>
+    <licenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/bugsnag/bugsnag-dotnet</projectUrl>
     <iconUrl>https://bugsnag.com/images/logo-mark.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

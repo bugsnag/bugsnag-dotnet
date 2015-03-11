@@ -186,7 +186,7 @@ namespace Bugsnag
                     }
                 }
             }
-            catch (UnauthorizedAccessException exp)
+            catch (UnauthorizedAccessException)
             {
                 // If we don't have permssions to query the WMI, then indicate we don't know the OS type
                 return OsType.Unknown;

@@ -27,10 +27,15 @@ namespace Bugsnag.Test.FunctionalTests
             Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
 
             var traceJson = json["events"][0]["exceptions"][0]["stacktrace"];
+#if DEBUG
             Assert.Equal(3, traceJson.Count());
             Assert.Equal("TestNamespace.ClassGamma.ThrowException()", traceJson[0]["method"]);
             Assert.Equal("TestNamespace.ClassBeta.ThrowException()", traceJson[1]["method"]);
             Assert.Equal("TestNamespace.ClassAlpha.ThrowException()", traceJson[2]["method"]);
+#else
+            Assert.Equal(1, traceJson.Count());
+            Assert.Equal("TestNamespace.ClassAlpha.ThrowException()", traceJson[0]["method"]);
+#endif
         }
 
         [Fact]

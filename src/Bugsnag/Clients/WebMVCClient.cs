@@ -1,33 +1,34 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Web;
-using System.Web.Http.Filters;
+using System.Web.Mvc;
 
 namespace Bugsnag.Clients
 {
-    public static class WebAPIClient
+    public static class WebMVCClient
     {
         [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-        public sealed class BugsnagExceptionHandler : ExceptionFilterAttribute
+        [ComVisible(false)]
+        public sealed class BugsnagExceptionHandler : HandleErrorAttribute
         {
             internal BugsnagExceptionHandler()
             {
             }
 
-            public override void OnException(HttpActionExecutedContext context)
+            public override void OnException(ExceptionContext filterContext)
             {
-                base.OnException(context);
-                if (context == null || context.Exception == null)
+                base.OnException(filterContext);
+                if (filterContext == null || filterContext.Exception == null)
                     return;
-
                 if (Config.AutoNotify)
-                    Client.Notify(context.Exception);
+                    Client.Notify(filterContext.Exception);
             }
         }
 
         public static Configuration Config;
         private static BaseClient Client;
 
-        static WebAPIClient()
+        static WebMVCClient()
         {
             Client = new BaseClient(ConfigurationStorage.ConfigSection.Settings);
             Config = Client.Config;
