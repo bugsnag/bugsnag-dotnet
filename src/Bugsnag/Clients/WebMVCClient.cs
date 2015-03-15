@@ -1,30 +1,15 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Web;
+
+// Provide exception attribute for global filters (> .NET 4.0 )
+#if !NET35
 using System.Web.Mvc;
+#endif
 
 namespace Bugsnag.Clients
 {
     public static class WebMVCClient
     {
-        [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-        [ComVisible(false)]
-        public sealed class BugsnagExceptionHandler : HandleErrorAttribute
-        {
-            internal BugsnagExceptionHandler()
-            {
-            }
-
-            public override void OnException(ExceptionContext filterContext)
-            {
-                base.OnException(filterContext);
-                if (filterContext == null || filterContext.Exception == null)
-                    return;
-                if (Config.AutoNotify)
-                    Client.Notify(filterContext.Exception);
-            }
-        }
-
         public static Configuration Config;
         private static BaseClient Client;
 
@@ -74,11 +59,6 @@ namespace Bugsnag.Clients
 
         }
 
-        public static BugsnagExceptionHandler ErrorHandler()
-        {
-            return new BugsnagExceptionHandler();
-        }
-
         public static void Notify(Exception error)
         {
             Client.Notify(error);
@@ -98,5 +78,32 @@ namespace Bugsnag.Clients
         {
             Client.Notify(error, severity, metadata);
         }
+
+#if !NET35
+        /// <summary>
+        /// Exception attribute to automatically handle errors when registered (requires > .NET 4.0)
+        /// </summary>
+        [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
+        public sealed class BugsnagExceptionHandler : HandleErrorAttribute
+        {
+            internal BugsnagExceptionHandler()
+            {
+            }
+
+            public override void OnException(ExceptionContext filterContext)
+            {
+                base.OnException(filterContext);
+                if (filterContext == null || filterContext.Exception == null)
+                    return;
+                if (Config.AutoNotify)
+                    Client.Notify(filterContext.Exception);
+            }
+        }
+
+        public static BugsnagExceptionHandler ErrorHandler()
+        {
+            return new BugsnagExceptionHandler();
+        }
+#endif
     }
 }

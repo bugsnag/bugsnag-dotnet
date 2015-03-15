@@ -95,7 +95,7 @@ namespace Bugsnag
 
             // Create a basic signature using the methods parameters and name
             var param = method.GetParameters().Select(p => p.ParameterType.Name + " " + p.Name);
-            var paramSummary = String.Join(", ", param);
+            var paramSummary = String.Join(", ", param.ToArray());
             var baseSignature = String.Format("{0}({1})", method.Name, paramSummary);
 
             // Add on the namespace the method came from

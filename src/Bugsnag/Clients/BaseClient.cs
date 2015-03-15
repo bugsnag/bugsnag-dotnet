@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Bugsnag.ConfigurationStorage;
+using Bugsnag.Handlers;
 
 namespace Bugsnag.Clients
 {
@@ -19,7 +20,14 @@ namespace Bugsnag.Clients
         /// <summary>
         /// The handler used to handle app level exceptions and notify Bugsnag accordingly
         /// </summary>
-        internal ExceptionHandler exceptionHandler;
+        internal UnhandledExceptionHandler unhandledExceptionHandler = new UnhandledExceptionHandler();
+
+#if !NET35
+        /// <summary>
+        /// The handler used to handle task app level exceptions and notify Bugsnag accordingly
+        /// </summary>
+        internal TaskExceptionHandler taskExceptionHandler = new TaskExceptionHandler();
+#endif
 
         /// <summary>
         /// Gets the configuration of the client, allowing users to config it
@@ -56,7 +64,10 @@ namespace Bugsnag.Clients
         /// </summary>
         public void StartAutoNotify()
         {
-            exceptionHandler.InstallHandler(HandleDefaultException);
+            unhandledExceptionHandler.InstallHandler(HandleDefaultException);
+#if !NET35
+            taskExceptionHandler.InstallHandler(HandleDefaultException);
+#endif
         }
 
         /// <summary>
@@ -64,7 +75,10 @@ namespace Bugsnag.Clients
         /// </summary>
         public void StopAutoNotify()
         {
-            exceptionHandler.UninstallHandler();
+            unhandledExceptionHandler.UninstallHandler();
+#if !NET35
+            taskExceptionHandler.InstallHandler(HandleDefaultException);
+#endif
         }
 
         /// <summary>
@@ -160,7 +174,6 @@ namespace Bugsnag.Clients
             {
                 Config = new Configuration(configStorage);
                 notifier = new Notifier(Config);
-                exceptionHandler = new ExceptionHandler();
 
                 // Install a default exception handler with this client
                 if (Config.AutoNotify)

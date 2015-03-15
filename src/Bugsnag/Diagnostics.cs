@@ -32,12 +32,12 @@ namespace Bugsnag
         /// <summary>
         /// Determines if the application is a 32 bit or a 64 bit process
         /// </summary>
-        public static readonly string AppArchitecture = Environment.Is64BitProcess ? "64 bit" : "32 bit";
+        public static readonly string AppArchitecture = Is64bitProcess() ? "64 bit" : "32 bit";
 
         /// <summary>
         /// Determines if the operation system is 32 bit or 64 bit
         /// </summary>
-        public static readonly string OSArchitecture = Environment.Is64BitOperatingSystem ? "64 bit" : "32 bit";
+        public static readonly string OSArchitecture = GetOSArchitecture();
 
         /// <summary>
         /// The number of processors (cores) the device/machine has
@@ -227,6 +227,32 @@ namespace Bugsnag
             proc.WaitForExit();
             var output = proc.StandardOutput.ReadToEnd();
             return output.Trim();
+        }
+
+        /// <summary>
+        /// Determines if the current process is a 64 bit process
+        /// </summary>
+        /// <returns>True if the process is 64 bit otherwise false</returns>
+        private static bool Is64bitProcess()
+        {
+#if !NET35
+            return Environment.Is64BitProcess;
+#else
+            return IntPtr.Size == 8;
+#endif
+        }
+
+        /// <summary>
+        /// Attempts to determine the architecture of the OS.
+        /// </summary>
+        /// <returns>The architecture of the OS</returns>
+        private static string GetOSArchitecture()
+        {
+#if !NET35
+            return Environment.Is64BitOperatingSystem ? "64 bit" : "32 bit";
+#else
+            return Is64bitProcess() ? "64 bit" : "Unknown";
+#endif
         }
     }
 }

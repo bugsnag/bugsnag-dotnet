@@ -115,6 +115,7 @@ namespace Bugsnag
             }
             else
             {
+#if !NET35
                 // Check if the current exception contains more than 1 inner exception
                 // if it does, then recurse through them seperately
                 var aggExp = exp as AggregateException;
@@ -129,7 +130,10 @@ namespace Bugsnag
                 {
                     // Otherwise just move to the next inner exception
                     RecursiveAddExceptionInfo(error, exp.InnerException, callStack, currentEvent);
-                }
+                }           
+#else
+                RecursiveAddExceptionInfo(error, exp.InnerException, callStack, currentEvent);
+#endif
             }
         }
 

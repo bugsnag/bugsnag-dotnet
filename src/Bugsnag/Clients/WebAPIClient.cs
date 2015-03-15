@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Http.Filters;
 
@@ -8,7 +7,6 @@ namespace Bugsnag.Clients
     public static class WebAPIClient
     {
         [AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-        [ComVisible(false)]
         public sealed class BugsnagExceptionHandler : ExceptionFilterAttribute
         {
             internal BugsnagExceptionHandler()

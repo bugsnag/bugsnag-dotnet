@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Desktop.ConsoleApp", "sampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.Test", "test\Bugsnag.Test\Bugsnag.Test.csproj", "{8539FD93-F93E-4F3B-ACC5-C0C665C7C02B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.Net35", "src\Bugsnag.Net35\Bugsnag.Net35.csproj", "{5A024FF2-7E99-4959-95A5-836B3CB48864}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,12 @@ Global
 		{8539FD93-F93E-4F3B-ACC5-C0C665C7C02B}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
 		{8539FD93-F93E-4F3B-ACC5-C0C665C7C02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8539FD93-F93E-4F3B-ACC5-C0C665C7C02B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A024FF2-7E99-4959-95A5-836B3CB48864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A024FF2-7E99-4959-95A5-836B3CB48864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A024FF2-7E99-4959-95A5-836B3CB48864}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{5A024FF2-7E99-4959-95A5-836B3CB48864}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{5A024FF2-7E99-4959-95A5-836B3CB48864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A024FF2-7E99-4959-95A5-836B3CB48864}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,5 +79,6 @@ Global
 		{0E890E8C-0F32-4C45-BAB8-26BF8748D1D5} = {A3668929-5936-4D38-BB0A-CC0B89C2BA42}
 		{8185E14D-779D-486E-8827-F45EF6007F4B} = {A3668929-5936-4D38-BB0A-CC0B89C2BA42}
 		{8539FD93-F93E-4F3B-ACC5-C0C665C7C02B} = {5E25531B-BE8D-4386-9BC3-3C0684F769D0}
+		{5A024FF2-7E99-4959-95A5-836B3CB48864} = {2CBE6402-4C06-42B2-BFBC-0D77C286C6DC}
 	EndGlobalSection
 EndGlobal
