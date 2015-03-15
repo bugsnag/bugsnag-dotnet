@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Bugsnag.Clients;
 using Newtonsoft.Json.Linq;
 using Xunit;
