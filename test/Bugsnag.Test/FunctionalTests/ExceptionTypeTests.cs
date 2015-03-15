@@ -60,7 +60,6 @@ namespace Bugsnag.Test.FunctionalTests
             Assert.Equal("TypeAccessException", json["events"][0]["exceptions"][2]["errorClass"]);
         }
 
-#if !NET35
         [Fact]
         public void CheckInnerExceptionsForBasicAggregateException()
         {
@@ -102,6 +101,5 @@ namespace Bugsnag.Test.FunctionalTests
             Assert.Equal("Task 2 Exception", task2Exps["message"]);
             Assert.Equal("Task 3 Exception", task3Exps["message"]);
         }
-#endif
     }
 }
