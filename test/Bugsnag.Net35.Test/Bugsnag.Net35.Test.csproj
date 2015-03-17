@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4AC45452-7497-4CC5-A2FF-8F52D689172E}</ProjectGuid>
+    <ProjectGuid>{B020BB0F-EF83-46B6-9714-EE037DEE89C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bugsnag.Net35.Test</RootNamespace>
@@ -17,14 +17,14 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>82dcafbf</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>122f8ee0</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET35</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -32,7 +32,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NET35</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -57,16 +57,31 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Bugsnag.Test\ClientTests.cs">
+      <Link>ClientTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Bugsnag.Test\ConfigurationTests.cs">
+      <Link>ConfigurationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Bugsnag.Test\EventTests.cs">
+      <Link>EventTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Bugsnag.Test\ExceptionParserTests.cs">
+      <Link>ExceptionParserTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Bugsnag.Test\MetaDataTests.cs">
+      <Link>MetaDataTests.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bugsnag.Net35\Bugsnag.Net35.csproj">
       <Project>{5a024ff2-7e99-4959-95a5-836b3cb48864}</Project>
       <Name>Bugsnag.Net35</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
