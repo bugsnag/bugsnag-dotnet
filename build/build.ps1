@@ -49,6 +49,8 @@ task Archive -depends Test {
 
 task Test -depends Compile, Clean {
   Write-Host "Compiling Test Assemblies"
+  nuget restore ../test/Bugsnag.Test/packages.config -PackagesDirectory ../packages
+  nuget restore ../test/Bugsnag.Net35.Test/packages.config -PackagesDirectory ../packages
   exec { msbuild ../test/Bugsnag.Test/Bugsnag.Test.csproj /p:Configuration=$config /p:OutDir=$45_test_dir /v:m /nologo } 
   exec { msbuild ../test/Bugsnag.Net35.Test/Bugsnag.Net35.Test.csproj /p:Configuration=$config /p:OutDir=$35_test_dir /v:m /nologo}
 
@@ -62,6 +64,8 @@ task Test -depends Compile, Clean {
 
 task Compile -depends Clean {
   Write-Host "Compiling Build Assemblies"
+  nuget restore ../src/Bugsnag/packages.config -PackagesDirectory ../packages
+  nuget restore ../src/Bugsnag.Net35/packages.config -PackagesDirectory ../packages
   exec { msbuild ../src/Bugsnag/Bugsnag.csproj /p:Configuration=$config /p:OutDir=$45_build_dir /p:AssemblyName=Bugsnag /v:m /nologo }
   exec { msbuild ../src/Bugsnag.Net35/Bugsnag.Net35.csproj /p:Configuration=$config /p:OutDir=$35_build_dir /p:AssemblyName=Bugsnag /v:m /nologo}
 }
