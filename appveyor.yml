@@ -17,11 +17,6 @@ environment:
 #       build configuration       #
 #---------------------------------#
 
-configuration:
-  - Debug
-  - Release
-  - MonoRelease
-
 # scripts to run before build
 build_script:
   build/build.bat
