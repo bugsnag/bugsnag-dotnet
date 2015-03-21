@@ -10,35 +10,6 @@ namespace Bugsnag.Test.FunctionalTests
     public class ExceptionTypeTests
     {
         [Fact]
-        public void CheckCallStacksAreReportedCorrectly()
-        {
-            // Arrange
-            var client = new BaseClient(StaticData.TestApiKey);
-
-            // Act
-            JObject json;
-            using (var server = new TestServer(client))
-            {
-                client.Notify(StaticData.TestCallStackException);
-                json = server.GetLastResponse();
-            }
-
-            // Assert
-            Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
-
-            var traceJson = json["events"][0]["exceptions"][0]["stacktrace"];
-#if DEBUG
-            Assert.Equal(3, traceJson.Count());
-            Assert.Equal("TestNamespace.ClassGamma.ThrowException()", traceJson[0]["method"]);
-            Assert.Equal("TestNamespace.ClassBeta.ThrowException()", traceJson[1]["method"]);
-            Assert.Equal("TestNamespace.ClassAlpha.ThrowException()", traceJson[2]["method"]);
-#else
-            Assert.Equal(1, traceJson.Count());
-            Assert.Equal("TestNamespace.ClassAlpha.ThrowException()", traceJson[0]["method"]);
-#endif
-        }
-
-        [Fact]
         public void CheckInnerExceptionsAreNotified()
         {
             // Arrange
@@ -101,5 +72,33 @@ namespace Bugsnag.Test.FunctionalTests
             Assert.Equal("Task 2 Exception", task2Exps["message"]);
             Assert.Equal("Task 3 Exception", task3Exps["message"]);
         }
+
+#if DEBUG
+        [Fact]
+        public void CheckCallStacksAreReportedCorrectly()
+        {
+            // Arrange
+            var client = new BaseClient(StaticData.TestApiKey);
+
+            // Act
+            JObject json;
+            using (var server = new TestServer(client))
+            {
+                client.Notify(StaticData.TestCallStackException);
+                json = server.GetLastResponse();
+            }
+
+            // Assert
+            Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
+
+            var traceJson = json["events"][0]["exceptions"][0]["stacktrace"];
+
+            Assert.Equal(3, traceJson.Count());
+            Assert.Equal("TestNamespace.ClassGamma.ThrowException()", traceJson[0]["method"]);
+            Assert.Equal("TestNamespace.ClassBeta.ThrowException()", traceJson[1]["method"]);
+            Assert.Equal("TestNamespace.ClassAlpha.ThrowException()", traceJson[2]["method"]);
+        }
+
+#endif
     }
 }

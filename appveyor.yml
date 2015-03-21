@@ -23,6 +23,6 @@ configuration:
   - MonoRelease
 
 # scripts to run before build
-before_build:
-  nuget restore
+build_script:
+  build/build.bat
 

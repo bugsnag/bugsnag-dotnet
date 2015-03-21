@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>$id$</id>
+    <id>Bugsnag</id>
     <version>$version$</version>
     <title>Bugsnag .NET Notifier</title>
     <authors>snmaynard</authors>
