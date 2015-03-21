@@ -23,7 +23,6 @@ properties {
   $version = if ($env:APPVEYOR_BUILD_VERSION) {$env:APPVEYOR_BUILD_VERSION} else {6.7}
   $config = "Release"
 }
-import-module Pscx
 
 task default -depends Package, Archive
 
@@ -42,11 +41,17 @@ task Package -depends Test {
 
     exec { nuget pack $nuget_spec -OutputDirectory $output_dir }
 }
+
+
 task Archive -depends Test {
+  if ($env:APPVEYOR) {
+	Write-Host "Skipping archiving, Appveyor will publish as artifact"
+  } else {
     mkdir $archive_dir | Out-Null   
     Copy-Item $build_dir $archive_dir -Recurse
     Write-Zip -Path "$archive_dir\*" -OutputPath "$output_dir\bugsnag.$version.zip" | Out-Null  
 	Remove-Item $archive_dir -Recurse
+  }
 }
 
 task Test -depends Compile, Clean {
@@ -55,10 +60,14 @@ task Test -depends Compile, Clean {
   nuget restore ../test/Bugsnag.Net35.Test/packages.config -PackagesDirectory ../packages
   exec { msbuild ../test/Bugsnag.Test/Bugsnag.Test.csproj /p:Configuration=$config /p:OutDir=$45_test_dir /v:m /nologo } 
   exec { msbuild ../test/Bugsnag.Net35.Test/Bugsnag.Net35.Test.csproj /p:Configuration=$config /p:OutDir=$35_test_dir /v:m /nologo}
-
-  Write-Host "Running Unit Tests..." -foregroundcolor "Yellow"
-  exec {& $tools_dir/xunit/xunit.console.clr4.exe "$45_test_dir/Bugsnag.Test.dll" /noshadow | select-string -notmatch -pattern "xunit.dll","xUnit.net","Copyright","Tests complete","^\s*$"  -casesensitive}
-  exec {& $tools_dir/xunit/xunit.console.clr4.exe "$35_test_dir/Bugsnag.Net35.Test.dll" /noshadow | select-string -notmatch -pattern "xunit.dll","xUnit.net","Copyright","Tests complete","^\s*$"   -casesensitive}
+	
+  if ($env:APPVEYOR) {
+	Write-Host "Skipping unit tests, Appveyor will run tests"
+  } else {
+	Write-Host "Running Unit Tests..." -foregroundcolor "Yellow"
+	exec {& $tools_dir/xunit/xunit.console.clr4.exe "$45_test_dir/Bugsnag.Test.dll" /noshadow }
+	exec {& $tools_dir/xunit/xunit.console.clr4.exe "$35_test_dir/Bugsnag.Net35.Test.dll" /noshadow }
+  }
 }
 
 task Compile -depends Clean {
@@ -73,5 +82,3 @@ task Clean {
   remove-item -force -recurse $output_dir -ErrorAction SilentlyContinue
   Write-Host "Deleted previous output"
 }
-
-remove-module Pscx
