@@ -23,7 +23,7 @@ build_script:
   
 test:
   assemblies:
-    - 'build\output\tests\**\*.Test.dll'
+    - 'build\output\test\**\*.Test.dll'
   
 #---------------------------------#
 #      artifacts configuration    #
@@ -37,4 +37,5 @@ artifacts:
  
   # pushing all *.nupkg files in directory
   - path: build\output\*.nupkg
+    name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
 
