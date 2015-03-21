@@ -21,6 +21,10 @@ environment:
 build_script:
   ps: import-module ".\build\psake.psm1";invoke-psake ".\build\build.ps1"
   
+test:
+  assemblies:
+    - 'build\output\tests\**\*.Test.dll'
+  
 #---------------------------------#
 #      artifacts configuration    #
 #---------------------------------#
@@ -28,7 +32,7 @@ build_script:
 artifacts:
   # pushing entire folder as a zip archive
   - path: build\output\bin
-    name: Bugsnag.{version}.zip
+    name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
     type: zip
  
   # pushing all *.nupkg files in directory
