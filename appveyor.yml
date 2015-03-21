@@ -19,5 +19,5 @@ environment:
 
 # scripts to run before build
 build_script:
-  build/build.bat
+  ps: invoke-psake "build/build.ps1"
 
