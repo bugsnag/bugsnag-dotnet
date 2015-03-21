@@ -19,6 +19,5 @@ environment:
 
 # scripts to run before build
 build_script:
-  ps: import-module "build/psake.psm1"
-  ps: invoke-psake "build/build.ps1"
+  ps: import-module "build/psake.psm1";invoke-psake "build/build.ps1"
 
