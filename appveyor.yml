@@ -28,8 +28,8 @@ build_script:
 artifacts:
   # pushing entire folder as a zip archive
   - path: build\output\bin
-  - name: Bugsnag.{version}.zip
-  - type: zip
+    name: Bugsnag.{version}.zip
+    type: zip
  
   # pushing all *.nupkg files in directory
   - path: build\output\*.nupkg
