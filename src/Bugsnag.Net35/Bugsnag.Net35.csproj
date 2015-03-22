@@ -31,6 +31,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MonoRelease|AnyCPU'">
+    <OutputPath>bin\MonoRelease\</OutputPath>
+    <DefineConstants>TRACE;NET35;MONO</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+	<AssemblyName>BugsnagMono</AssemblyName>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
@@ -39,11 +49,7 @@
       <Link>Properties\CommonVersionInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\Bugsnag\**\*.cs" 
-             Exclude="..\Bugsnag\Properties\AssemblyInfo.cs;
-                      ..\Bugsnag\obj\**\*.cs;
-                      ..\Bugsnag\Clients\WebAPIClient.cs;
-                      ..\Bugsnag\Handlers\TaskExceptionHandler.cs">
+    <Compile Include="..\Bugsnag\**\*.cs" Exclude="..\Bugsnag\Properties\AssemblyInfo.cs;&#xD;&#xA;                      ..\Bugsnag\obj\**\*.cs;&#xD;&#xA;                      ..\Bugsnag\Clients\WebAPIClient.cs;&#xD;&#xA;                      ..\Bugsnag\Handlers\TaskExceptionHandler.cs">
       <Link>%(RecursiveDir)%(FileName)</Link>
     </Compile>
   </ItemGroup>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>BugsnagMono</id>
+    <version>$version$</version>
+    <title>Bugsnag .NET Notifier for Mono</title>
+    <authors>snmaynard</authors>
+    <owners>snmaynard</owners>
+    <licenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/bugsnag/bugsnag-dotnet</projectUrl>
+    <iconUrl>https://bugsnag.com/images/logo-mark.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Bugsnag .NET notifier for Mono</description>
+    <releaseNotes></releaseNotes>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="6.0.1" />
+    </dependencies>
+    <copyright>Copyright 2015</copyright>
+    <tags>bugsnag error logging reporting</tags>
+  </metadata>
+</package>
