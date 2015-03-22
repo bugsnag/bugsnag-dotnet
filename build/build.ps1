@@ -1,12 +1,12 @@
 properties {
   # Custom properties
-  $default_version = 6.7
+  $default_version = "1.1.0.0"
   $config = "Debug"
   
   # Bugsnag Projects
   $projects = @(
-    @{name = "Bugsnag"; target = "4.5"},
-    @{name = "Bugsnag.Net35"; target = "3.5"}
+    @{name = "Bugsnag"; target = "net45"},
+    @{name = "Bugsnag.Net35"; target = "net35"}
   )
   
   # Directories
@@ -36,7 +36,7 @@ task Package -depends Test {
 	log "Updating Nuspec file (Version:$version)" 
 	Copy-Item $nuget_spec_template $nuget_spec
 	$spec = [xml](Get-Content $nuget_spec )
-    $spec.package.metadata.version = ([string]$version)
+    $spec.package.metadata.version = $version
     $spec.Save($nuget_spec)
 
 	log "Creating Nuget package" 
@@ -75,6 +75,10 @@ task Test -depends Compile, Clean {
 }
 
 task Compile -depends Clean {
+  log "Patching assembly versions to $version"
+  replace_line "..\src\Common\CommonVersionInfo.cs" "^\[assembly: AssemblyVersion.*$" "[assembly: AssemblyVersion(`"$version`")]"
+  replace_line "..\src\Common\CommonVersionInfo.cs" "^\[assembly: AssemblyFileVersion.*$" "[assembly: AssemblyFileVersion(`"$version`")]"
+  
   foreach($project in $projects) {
     log "Building $($project.name)"
 	$project_file = "..\src\$($project.name)\$($project.name).csproj"
@@ -102,3 +106,10 @@ function global:compile_project($project_file, $out_dir)
   nuget restore $package_file -PackagesDirectory $packages_dir | Out-Null
   exec { msbuild $project_file /p:Configuration=$config /p:OutDir=$out_dir /v:m /nologo }
 }
+
+function global:replace_line($file, $regex, $newline)
+{
+  $content = Get-Content $file
+  $content -replace $regex, $newline | Set-Content $file
+}
+
