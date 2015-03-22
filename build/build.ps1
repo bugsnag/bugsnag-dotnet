@@ -59,16 +59,16 @@ task Archive -depends Test {
 }
 
 task Test -depends Compile, Clean {
-  if ($env:APPVEYOR) {
-	log "Skipping unit tests, Appveyor will run tests"
-  } else {
-	foreach($project in $projects) {
-	  log "Running unit tests for $($project.name)"
-	  $test_name = "$($project.name).Test"
-	  $test_project_file = "..\test\$test_name\$test_name.csproj"
-	  $test_output = "$test_dir\$($project.target)"
-	  
-	  compile_project $test_project_file $test_output 
+  foreach($project in $projects) {
+	log "Running unit tests for $($project.name)"
+	$test_name = "$($project.name).Test"
+	$test_project_file = "..\test\$test_name\$test_name.csproj"
+	$test_output = "$test_dir\$($project.target)"
+	
+	compile_project $test_project_file $test_output
+	if ($env:APPVEYOR) {
+	  exec {& xunit.console.clr4 $("$test_output\$test_name.dll") /noshadow /appveyor}
+    } else {	  
 	  exec {& $tools_dir/xunit/xunit.console.clr4.exe $("$test_output\$test_name.dll") /noshadow }
 	}
   }

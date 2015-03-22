@@ -21,9 +21,8 @@ environment:
 build_script:
   ps: import-module ".\build\psake.psm1";invoke-psake ".\build\build.ps1"
   
-test:
-  assemblies:
-    - 'build\output\test\**\*.Test.dll'
+# build script will run tests
+test: off
   
 #---------------------------------#
 #      artifacts configuration    #
