@@ -1,9 +1,10 @@
 properties {
+  # UPDATE TO SET VERSION NUMBER OF BUILD
   # Version (overwritten if built using Appveyor)
   $default_version = "1.1.0.0"
+ 
+  # Build profiles / properties
   $version = if ($env:APPVEYOR_BUILD_VERSION) {$env:APPVEYOR_BUILD_VERSION} else {$default_version}
-  
-  # Build profiles
   $profiles = @(
     @{config = "Debug"; test_only=$true},
     @{config = "Release"; nuspec="Bugsnag.nuspec"},
@@ -28,6 +29,11 @@ properties {
   $build_dir = "$output_dir\bin"
   $test_out_dir = "$output_dir\test"
   $nuget_dir = "$output_dir\nuget"
+  
+  # Build Tools
+  $nuget_exe = "nuget"
+  $xunit_exe = "$tools_dir\xunit\xunit.console.clr4.exe"
+  $xunit_appveyor = "xunit.console.clr4"
 }
 
 task default -depends Package, Archive
@@ -54,7 +60,7 @@ task Package -depends Test {
     mkdir $new_lib_dir | Out-Null
     Copy-Item "$build_dir\$($profile.config)\*" $new_lib_dir -Recurse
     Remove-Item "$new_lib_dir\*" -Exclude "Bugsnag*" -Recurse
-    exec { nuget pack $new_spec -OutputDirectory $output_dir -Verbosity quiet}
+    exec {& $nuget_exe pack $new_spec -OutputDirectory $output_dir -Verbosity quiet}
   }
 }
 
@@ -88,9 +94,9 @@ task Test -depends Compile, Clean {
     
       compile_project $test_project_file $profile.config $test_output 
       if ($env:APPVEYOR) {
-        exec {& xunit.console.clr4 $("$test_output\$test_name.dll") /noshadow /appveyor}
+        exec {& $xunit_appveyor $("$test_output\$test_name.dll") /noshadow /appveyor}
       } else {      
-        exec {& $tools_dir/xunit/xunit.console.clr4.exe $("$test_output\$test_name.dll") /noshadow }
+        exec {& $xunit_exe $("$test_output\$test_name.dll") /noshadow }
       }
 	}
   }
