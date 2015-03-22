@@ -1,6 +1,7 @@
 properties {
-  # Custom properties
-  $default_version = "1.3.0.0"
+  # Version (overwritten if built using Appveyor)
+  $default_version = "1.1.0.0"
+  $version = if ($env:APPVEYOR_BUILD_VERSION) {$env:APPVEYOR_BUILD_VERSION} else {$default_version}
   
   # Build profiles
   $profiles = @(
@@ -8,31 +9,33 @@ properties {
     @{config = "Release"; nuspec="Bugsnag.nuspec"},
     @{config = "MonoRelease"; nuspec="BugsnagMono.nuspec"}
   )
-  
+
   # Bugsnag Projects
   $projects = @(
     @{name = "Bugsnag"; target = "net45"},
     @{name = "Bugsnag.Net35"; target = "net35"}
   )
   
-  # Directories
+  # Build directories
   $base_dir = resolve-path .
-  $output_dir = "$base_dir\output"
-  $build_dir = "$output_dir\bin"
-  $test_dir = "$output_dir\test"
-  $nuget_dir = "$output_dir\nuget"
-  
-  # Misc directorires
-  $src_files_dir = "$base_dir\..\src"
-  $test_files_dir = "$base_dir\..\test"
+  $src_dir = "$base_dir\..\src"
+  $test_dir = "$base_dir\..\test"
   $tools_dir = "$base_dir\..\tools"
   $packages_dir = "$base_dir\..\packages"
-  $sln_file = "$base_dir\..\Bugsnag.sln"
-  $version = if ($env:APPVEYOR_BUILD_VERSION) {$env:APPVEYOR_BUILD_VERSION} else {$default_version}
+  
+  # Output directories
+  $output_dir = "$base_dir\output"
+  $build_dir = "$output_dir\bin"
+  $test_out_dir = "$output_dir\test"
+  $nuget_dir = "$output_dir\nuget"
 }
 
 task default -depends Package, Archive
 
+#------------------------------------------------------------------------
+#  PACKAGE
+#  Produces Nuget packages for all profiles that have a nuget spec
+#------------------------------------------------------------------------
 task Package -depends Test {
   foreach($profile in ($profiles | Where-Object {$_.nuspec})) {
     $nuget_profile_dir = "$nuget_dir\$($profile.config)"
@@ -46,7 +49,7 @@ task Package -depends Test {
     $spec_xml.package.metadata.version = $version
     $spec_xml.Save($new_spec)
 
-    log "Creating Nuget package for $($profile.config)"
+    log "Creating Nuget package for $($profile.nuspec)"
     $new_lib_dir = "$nuget_profile_dir\lib"
     mkdir $new_lib_dir | Out-Null
     Copy-Item "$build_dir\$($profile.config)\*" $new_lib_dir -Recurse
@@ -55,6 +58,10 @@ task Package -depends Test {
   }
 }
 
+#------------------------------------------------------------------------
+#  ARCHIVE                                             
+#  Creates a zip file with all compiled binaries (including dependencies) 
+#------------------------------------------------------------------------
 task Archive -depends Test {
   if ($env:APPVEYOR) {
     log "Skipping archiving, Appveyor will publish archive as artifact"
@@ -67,13 +74,17 @@ task Archive -depends Test {
   }
 }
 
+#------------------------------------------------------------------------
+#  TEST                                             
+#  Runs all xUnit tests for every profile/target framework combination
+#------------------------------------------------------------------------
 task Test -depends Compile, Clean {
   foreach($project in $projects) {
     foreach($profile in $profiles) {
       log "Running unit tests for $($project.name) ($($profile.config))"
       $test_name = "$($project.name).Test"
-      $test_project_file = "$test_files_dir\$test_name\$test_name.csproj"
-      $test_output = "$test_dir\$($profile.config)\$($project.name)"
+      $test_project_file = "$test_dir\$test_name\$test_name.csproj"
+      $test_output = "$test_out_dir\$($profile.config)\$($project.name)"
     
       compile_project $test_project_file $profile.config $test_output 
       if ($env:APPVEYOR) {
@@ -85,39 +96,52 @@ task Test -depends Compile, Clean {
   }
 }
 
+#------------------------------------------------------------------------
+#  COMPILE                                              
+#  Updates Assembly versions and builds all shippable libraries
+#------------------------------------------------------------------------
 task Compile -depends Clean {
   log "Patching assembly versions to $version"
-  replace_line "$src_files_dir\Common\CommonVersionInfo.cs" "^\[assembly: AssemblyVersion.*$" "[assembly: AssemblyVersion(`"$version`")]"
-  replace_line "$src_files_dir\Common\CommonVersionInfo.cs" "^\[assembly: AssemblyFileVersion.*$" "[assembly: AssemblyFileVersion(`"$version`")]"
+  replace_line "$src_dir\Common\CommonVersionInfo.cs" "^\[assembly: AssemblyVersion.*$" "[assembly: AssemblyVersion(`"$version`")]"
+  replace_line "$src_dir\Common\CommonVersionInfo.cs" "^\[assembly: AssemblyFileVersion.*$" "[assembly: AssemblyFileVersion(`"$version`")]"
   
   foreach($project in $projects) {
-    foreach($profile in $profiles) {
-      if(!$profile.test_only) {
-        log "Building $($project.name) ($($profile.config))"
-        $project_file = "$src_files_dir\$($project.name)\$($project.name).csproj"
-        $project_out = "$build_dir\$($profile.config)"
-        if ($project.target) {
-          $project_out = "$project_out\$($project.target)\"
-        }
-        compile_project $project_file $profile.config $project_out
+    foreach($profile in ($profiles| Where-Object {$_.test_only -ne $true})) {
+      log "Building $($project.name) ($($profile.config))"
+      $project_file = "$src_dir\$($project.name)\$($project.name).csproj"
+      $project_out = "$build_dir\$($profile.config)"
+      if ($project.target) {
+        $project_out = "$project_out\$($project.target)\"
       }
+      compile_project $project_file $profile.config $project_out
     }
   }
 }
 
+#------------------------------------------------------------------------
+#  CLEAN
+#  Removes any build artifacts from previous builds
+#------------------------------------------------------------------------
 task Clean {
   Remove-Item -force -recurse $output_dir -ErrorAction SilentlyContinue
   log "Deleted previous output directory"
 }
+
 #-------------------------------------------------------------------------
-#  FUNCTIONS
+#  GLOBAL FUNCTIONS
 #-------------------------------------------------------------------------
 
+# Logs text to console (in Yellow)
+# - $log_text : The text to show on screen
 function global:log($log_text)
 {
   Write-Host $log_text -foregroundcolor "Yellow"
 }
 
+# Uses MSBuild to compile a .csproj
+# - $project_file : Path to the project file
+# - $config       : The configuration to use for the build
+# - $out_dir      : The directory for the output DLLs and associated files
 function global:compile_project($project_file, $config, $out_dir)
 {
   $package_file = $(Split-Path $project_file) + $("\packages.config")
@@ -125,6 +149,10 @@ function global:compile_project($project_file, $config, $out_dir)
   exec { msbuild $project_file /p:Configuration=$config /p:OutDir=$out_dir /v:m /nologo }
 }
 
+# Replaces lines in a text file
+# - $file    : Path to the file
+# - $regex   : The regex that will match the lines to replace
+# - $newline : The line to replace these matches with
 function global:replace_line($file, $regex, $newline)
 {
   $content = Get-Content $file
