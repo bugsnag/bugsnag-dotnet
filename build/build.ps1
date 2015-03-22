@@ -1,84 +1,104 @@
 properties {
+  # Custom properties
+  $default_version = 6.7
+  $config = "Debug"
+  
+  # Bugsnag Projects
+  $projects = @(
+    @{name = "Bugsnag"; target = "4.5"},
+    @{name = "Bugsnag.Net35"; target = "3.5"}
+  )
+  
+  # Directories
   $base_dir = resolve-path .
   $output_dir = "$base_dir\output"
-  
-  # Build directories
   $build_dir = "$output_dir\bin"
-  $45_build_dir = "$build_dir\4.5\"
-  $35_build_dir = "$build_dir\3.5\"
-  
-  # Test directories
   $test_dir = "$output_dir\test"
-  $45_test_dir = "$test_dir\4.5\"
-  $35_test_dir = "$test_dir\3.5\"
   
-  $archive_dir = "$output_dir\archive"
+  # Nuget Directories
   $nuget_dir = "$output_dir\nuget"
+  $nuget_lib_dir = "$nuget_dir\lib"
   $nuget_spec_template = "$base_dir\Bugsnag.nuspec"
   $nuget_spec = "$nuget_dir\Bugsnag.nuspec"
   
+  # Misc directorires
   $tools_dir = "$base_dir\..\tools"
-  $packageinfo_dir = "$base_dir\packaging"
+  $packages_dir = "$base_dir\..\packages"
   $sln_file = "$base_dir\..\Bugsnag.sln"
-  $version = if ($env:APPVEYOR_BUILD_VERSION) {$env:APPVEYOR_BUILD_VERSION} else {6.7}
-  $config = "Release"
+  $version = if ($env:APPVEYOR_BUILD_VERSION) {$env:APPVEYOR_BUILD_VERSION} else {$default_version}
 }
 
 task default -depends Package, Archive
 
 task Package -depends Test {
 	mkdir $nuget_dir | Out-Null
+	
+	log "Updating Nuspec file (Version:$version)" 
 	Copy-Item $nuget_spec_template $nuget_spec
-
-    mkdir "$nuget_dir\lib" | Out-Null
-    Copy-Item "$build_dir\*" "$nuget_dir\lib" -Recurse
-	Remove-Item "$nuget_dir\lib\*" -Exclude "Bugsnag.*" -Recurse
-
-
-    $spec = [xml](Get-Content $nuget_spec )
+	$spec = [xml](Get-Content $nuget_spec )
     $spec.package.metadata.version = ([string]$version)
     $spec.Save($nuget_spec)
 
+	log "Creating Nuget package" 
+    mkdir $nuget_lib_dir | Out-Null
+    Copy-Item "$build_dir\*" $nuget_lib_dir -Recurse
+	Remove-Item "$nuget_lib_dir\*" -Exclude "Bugsnag.*" -Recurse
     exec { nuget pack $nuget_spec -OutputDirectory $output_dir }
 }
 
-
 task Archive -depends Test {
   if ($env:APPVEYOR) {
-	Write-Host "Skipping archiving, Appveyor will publish as artifact"
+	log "Skipping archiving, Appveyor will publish archive as artifact"
   } else {
-    mkdir $archive_dir | Out-Null   
-    Copy-Item $build_dir $archive_dir -Recurse
-    Write-Zip -Path "$archive_dir\*" -OutputPath "$output_dir\bugsnag.$version.zip" | Out-Null  
-	Remove-Item $archive_dir -Recurse
+    log "Creating zip file of binaries"
+    mkdir "$output_dir\archive" | Out-Null   
+    Copy-Item $build_dir "$output_dir\archive" -Recurse
+    Write-Zip -Path "$output_dir\archive\*" -OutputPath "$output_dir\bugsnag.$version.zip" | Out-Null  
+	Remove-Item "$output_dir\archive" -Recurse
   }
 }
 
 task Test -depends Compile, Clean {
-  Write-Host "Compiling Test Assemblies"
-  nuget restore ../test/Bugsnag.Test/packages.config -PackagesDirectory ../packages
-  nuget restore ../test/Bugsnag.Net35.Test/packages.config -PackagesDirectory ../packages
-  exec { msbuild ../test/Bugsnag.Test/Bugsnag.Test.csproj /p:Configuration=$config /p:OutDir=$45_test_dir /v:m /nologo } 
-  exec { msbuild ../test/Bugsnag.Net35.Test/Bugsnag.Net35.Test.csproj /p:Configuration=$config /p:OutDir=$35_test_dir /v:m /nologo}
-	
   if ($env:APPVEYOR) {
-	Write-Host "Skipping unit tests, Appveyor will run tests"
+	log "Skipping unit tests, Appveyor will run tests"
   } else {
-	Write-Host "Running Unit Tests..." -foregroundcolor "Yellow"
-	exec {& $tools_dir/xunit/xunit.console.clr4.exe "$45_test_dir/Bugsnag.Test.dll" /noshadow }
-	exec {& $tools_dir/xunit/xunit.console.clr4.exe "$35_test_dir/Bugsnag.Net35.Test.dll" /noshadow }
+	foreach($project in $projects) {
+	  log "Running unit tests for $($project.name)"
+	  $test_name = "$($project.name).Test"
+	  $test_project_file = "..\test\$test_name\$test_name.csproj"
+	  $test_output = "$test_dir\$($project.target)"
+	  
+	  compile_project $test_project_file $test_output 
+	  exec {& $tools_dir/xunit/xunit.console.clr4.exe $("$test_output\$test_name.dll") /noshadow }
+	}
   }
 }
 
 task Compile -depends Clean {
-  Write-Host "Compiling Build Assemblies"
-  nuget restore ../src/Bugsnag/packages.config -PackagesDirectory ../packages
-  nuget restore ../src/Bugsnag.Net35/packages.config -PackagesDirectory ../packages
-  exec { msbuild ../src/Bugsnag/Bugsnag.csproj /p:Configuration=$config /p:OutDir=$45_build_dir /p:AssemblyName=Bugsnag /v:m /nologo }
-  exec { msbuild ../src/Bugsnag.Net35/Bugsnag.Net35.csproj /p:Configuration=$config /p:OutDir=$35_build_dir /p:AssemblyName=Bugsnag /v:m /nologo}
+  foreach($project in $projects) {
+    log "Building $($project.name)"
+	$project_file = "..\src\$($project.name)\$($project.name).csproj"
+	$project_out = "$build_dir\$($project.target)\"
+	compile_project $project_file $project_out
+  }
 }
 
 task Clean {
-  remove-item -force -recurse $output_dir -ErrorAction SilentlyContinue
-  Write-Host "Deleted previous output"
+  Remove-Item -force -recurse $output_dir -ErrorAction SilentlyContinue
+  log "Deleted previous output directory"
+}
+#-------------------------------------------------------------------------
+#  FUNCTIONS
+#-------------------------------------------------------------------------
+
+function global:log($log_text)
+{
+  Write-Host $log_text -foregroundcolor "Yellow"
+}
+
+function global:compile_project($project_file, $out_dir)
+{
+  $package_file = $(Split-Path $project_file) + $("\packages.config")
+  nuget restore $package_file -PackagesDirectory $packages_dir | Out-Null
+  exec { msbuild $project_file /p:Configuration=$config /p:OutDir=$out_dir /v:m /nologo }
 }
