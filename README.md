@@ -9,7 +9,7 @@ How to Install
 --------------
 ### Using Nuget (Recommended)
 
-- Install the Bugsnag package from Nuget.
+- Install the [Bugsnag](https://www.nuget.org/packages/Bugsnag/) package from Nuget.
 
 ### Manual Library Reference
 
