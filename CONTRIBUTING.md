@@ -58,6 +58,7 @@ Build using AppVeyor
 Releasing 
 ---------
 
+* Update the CHANGELOG.md
 * Update the version of the build in `appveyor.yml`, located in the root directory.
 * Push the change, this should kick off a build.
 * Tag master with the correct version `git tag v1.1.0; git push --tags`
