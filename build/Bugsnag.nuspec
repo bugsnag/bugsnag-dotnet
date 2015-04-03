@@ -8,7 +8,7 @@
     <owners>snmaynard</owners>
     <licenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/bugsnag/bugsnag-dotnet</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/CodeHex/bugsnag-dotnet/build-pipeline/build/BugsnagLogo.png</iconUrl>
+    <iconUrl>https://dbd6j53uzcole.cloudfront.net/assets/images/website/logo-mark.0b14965b.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The Bugsnag .NET notifier</description>
     <releaseNotes></releaseNotes>
