@@ -3,14 +3,6 @@ Building Bugsnag
 
 Bugsnag can be built either using a local Windows build environment or by using AppVeyor.
 
-Build using AppVeyor
---------------------
-
- * Update the version of the build in `appveyor.yml`, located in the root directory.
- * Commit the change. This should kick off a build on AppVeyor (if configured correctly). Otherwise you can manually kick off a build via the website.
- * Download the nuget packages and zip file containing the binaries in the **ARTIFACTS** section.
-
-
 Build using Local Windows Environment
 --------------------
 
@@ -57,3 +49,18 @@ The build will produce the following structure in the `build` folder
 
 ### Clean Previous Build
 Run `build\cleanbuild.bat` to remove the previous builds output
+
+Build using AppVeyor
+--------------------
+
+ * Commit the change. This should kick off a build on AppVeyor (if configured correctly). Otherwise you can manually kick off a build via the website.
+
+Releasing 
+---------
+
+* Update the version of the build in `appveyor.yml`, located in the root directory.
+* Push the change, this should kick off a build.
+* Tag master with the correct version `git tag v1.1.0; git push --tags`
+* Download the nuget packages and zip file containing the binaries in the **ARTIFACTS** section.
+* Upload the packages to nuget
+* Upload the packages to github and perform a github release
