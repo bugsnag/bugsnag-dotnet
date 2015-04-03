@@ -3,29 +3,30 @@
 #---------------------------------#
 
 # version format
-version: 1.2.6.{build}
-
-#---------------------------------#
-#    environment configuration    #
-#---------------------------------#
-
-# environment variables
-environment:
-  test_api_key: 123456
+version: 1.1.0.{build}
 
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
 
-configuration:
-  - Debug
-  - Release
-
 # scripts to run before build
-before_build:
-  nuget restore
+build_script:
+  ps: import-module ".\build\psake.psm1";invoke-psake ".\build\build.ps1"
+  
+# build script will run tests
+test: off
+  
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+ 
+artifacts:
+  # pushing entire folder as a zip archive
+  - path: build\output\bin
+    name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
+    type: zip
+ 
+  # pushing all *.nupkg files in directory
+  - path: build\output\*.nupkg
+    name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
 
-after_build:
-  - ps: . .\CodeAnalysis.ps1
-  - ps: analyseCodeAnalysisResults (".\src\Bugsnag.Core\bin\" + $env:CONFIGURATION  + "\Bugsnag.Core.dll.CodeAnalysisLog.xml")
-  - ps: analyseCodeAnalysisResults (".\src\Bugsnag.Web\bin\" + $env:CONFIGURATION + "\Bugsnag.Web.dll.CodeAnalysisLog.xml")
