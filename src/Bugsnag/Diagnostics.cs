@@ -1,6 +1,9 @@
 ﻿using System;
-using System.Management;
 using System.Net;
+
+#if !MONO
+using System.Management;
+#endif
 
 namespace Bugsnag
 {
@@ -73,11 +76,8 @@ namespace Bugsnag
                     return GetWin32WindowsVersion();
                 case System.PlatformID.Win32NT:
                     return GetWin32NTVersion();
-                case System.PlatformID.Unix:
-                case System.PlatformID.MacOSX:
-                    return UnixOrMacVersion();
                 default:
-                    return "UNKNOWN";
+                    return UnixOrMacVersion();
             }
         }
 
@@ -171,6 +171,7 @@ namespace Bugsnag
         /// <returns>True if the current operating system is the server version, otherwise false</returns>
         private static OsType GetOsType()
         {
+            #if !MONO
             try
             {
                 using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
@@ -191,6 +192,7 @@ namespace Bugsnag
                 // If we don't have permssions to query the WMI, then indicate we don't know the OS type
                 return OsType.Unknown;
             }
+            #endif
             return OsType.Desktop;
         }
 
@@ -200,6 +202,12 @@ namespace Bugsnag
         /// <returns></returns>
         private static string UnixOrMacVersion()
         {
+            #if UNIFIED 
+            return Foundation.NSProcessInfo.ProcessInfo.OperatingSystemVersionString;
+            #elif ANDROID
+            return "Android SDK " + Android.OS.Build.VERSION.SdkInt;
+            #else
+
             if (RunTerminalCommand("uname") == "Darwin")
             {
                 var osName = RunTerminalCommand("sw_vers", "-productName");
@@ -207,6 +215,7 @@ namespace Bugsnag
                 return osName + " (" + osVersion + ")";
             }
             return "UNIX";
+            #endif
         }
 
         /// <summary>
