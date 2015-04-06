@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{E5EEF584-2A8A-4067-8309-15FE4D65DD64}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Bugsnag</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>Bugsnag</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Xamarin.iOS10</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Xamarin.iOS10</IntermediateOutputPath>
+    <DefineConstants>DEBUG;UNIFIED;MONO;UIKIT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>UNIFIED;MONO;UIKIT</DefineConstants>
+    <OutputPath>bin\Release\Xamarin.iOS10</OutputPath>
+    <IntermediateOutputPath>obj\Release\Xamarin.iOS10</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\CommonVersionInfo.cs">
+      <Link>Properties\CommonVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Handlers\UnhandledExceptionHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Clients\SingletonBaseClient.cs" />
+    <Compile Include="Clients\BaseClient.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ConfigurationStorage\BaseStorage.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="Handlers\TaskExceptionHandler.cs" />
+    <Compile Include="ExceptionParser.cs" />
+    <Compile Include="ConfigurationStorage\IConfigurationStorage.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Metadata.cs" />
+    <Compile Include="NotificationFactory.cs" />
+    <Compile Include="Notifier.cs" />
+    <Compile Include="Payload\App\AppInfo.cs" />
+    <Compile Include="Payload\App\AppStateInfo.cs" />
+    <Compile Include="Payload\Core\NotiferInfo.cs" />
+    <Compile Include="Payload\Core\UserInfo.cs" />
+    <Compile Include="Payload\Device\DeviceInfo.cs" />
+    <Compile Include="Payload\Device\DeviceStateInfo.cs" />
+    <Compile Include="Payload\Event\EventInfo.cs" />
+    <Compile Include="Payload\Event\ExceptionInfo.cs" />
+    <Compile Include="Payload\Event\StackTraceFrameInfo.cs" />
+    <Compile Include="Payload\Event\ThreadInfo.cs" />
+    <Compile Include="Payload\Notification.cs" />
+    <Compile Include="Diagnostics.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+</Project>
