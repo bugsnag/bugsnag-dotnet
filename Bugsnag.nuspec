@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Bugsnag</id>
-    <version>$version$</version>
+    <version>1.1.0.0</version>
     <title>Bugsnag .NET Notifier</title>
     <authors>snmaynard</authors>
     <owners>snmaynard</owners>
