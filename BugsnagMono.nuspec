@@ -18,4 +18,9 @@
     <copyright>Copyright 2015</copyright>
     <tags>bugsnag error logging reporting</tags>
   </metadata>
+
+  <files>
+    <file src="src\Bugsnag\bin\MonoRelease\**\Bugsnag*.dll" target="lib" />
+    <file src="src\Bugsnag\bin\MonoRelease\**\Bugsnag*.pdb" target="lib" />
+  </files>
 </package>
