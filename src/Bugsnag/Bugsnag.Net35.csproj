@@ -18,7 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\Net35</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Net35</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;NET35</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,20 +27,21 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\Net35</OutputPath>
+    <IntermediateOutputPath>obj\Release\Net35</IntermediateOutputPath>
     <DefineConstants>TRACE;NET35</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MonoRelease|AnyCPU'">
-    <OutputPath>bin\MonoRelease\</OutputPath>
+    <OutputPath>bin\MonoRelease\Net35</OutputPath>
+    <IntermediateOutputPath>obj\MonoRelease\Net35</IntermediateOutputPath>
     <DefineConstants>TRACE;NET35;MONO</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <AssemblyName>BugsnagMono</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
@@ -77,11 +79,6 @@
     <Compile Include="Payload\Event\ThreadInfo.cs" />
     <Compile Include="Payload\Notification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <!--
-    <Compile Include="..\Bugsnag\**\*.cs" Exclude="..\Bugsnag\Properties\AssemblyInfo.cs;&#xD;&#xA;                      ..\Bugsnag\obj\**\*.cs;&#xD;&#xA;                      ..\Bugsnag\Clients\WebAPIClient.cs;&#xD;&#xA;                      ..\Bugsnag\Handlers\TaskExceptionHandler.cs">
-      <Link>%(RecursiveDir)%(FileName)</Link>
-    </Compile>
-    -->
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
