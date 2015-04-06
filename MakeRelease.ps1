@@ -1,4 +1,4 @@
-$baseDir = Resolve-Path "$PSScriptRoot/.."
+$baseDir = Resolve-Path "$PSScriptRoot"
 $outDir = "$baseDir\out"
 $msbuildExe = "C:\Program Files (x86)\MSBuild\12.0\bin\MsBuild.exe"
 $nugetExe = "$baseDir\.nuget\NuGet.exe"
@@ -21,7 +21,12 @@ foreach-object $configsToBuild | % { & $msbuildExe "$baseDir/Bugsnag.sln" "/p:Co
 $filesToTest = ls -r "$baseDir\test\bin\**\Bugsnag.Test.dll"
 echo $filesToTest | % { & $testExe "$_" $testFlags }
 
-mkdir -p $outDir
+mkdir -Path $outDir
 
-& $nugetExe pack $baseDir\Bugsnag.nuspec -OutputDirectory $outDir
-& $nugetExe pack $baseDir\BugsnagMono.nuspec -OutputDirectory $outDir
+& "$nugetExe" pack $baseDir\Bugsnag.nuspec -OutputDirectory $outDir
+& "$nugetExe" pack $baseDir\BugsnagMono.nuspec -OutputDirectory $outDir
+mv "$baseDir\src\Bugsnag\bin\Release\*" $outDir
+ls "$baseDir\src\Bugsnag\bin\MonoRelease\*" | %{
+	$monoName = "mono-" + $_.Name 
+	mv $_ "$outDir\$monoName"
+}
