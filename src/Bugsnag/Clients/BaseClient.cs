@@ -77,7 +77,7 @@ namespace Bugsnag.Clients
         {
             unhandledExceptionHandler.UninstallHandler();
 #if !NET35
-            taskExceptionHandler.InstallHandler(HandleDefaultException);
+            taskExceptionHandler.UninstallHandler();
 #endif
         }
 
