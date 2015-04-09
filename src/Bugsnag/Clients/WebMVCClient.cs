@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Web;
 
-// Provide exception attribute for global filters (> .NET 4.0 )
 #if !NET35
+// Tasks for Async versions of Notify()
+using System.Threading.Tasks;
+
+// Provide exception attribute for global filters (> .NET 4.0 )
 using System.Web.Mvc;
 #endif
 
@@ -78,6 +81,28 @@ namespace Bugsnag.Clients
         {
             Client.Notify(error, severity, metadata);
         }
+
+#if !NET35
+        public static Task NotifyAsync(Exception error)
+        {
+            return Client.NotifyAsync(error);
+        }
+
+        public static Task NotifyAsync(Exception error, Metadata metadata)
+        {
+            return Client.NotifyAsync(error, metadata);
+        }
+
+        public static Task NotifyAsync(Exception error, Severity severity)
+        {
+            return Client.NotifyAsync(error, severity);
+        }
+
+        public static Task NotifyAsync(Exception error, Severity severity, Metadata metadata)
+        {
+            return Client.NotifyAsync(error, severity, metadata);
+        }
+#endif
 
 #if !NET35
         /// <summary>
