@@ -58,8 +58,10 @@ namespace Bugsnag
                 }
                 request.GetResponse().Close();
             }
-            catch
+            catch (Exception e)
             {
+                Logger.Warning("Bugsnag failed to send error report with exception: " + e.ToString());
+
                 // Deliberate empty catch for now
 
                 // Must never double fault - i.e. can't leak an exception from an exception handler

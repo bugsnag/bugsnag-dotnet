@@ -107,5 +107,27 @@ namespace Bugsnag.Test.FunctionalTests
             Assert.Equal("Value 2", actData["Test Tab 1"]["Key 2"]);
             Assert.Equal("Value 1", actData["Test Tab 2"]["Key 1"]);
         }
+
+        [Fact]
+        public void TestNoExceptionLeaks()
+        {
+            // Arrange
+            var client = new BaseClient(StaticData.TestApiKey);
+
+            // Act
+            using (var server = new TestServer(client))
+            {
+                server.Stop();
+                try
+                {
+                    client.Notify(StaticData.TestThrowException);
+                }
+                catch (Exception e)
+                {
+                    // Assert
+                    Assert.True(false, "No network shouldn't throw: " + e.ToString());
+                }
+            }
+        }
     }
 }

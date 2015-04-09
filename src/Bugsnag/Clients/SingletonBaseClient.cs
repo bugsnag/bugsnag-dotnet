@@ -1,5 +1,10 @@
 ﻿using System;
 
+#if !NET35
+// Tasks for Async versions of Notify()
+using System.Threading.Tasks;
+#endif
+
 namespace Bugsnag.Clients
 {
     public static class SingletonBaseClient
@@ -68,5 +73,28 @@ namespace Bugsnag.Clients
         {
             Client.Notify(errorEvent);
         }
+
+#if !NET35
+        // Async variants of Notify() methods above
+        public static Task NotifyAsync(Exception error)
+        {
+            return Client.NotifyAsync(error);
+        }
+
+        public static Task NotifyAsync(Exception error, Severity severity)
+        {
+            return Client.NotifyAsync(error, severity);
+        }
+
+        public static Task NotifyAsync(Exception error, Metadata data)
+        {
+            return Client.NotifyAsync(error, data);
+        }
+
+        public static Task NotifyAsync(Exception error, Severity severity, Metadata data)
+        {
+            return Client.NotifyAsync(error, severity, data);
+        }
+#endif
     }
 }

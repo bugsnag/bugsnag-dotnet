@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 
 #if !NET35
+// Tasks for Async versions of Notify()
 using System.Threading.Tasks;
 #endif
 
@@ -53,28 +54,24 @@ namespace Bugsnag.Clients
         }
 
 #if !NET35
+        public static Task NotifyAsync(Exception error)
+        {
+            return Client.NotifyAsync(error);
+        }
+
         public static Task NotifyAsync(Exception error, Metadata metadata)
         {
-            return Task.Factory.StartNew(() =>
-                {
-                    Client.Notify(error, metadata);
-                });
+            return Client.NotifyAsync(error, metadata);
         }
 
         public static Task NotifyAsync(Exception error, Severity severity)
         {
-            return Task.Factory.StartNew(() =>
-                {
-                    Client.Notify(error, severity);
-                });
+            return Client.NotifyAsync(error, severity);
         }
 
         public static Task NotifyAsync(Exception error, Severity severity, Metadata metadata)
         {
-            return Task.Factory.StartNew(() =>
-                {
-                    Client.Notify(error, severity, metadata);
-                });
+            return Client.NotifyAsync(error, severity, metadata);
         }
 #endif
     }

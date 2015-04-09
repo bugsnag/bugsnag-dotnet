@@ -5,6 +5,10 @@ using System.Text.RegularExpressions;
 using Bugsnag.ConfigurationStorage;
 using Bugsnag.Handlers;
 
+#if !NET35
+using System.Threading.Tasks;
+#endif
+
 namespace Bugsnag.Clients
 {
     /// <summary>
@@ -158,6 +162,41 @@ namespace Bugsnag.Clients
 
             notifier.Send(errorEvent);
         }
+
+#if !NET35
+        // Async variants of the Notify functions above
+        public Task NotifyAsync(Exception error)
+        {
+            return Task.Factory.StartNew(() =>
+                {
+                    Notify(error);
+                });
+        }
+
+        public Task NotifyAsync(Exception error, Metadata metadata)
+        {
+            return Task.Factory.StartNew(() =>
+                {
+                    Notify(error, metadata);
+                });
+        }
+
+        public Task NotifyAsync(Exception error, Severity severity)
+        {
+            return Task.Factory.StartNew(() =>
+                {
+                    Notify(error, severity);
+                });
+        }
+
+        public Task NotifyAsync(Exception error, Severity severity, Metadata metadata)
+        {
+            return Task.Factory.StartNew(() =>
+                {
+                    Notify(error, severity, metadata);
+                });
+        }
+#endif
 
         /// <summary>
         /// Initialize the client with dependencies
