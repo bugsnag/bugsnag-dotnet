@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription(".NET client for Bugsnag")]
 
 [assembly: InternalsVisibleTo("Bugsnag.Test")]
+[assembly: InternalsVisibleTo("Bugsnag.Net35.Test")]

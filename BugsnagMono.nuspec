@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>BugsnagMono</id>
-    <version>$version$</version>
+    <version>1.1.0.0</version>
     <title>Bugsnag .NET Notifier for Mono</title>
     <authors>snmaynard</authors>
     <owners>snmaynard</owners>
@@ -18,4 +18,9 @@
     <copyright>Copyright 2015</copyright>
     <tags>bugsnag error logging reporting</tags>
   </metadata>
+
+  <files>
+    <file src="src\Bugsnag\bin\MonoRelease\**\Bugsnag*.dll" target="lib" />
+    <file src="src\Bugsnag\bin\MonoRelease\**\Bugsnag*.pdb" target="lib" />
+  </files>
 </package>

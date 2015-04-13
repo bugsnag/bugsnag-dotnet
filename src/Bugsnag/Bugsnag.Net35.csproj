@@ -18,7 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\Net35</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Net35</IntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;NET35</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,20 +27,21 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\Net35</OutputPath>
+    <IntermediateOutputPath>obj\Release\Net35</IntermediateOutputPath>
     <DefineConstants>TRACE;NET35</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MonoRelease|AnyCPU'">
-    <OutputPath>bin\MonoRelease\</OutputPath>
+    <OutputPath>bin\MonoRelease\Net35</OutputPath>
+    <IntermediateOutputPath>obj\MonoRelease\Net35</IntermediateOutputPath>
     <DefineConstants>TRACE;NET35;MONO</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	<AssemblyName>BugsnagMono</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
@@ -48,10 +50,35 @@
     <Compile Include="..\Common\CommonVersionInfo.cs">
       <Link>Properties\CommonVersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Clients\BaseClient.cs" />
+    <Compile Include="Clients\SingletonBaseClient.cs" />
+    <Compile Include="Clients\WebMVCClient.cs" />
+    <Compile Include="Clients\WPFClient.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ConfigurationStorage\BaseStorage.cs" />
+    <Compile Include="ConfigurationStorage\ConfigSection.cs" />
+    <Compile Include="ConfigurationStorage\IConfigurationStorage.cs" />
+    <Compile Include="Diagnostics.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="ExceptionParser.cs" />
+    <Compile Include="Handlers\UnhandledExceptionHandler.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="MetaData.cs" />
+    <Compile Include="NotificationFactory.cs" />
+    <Compile Include="Notifier.cs" />
+    <Compile Include="Payload\App\AppInfo.cs" />
+    <Compile Include="Payload\App\AppStateInfo.cs" />
+    <Compile Include="Payload\Core\NotiferInfo.cs" />
+    <Compile Include="Payload\Core\UserInfo.cs" />
+    <Compile Include="Payload\Device\DeviceInfo.cs" />
+    <Compile Include="Payload\Device\DeviceStateInfo.cs" />
+    <Compile Include="Payload\Event\EventInfo.cs" />
+    <Compile Include="Payload\Event\ExceptionInfo.cs" />
+    <Compile Include="Payload\Event\StackTraceFrameInfo.cs" />
+    <Compile Include="Payload\Event\ThreadInfo.cs" />
+    <Compile Include="Payload\Notification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\Bugsnag\**\*.cs" Exclude="..\Bugsnag\Properties\AssemblyInfo.cs;&#xD;&#xA;                      ..\Bugsnag\obj\**\*.cs;&#xD;&#xA;                      ..\Bugsnag\Clients\WebAPIClient.cs;&#xD;&#xA;                      ..\Bugsnag\Handlers\TaskExceptionHandler.cs">
-      <Link>%(RecursiveDir)%(FileName)</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -67,7 +94,7 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.Bugsnag.Net35.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
