@@ -1,6 +1,8 @@
 Bugsnag Notifier for .NET
 ===========
 
+![](https://ci.appveyor.com/api/projects/status/0c0mlvop5equtm43/branch/master?svg=true)
+
 The Bugsnag Notifier for .NET gives you instant notification of exceptions thrown from your ASP.NET MVC, WPF, WebAPI or other .NET applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.
 
 [Bugsnag](https://bugsnag.com) captures errors in real-time from your websites and mobile applications, helping you to understand and resolve them as fast as possible. [Create a free account](https://bugsnag.com) to start capturing errors from your applications.
