@@ -3,7 +3,7 @@
 #---------------------------------#
 
 # version format
-version: 1.1.0.{build}
+version: 1.2.0.{build}
 
 #---------------------------------#
 #       build configuration       #
@@ -12,21 +12,20 @@ version: 1.1.0.{build}
 # scripts to run before build
 build_script:
   ps: .\MakeRelease.ps1
-  
+
 # build script will run tests
 test: off
-  
+
 #---------------------------------#
 #      artifacts configuration    #
 #---------------------------------#
- 
+
 artifacts:
   # pushing entire folder as a zip archive
   - path: out
     name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
     type: zip
- 
+
   # pushing all *.nupkg files in directory
   - path: build\output\*.nupkg
     name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
-

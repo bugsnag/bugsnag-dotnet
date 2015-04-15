@@ -1,3 +1,9 @@
+1.2.0
+=====
+
+* Add async notify support
+
+
 1.1.0
 =====
 
