@@ -14,7 +14,7 @@ namespace Bugsnag.Clients
     public static class WebMVCClient
     {
         public static Configuration Config;
-        private static BaseClient Client;
+        internal static BaseClient Client;
 
         static WebMVCClient()
         {
@@ -59,7 +59,7 @@ namespace Bugsnag.Clients
 
         public static void Start()
         {
-
+            ErrorExtensions.ClientType = ClientTypes.WebMvc; // Set client type
         }
 
         public static void Notify(Exception error)
@@ -127,6 +127,7 @@ namespace Bugsnag.Clients
 
         public static BugsnagExceptionHandler ErrorHandler()
         {
+            ErrorExtensions.ClientType = ClientTypes.WebMvc; // Set client type
             return new BugsnagExceptionHandler();
         }
 #endif

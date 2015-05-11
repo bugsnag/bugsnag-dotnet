@@ -25,7 +25,7 @@ namespace Bugsnag.Clients
         }
 
         public static Configuration Config;
-        private static BaseClient Client;
+        internal static BaseClient Client;
 
         static WebAPIClient()
         {
@@ -70,11 +70,12 @@ namespace Bugsnag.Clients
 
         public static void Start()
         {
-
+            ErrorExtensions.ClientType = ClientTypes.WebApi; // Set client type
         }
 
         public static BugsnagExceptionHandler ErrorHandler()
         {
+            ErrorExtensions.ClientType = ClientTypes.WebApi; // Set client type
             return new BugsnagExceptionHandler();
         }
 

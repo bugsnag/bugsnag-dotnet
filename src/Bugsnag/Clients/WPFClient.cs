@@ -12,7 +12,7 @@ namespace Bugsnag.Clients
     public static class WPFClient
     {
         public static Configuration Config;
-        private static BaseClient Client;
+        internal static BaseClient Client;
 
         static WPFClient()
         {
@@ -30,7 +30,7 @@ namespace Bugsnag.Clients
 
         public static void Start()
         {
-
+            ErrorExtensions.ClientType = ClientTypes.Wpf; // Set client type
         }
 
         public static void Notify(Exception error)

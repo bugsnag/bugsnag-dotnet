@@ -61,6 +61,7 @@
     <Compile Include="ConfigurationStorage\IConfigurationStorage.cs" />
     <Compile Include="Diagnostics.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="ErrorExtensions.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="ExceptionParser.cs" />
     <Compile Include="Handlers\UnhandledExceptionHandler.cs" />
