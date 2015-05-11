@@ -76,6 +76,7 @@
     <Compile Include="..\Common\CommonVersionInfo.cs">
       <Link>Properties\CommonVersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ConfigurationStorage\AppSettingStorage.cs" />
     <Compile Include="Handlers\UnhandledExceptionHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clients\SingletonBaseClient.cs" />

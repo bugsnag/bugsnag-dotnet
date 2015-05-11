@@ -16,7 +16,7 @@ namespace Bugsnag.Clients
 
         static WPFClient()
         {
-            Client = new BaseClient(ConfigurationStorage.ConfigSection.Settings);
+            Client = new BaseClient();
             Config = Client.Config;
             Client.Config.BeforeNotify(error =>
             {

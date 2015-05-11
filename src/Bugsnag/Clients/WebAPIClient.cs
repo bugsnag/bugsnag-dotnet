@@ -29,7 +29,7 @@ namespace Bugsnag.Clients
 
         static WebAPIClient()
         {
-            Client = new BaseClient(ConfigurationStorage.ConfigSection.Settings);
+            Client = new BaseClient();
             Config = Client.Config;
             Client.Config.BeforeNotify(error =>
             {
