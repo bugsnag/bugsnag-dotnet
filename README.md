@@ -109,7 +109,7 @@ Thats it...you will be reporting on uncaught exceptions by default!
 
 Bugsnag will also catch exceptions in standard .NET applications. To do so you can construct a `Bugsnag.Clients.BaseClient` (there is a Singleton convenience wrapper in `Bugsnag.Clients.SingletonClient` if you would like to use it.)
 
-Firstly import the `Bugsang.Clients` namespace.
+Firstly import the `Bugsnag.Clients` namespace.
 
 ```c#
 using Bugsnag.Clients;
