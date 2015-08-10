@@ -45,7 +45,7 @@ using Bugsnag.Clients;
 Inside the `RegisterGlobalFilters` function add the `WebMVCClient` error handler. Normally, this can be done in the `App_Start > FilterConfig.cs` file.
 
 ```c#
-filters.Add(WebAPIClient.ErrorHandler());
+filters.Add(WebMVCClient.ErrorHandler());
 ```
 
 Thats it...you will be reporting on uncaught exceptions by default!
