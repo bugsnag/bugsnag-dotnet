@@ -117,9 +117,9 @@ namespace Bugsnag.Clients
 
             public override void OnException(ExceptionContext filterContext)
             {
-                base.OnException(filterContext);
                 if (filterContext == null || filterContext.Exception == null)
                     return;
+
                 if (Config.AutoNotify)
                     Client.Notify(filterContext.Exception);
             }
