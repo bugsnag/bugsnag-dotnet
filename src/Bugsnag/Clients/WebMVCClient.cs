@@ -121,7 +121,7 @@ namespace Bugsnag.Clients
                     return;
 
                 if (Config.AutoNotify)
-                    Client.Notify(filterContext.Exception);
+                    Client.Notify(filterContext.Exception, Severity.Error);
             }
         }
 
