@@ -160,6 +160,8 @@ namespace Bugsnag
                         }
                     }
                     return "UNKNOWN";
+                case 10:
+                    return "Windows 10";
                 default:
                     return "UNKNOWN";
             }
