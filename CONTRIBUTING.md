@@ -20,3 +20,5 @@ Releasing
 * Download the zip file containing the binaries in the **ARTIFACTS** section.
 * Upload the packages to nuget (extract from the zipfile)
 * Upload the packages to github and perform a github release
+* Update the setup guides for .NET (and its frameworks) on docs.bugsnag.com
+  with any new content.
