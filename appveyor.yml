@@ -11,7 +11,7 @@ version: 1.2.0.{build}
 
 # scripts to run before build
 build_script:
-  ps: .\MakeRelease.ps1
+  script\build.bat
 
 # build script will run tests
 test: off
@@ -22,10 +22,6 @@ test: off
 
 artifacts:
   # pushing entire folder as a zip archive
-  - path: out
+  - path: build
     name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
     type: zip
-
-  # pushing all *.nupkg files in directory
-  - path: build\output\*.nupkg
-    name: Bugsnag.$(APPVEYOR_BUILD_VERSION)
