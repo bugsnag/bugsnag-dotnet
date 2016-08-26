@@ -1,6 +1,6 @@
 $baseDir = Resolve-Path "$PSScriptRoot"
 $outDir = "$baseDir\out"
-$msbuildExe = "C:\Program Files (x86)\MSBuild\12.0\bin\MsBuild.exe"
+$msbuildExe = "C:\Program Files (x86)\MSBuild\14.0\bin\MsBuild.exe"
 $nugetExe = "$baseDir\.nuget\NuGet.exe"
 
 $configsToBuild = {"Release", "MonoRelease"}
