@@ -50,6 +50,7 @@
     <Compile Include="..\Common\CommonVersionInfo.cs">
       <Link>Properties\CommonVersionInfo.cs</Link>
     </Compile>
+    <Compile Include="OfflineStore.cs" />
     <Compile Include="Clients\BaseClient.cs" />
     <Compile Include="Clients\SingletonBaseClient.cs" />
     <Compile Include="Clients\WebMVCClient.cs" />

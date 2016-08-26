@@ -81,6 +81,7 @@
       <Link>Properties\CommonVersionInfo.cs</Link>
     </Compile>
     <Compile Include="Handlers\UnhandledExceptionHandler.cs" />
+    <Compile Include="OfflineStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Clients\SingletonBaseClient.cs" />
     <Compile Include="Clients\BaseClient.cs" />
