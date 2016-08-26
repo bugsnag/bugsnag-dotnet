@@ -11,7 +11,7 @@ version: 1.2.0.{build}
 
 # scripts to run before build
 build_script:
-  ps: .\MakeRelease.ps1
+  script\build.bat
 
 # build script will run tests
 test: off
