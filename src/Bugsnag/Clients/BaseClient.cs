@@ -256,5 +256,10 @@ namespace Bugsnag.Clients
             var error = new Event(exception, runtimeEnding);
             Notify(error);
         }
+
+        public void SendStoredExceptions()
+        {
+            notifier.SendStoredReports();
+        }
     }
 }
