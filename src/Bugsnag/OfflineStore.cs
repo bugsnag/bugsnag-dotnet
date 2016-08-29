@@ -15,24 +15,7 @@ namespace Bugsnag
             {
                 foreach (var filePath in store.GetFileNames("crash_reports\\*"))
                 {
-                    string fileData = null;
-
-                    lock (_lock)
-                    {
-                        try
-                        {
-                            using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}", filePath), FileMode.Open, store))
-                            {
-                                var reader = new StreamReader(storageStream);
-                                fileData = reader.ReadToEnd();
-                            }
-                        }
-                        catch (FileNotFoundException)
-                        {
-                            // we can assume here that this crash report has already been sent in another thread
-                        }
-                        store.DeleteFile(string.Format("crash_reports\\{0}", filePath));
-                    }
+                    string fileData = ReadAndRemoveCrashReport(store, filePath);
 
                     if (fileData != null)
                     {
@@ -54,6 +37,30 @@ namespace Bugsnag
                     writer.Flush();
                 }
             }
+        }
+
+        private string ReadAndRemoveCrashReport(IsolatedStorageFile store, string filePath)
+        {
+            string fileData = null;
+
+            lock (_lock)
+            {
+                try
+                {
+                    using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}", filePath), FileMode.Open, store))
+                    {
+                        var reader = new StreamReader(storageStream);
+                        fileData = reader.ReadToEnd();
+                    }
+                }
+                catch (FileNotFoundException)
+                {
+                    // we can assume here that this crash report has already been sent in another thread
+                }
+                store.DeleteFile(string.Format("crash_reports\\{0}", filePath));
+            }
+
+            return fileData;
         }
     }
 }
