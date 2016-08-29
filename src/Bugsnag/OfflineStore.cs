@@ -13,6 +13,7 @@ namespace Bugsnag
         {
             using (var store = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null))
             {
+                store.CreateDirectory("crash_reports");
                 foreach (var filePath in store.GetFileNames("crash_reports\\*"))
                 {
                     string fileData = ReadAndRemoveCrashReport(store, filePath);
