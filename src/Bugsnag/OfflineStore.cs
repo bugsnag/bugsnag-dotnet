@@ -19,10 +19,17 @@ namespace Bugsnag
 
                     lock (_lock)
                     {
-                        using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}", filePath), FileMode.Open, store))
+                        try
                         {
-                            var reader = new StreamReader(storageStream);
-                            fileData = reader.ReadToEnd();
+                            using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}", filePath), FileMode.Open, store))
+                            {
+                                var reader = new StreamReader(storageStream);
+                                fileData = reader.ReadToEnd();
+                            }
+                        }
+                        catch (FileNotFoundException)
+                        {
+                            // we can assume here that this crash report has already been sent in another thread
                         }
                         store.DeleteFile(string.Format("crash_reports\\{0}", filePath));
                     }
