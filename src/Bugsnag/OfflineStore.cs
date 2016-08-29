@@ -19,7 +19,7 @@ namespace Bugsnag
 
                     lock (_lock)
                     {
-                        using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}", filePath), FileMode.Open, FileAccess.Read, FileShare.Read, 512, store))
+                        using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}", filePath), FileMode.Open, store))
                         {
                             var reader = new StreamReader(storageStream);
                             fileData = reader.ReadToEnd();
