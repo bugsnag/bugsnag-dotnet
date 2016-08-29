@@ -44,9 +44,16 @@ namespace Bugsnag
 
         public void SendStoredReports()
         {
-            foreach (var storedReport in Store.ReadStoredJson())
+            try
             {
-                SendJson(storedReport);
+                foreach (var storedReport in Store.ReadStoredJson())
+                {
+                    SendJson(storedReport);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Warning(string.Format("Bugsnag failed to send persisted error reports with exception: {0}", e.ToString()));
             }
         }
 
@@ -91,7 +98,14 @@ namespace Bugsnag
             }
             if (!reportSent)
             {
-                Store.StoreJson(json);
+                try
+                {
+                    Store.StoreJson(json);
+                }
+                catch (Exception e)
+                {
+                    Logger.Warning("Bugsnag failed to persist error report with exception: " + e.ToString());
+                }
             }
         }
     }
