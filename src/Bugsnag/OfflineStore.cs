@@ -33,11 +33,24 @@ namespace Bugsnag
             using (var store = IsolatedStorageFile())
             {
                 store.CreateDirectory(CrashReportDirectory);
-                using (var storageStream = new IsolatedStorageFileStream(FullCrashReportFilePath(Guid.NewGuid()), FileMode.CreateNew, store))
+                Stream storageStream = null;
+
+                try
                 {
-                    var writer = new StreamWriter(storageStream);
-                    writer.Write(json);
-                    writer.Flush();
+                    storageStream = new IsolatedStorageFileStream(FullCrashReportFilePath(Guid.NewGuid()), FileMode.CreateNew, store);
+                    using (var writer = new StreamWriter(storageStream))
+                    {
+                        storageStream = null;
+                        writer.Write(json);
+                        writer.Flush();
+                    }
+                }
+                finally
+                {
+                    if (storageStream != null)
+                    {
+                        storageStream.Dispose();
+                    }
                 }
             }
         }
@@ -49,17 +62,26 @@ namespace Bugsnag
 
             lock (_lock)
             {
+                Stream storageStream = null;
                 try
                 {
-                    using (var storageStream = new IsolatedStorageFileStream(fullCrashReportFilePath, FileMode.Open, store))
+                    storageStream = new IsolatedStorageFileStream(fullCrashReportFilePath, FileMode.Open, store);
+                    using (var reader = new StreamReader(storageStream))
                     {
-                        var reader = new StreamReader(storageStream);
+                        storageStream = null;
                         fileData = reader.ReadToEnd();
                     }
                 }
                 catch (FileNotFoundException)
                 {
                     // we can assume here that this crash report has already been sent in another thread
+                }
+                finally
+                {
+                    if (storageStream != null)
+                    {
+                        storageStream.Dispose();
+                    }
                 }
                 store.DeleteFile(fullCrashReportFilePath);
             }
