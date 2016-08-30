@@ -28,6 +28,7 @@ namespace Bugsnag.Test.FunctionalTests
         {
             var client = new BaseClient(StaticData.TestApiKey);
             client.Config.Endpoint = "http://localhost:8181/";
+            client.Config.StoreOfflineErrors = true;
 
             client.Notify(exp);
 
@@ -39,6 +40,7 @@ namespace Bugsnag.Test.FunctionalTests
                 json = server.GetLastResponse();
             }
 
+            Assert.NotNull(json);
             Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
             Assert.Equal(Notifier.Name, json["notifier"]["name"]);
             Assert.Equal(Notifier.Version, json["notifier"]["version"]);

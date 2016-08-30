@@ -96,7 +96,7 @@ namespace Bugsnag
             {
                 Logger.Warning("Bugsnag failed to send error report with exception: " + e.ToString());
             }
-            if (!reportSent)
+            if (!reportSent && Config.StoreOfflineErrors)
             {
                 try
                 {

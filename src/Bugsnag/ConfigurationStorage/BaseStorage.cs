@@ -1,4 +1,6 @@
-﻿namespace Bugsnag.ConfigurationStorage
+﻿using System;
+
+namespace Bugsnag.ConfigurationStorage
 {
     public class BaseStorage : IConfigurationStorage
     {
@@ -83,6 +85,8 @@
         /// </summary>
         public string[] MetadataFilters { get; set; }
 
+        public bool StoreOfflineErrors { get; set; }
+
         /// <summary>
         /// Constructor for the BaseStorage class. ConfigurationStorage classes deal with storing and
         /// retrieving configuration variables for the Bugsnag notifier.
@@ -98,6 +102,7 @@
             MetadataFilters = new string[] { };
             ProjectNamespaces = new string[] { };
             FilePrefixes = new string[] { };
+            StoreOfflineErrors = false;
         }
     }
 }

@@ -251,5 +251,24 @@ namespace Bugsnag.ConfigurationStorage
             }
             set { this._metadataFilters = value; }
         }
+
+        private bool? _storeOfflineErrors;
+        [ConfigurationProperty("storeOfflineErrors", IsRequired = false, DefaultValue = false)]
+        public bool StoreOfflineErrors
+        {
+            get
+            {
+                if (this._storeOfflineErrors.HasValue)
+                {
+                    return this._storeOfflineErrors.Value;
+                }
+                else
+                {
+                    this._storeOfflineErrors = (bool?)this["storeOfflineErrors"];
+                    return this._storeOfflineErrors.HasValue ? this._storeOfflineErrors.Value : false;
+                }
+            }
+            set { this._storeOfflineErrors = value; }
+        }
     }
 }
