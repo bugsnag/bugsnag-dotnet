@@ -257,7 +257,7 @@ namespace Bugsnag.Clients
             Notify(error);
         }
 
-        public void SendStoredExceptions()
+        public void SendStoredReports()
         {
             notifier.SendStoredReports();
         }

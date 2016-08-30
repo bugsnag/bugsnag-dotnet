@@ -35,7 +35,7 @@ namespace Bugsnag.Clients
 
         public static void SendStoredReports()
         {
-            Client.SendStoredExceptions();
+            Client.SendStoredReports();
         }
 
         public static void Notify(Exception error)
