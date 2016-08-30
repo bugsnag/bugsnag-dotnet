@@ -9,12 +9,14 @@ namespace Bugsnag
     {
         private static object _lock = new object();
 
+        private const string CrashReportDirectory = "crash_reports";
+
         internal IEnumerable<string> ReadStoredJson()
         {
             using (var store = IsolatedStorageFile())
             {
-                store.CreateDirectory("crash_reports");
-                foreach (var filePath in store.GetFileNames("crash_reports\\*"))
+                store.CreateDirectory(CrashReportDirectory);
+                foreach (var filePath in store.GetFileNames(string.Format("{0}\\*", CrashReportDirectory)))
                 {
                     string fileData = ReadAndRemoveCrashReport(store, filePath);
 
@@ -30,8 +32,8 @@ namespace Bugsnag
         {
             using (var store = IsolatedStorageFile())
             {
-                store.CreateDirectory("crash_reports");
-                using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}.json", Guid.NewGuid()), FileMode.CreateNew, store))
+                store.CreateDirectory(CrashReportDirectory);
+                using (var storageStream = new IsolatedStorageFileStream(FullCrashReportFilePath(Guid.NewGuid()), FileMode.CreateNew, store))
                 {
                     var writer = new StreamWriter(storageStream);
                     writer.Write(json);
@@ -40,15 +42,16 @@ namespace Bugsnag
             }
         }
 
-        private string ReadAndRemoveCrashReport(IsolatedStorageFile store, string filePath)
+        private string ReadAndRemoveCrashReport(IsolatedStorageFile store, string fileName)
         {
+            string fullCrashReportFilePath = FullCrashReportFilePath(fileName);
             string fileData = null;
 
             lock (_lock)
             {
                 try
                 {
-                    using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}", filePath), FileMode.Open, store))
+                    using (var storageStream = new IsolatedStorageFileStream(fullCrashReportFilePath, FileMode.Open, store))
                     {
                         var reader = new StreamReader(storageStream);
                         fileData = reader.ReadToEnd();
@@ -58,10 +61,15 @@ namespace Bugsnag
                 {
                     // we can assume here that this crash report has already been sent in another thread
                 }
-                store.DeleteFile(string.Format("crash_reports\\{0}", filePath));
+                store.DeleteFile(fullCrashReportFilePath);
             }
 
             return fileData;
+        }
+
+        private static string FullCrashReportFilePath(object fileName)
+        {
+            return string.Format("{0}\\{1}", CrashReportDirectory, fileName);
         }
 
         private static IsolatedStorageFile IsolatedStorageFile()
