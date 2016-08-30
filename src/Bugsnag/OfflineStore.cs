@@ -74,7 +74,14 @@ namespace Bugsnag
 
         private static IsolatedStorageFile IsolatedStorageFile()
         {
-            return System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null);
+            if (AppDomain.CurrentDomain != null && AppDomain.CurrentDomain.ActivationContext != null)
+            {
+                return System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForApplication();
+            }
+            else
+            {
+                return System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly();
+            }
         }
     }
 }
