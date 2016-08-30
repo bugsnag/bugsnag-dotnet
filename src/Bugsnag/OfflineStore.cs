@@ -11,7 +11,7 @@ namespace Bugsnag
 
         internal IEnumerable<string> ReadStoredJson()
         {
-            using (var store = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null))
+            using (var store = IsolatedStorageFile())
             {
                 store.CreateDirectory("crash_reports");
                 foreach (var filePath in store.GetFileNames("crash_reports\\*"))
@@ -28,7 +28,7 @@ namespace Bugsnag
 
         internal void StoreJson(string json)
         {
-            using (var store = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null))
+            using (var store = IsolatedStorageFile())
             {
                 store.CreateDirectory("crash_reports");
                 using (var storageStream = new IsolatedStorageFileStream(string.Format("crash_reports\\{0}.json", Guid.NewGuid()), FileMode.CreateNew, store))
@@ -62,6 +62,11 @@ namespace Bugsnag
             }
 
             return fileData;
+        }
+
+        private static IsolatedStorageFile IsolatedStorageFile()
+        {
+            return System.IO.IsolatedStorage.IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null);
         }
     }
 }
