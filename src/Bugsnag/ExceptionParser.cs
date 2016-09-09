@@ -16,26 +16,40 @@ namespace Bugsnag
         /// </summary>
         /// <param name="exception">The exception to base the payload on</param>
         /// <param name="callTrace">The call stack trace, or null if its not available</param>
+        /// <param name="lastTrace">The last stack trace of the exception one level up, or null if its not available.</param>
         /// <param name="config">The configuration to use</param>
+        /// <param name="expTrace">The trace used when generating the exception info, or null if one was not used</param>
         /// <returns>The exception information payload to use in the notification</returns>
-        public static ExceptionInfo GenerateExceptionInfo(Exception exception, StackTrace callTrace, Configuration config)
+        public static ExceptionInfo GenerateExceptionInfo(Exception exception, 
+                                                          StackTrace callTrace, 
+                                                          StackTrace lastTrace, 
+                                                          Configuration config, 
+                                                          out StackTrace expTrace)
         {
+            expTrace = null;
             if (exception == null)
                 return null;
 
             StackTrace trace = null;
 
             // Attempt to get stack frame from exception, if the stack trace is invalid,
-            // try to use the call stack trace
+            // try to use the previous exception stack trace or call stack trace
             trace = new StackTrace(exception, true);
             if (trace == null || trace.FrameCount == 0)
             {
-                // If we still don't have a stack trace we can use, give up and return
-                if (callTrace == null || callTrace.FrameCount == 0)
+                // Try to use the last trace for an outer exception. If thats not available, use
+                // the call trace and if thats not available, then give up and return null as we
+                // have no useable stacktrace.
+                if (lastTrace != null && lastTrace.FrameCount != 0)
+                    trace = lastTrace;
+                else if (callTrace != null && callTrace.FrameCount != 0)
+                    trace = callTrace;
+                else
                     return null;
-
-                trace = callTrace;
             }
+
+            // Output the trace used
+            expTrace = trace;
 
             // Attempt to get the stack frames
             var frames = trace.GetFrames();

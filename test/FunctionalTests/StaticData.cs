@@ -14,6 +14,7 @@ namespace Bugsnag.Test.FunctionalTests
         public static readonly RankException TestThrowException;
         public static readonly ArithmeticException TestInnerException;
         public static readonly TimeoutException TestCallStackException;
+        public static readonly DivideByZeroException TestInnerNoStackException;
 
         static StaticData()
         {
@@ -63,6 +64,24 @@ namespace Bugsnag.Test.FunctionalTests
             catch (TimeoutException exp)
             {
                 TestCallStackException = exp;
+            }
+
+            // Exception containing an inner exception with no stack trace
+            try
+            {
+                try
+                {
+                    var rootExp = new OperationCanceledException("Operation Cancelled Test");
+                    throw new TimeoutException("Timeout test exception", rootExp);
+                }
+                catch (TimeoutException exp1)
+                {
+                    throw new DivideByZeroException("Divide By Zero Test", exp1);
+                }
+            }
+            catch (DivideByZeroException exp2)
+            {
+                TestInnerNoStackException = exp2;
             }
         }
     }
