@@ -84,7 +84,8 @@ namespace Bugsnag.Test
             var exp = new SystemException("System Error");
 
             // Act
-            var actInfo = ExceptionParser.GenerateExceptionInfo(exp, null, testConfig);
+            StackTrace lastTrace = null;
+            var actInfo = ExceptionParser.GenerateExceptionInfo(exp, null, null, testConfig, out lastTrace);
 
             // Assert
             Assert.Null(actInfo);
@@ -97,8 +98,10 @@ namespace Bugsnag.Test
             var testConfig = new Configuration(TestApiKey);
 
             // Act
-            var actInfoWithCall = ExceptionParser.GenerateExceptionInfo(null, new StackTrace(), testConfig);
-            var actInfoWithoutCall = ExceptionParser.GenerateExceptionInfo(null, null, testConfig);
+            StackTrace lastTrace = null;
+            var actInfoWithCall = ExceptionParser.GenerateExceptionInfo(null, new StackTrace(), null, testConfig, out lastTrace);
+            lastTrace = null;
+            var actInfoWithoutCall = ExceptionParser.GenerateExceptionInfo(null, null, null, testConfig, out lastTrace);
 
             // Assert
             Assert.Null(actInfoWithCall);
@@ -138,7 +141,8 @@ namespace Bugsnag.Test
             }
 
             // Act
-            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, useCallStack ? new StackTrace() : null, testConfig);
+            StackTrace lastTrace = null;
+            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, useCallStack ? new StackTrace() : null, null, testConfig, out lastTrace);
 
             // Assert
             Assert.NotNull(actInfo);
@@ -171,7 +175,8 @@ namespace Bugsnag.Test
             var testExp = new RankException("Test Rank Exp");
 
             // Act
-            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, CreateTrace(), testConfig);
+            StackTrace lastTrace = null;
+            var actInfo = ExceptionParser.GenerateExceptionInfo(testExp, CreateTrace(), null, testConfig, out lastTrace);
 
             // Assert
             Assert.NotNull(actInfo);

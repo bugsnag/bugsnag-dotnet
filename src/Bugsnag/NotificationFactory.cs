@@ -94,16 +94,19 @@ namespace Bugsnag
         /// <param name="exp">The exception to add to the current event</param>
         /// <param name="callStack">The stack of notify call</param>
         /// <param name="currentEvent">The current event info to add the exception to</param>
+        /// <param name="lastStack">The last stack trace used from the previous exception</param>
         private void RecursiveAddExceptionInfo(Event error,
                                                Exception exp,
                                                StackTrace callStack,
-                                               EventInfo currentEvent)
+                                               EventInfo currentEvent,
+                                               StackTrace lastStack = null)
         {
             // If we have no more exceptions, return the generated event info
             if (exp == null) return;
 
             // Parse the exception and add it to the current event info stack
-            var expInfo = ExceptionParser.GenerateExceptionInfo(exp, callStack, Config);
+            StackTrace expTrace = null;
+            var expInfo = ExceptionParser.GenerateExceptionInfo(exp, callStack, lastStack, Config, out expTrace);
             if (expInfo != null)
                 currentEvent.Exceptions.Add(expInfo);
 
@@ -123,16 +126,16 @@ namespace Bugsnag
                 {
                     foreach (var inner in aggExp.InnerExceptions)
                     {
-                        RecursiveAddExceptionInfo(error, inner, callStack, currentEvent);
+                        RecursiveAddExceptionInfo(error, inner, callStack, currentEvent, expTrace);
                     }
                 }
                 else
                 {
                     // Otherwise just move to the next inner exception
-                    RecursiveAddExceptionInfo(error, exp.InnerException, callStack, currentEvent);
-                }           
+                    RecursiveAddExceptionInfo(error, exp.InnerException, callStack, currentEvent, expTrace);
+                }
 #else
-                RecursiveAddExceptionInfo(error, exp.InnerException, callStack, currentEvent);
+                RecursiveAddExceptionInfo(error, exp.InnerException, callStack, currentEvent, expTrace);
 #endif
             }
         }

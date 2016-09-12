@@ -32,6 +32,28 @@ namespace Bugsnag.Test.FunctionalTests
         }
 
         [Fact]
+        public void CheckInnerExceptionsWithNoStackTraceAreNotified()
+        {
+            // Arrange
+            var client = new BaseClient(StaticData.TestApiKey);
+
+            // Act
+            JObject json;
+            using (var server = new TestServer(client))
+            {
+                client.Notify(StaticData.TestInnerNoStackException);
+                json = server.GetLastResponse();
+            }
+
+            // Assert
+            Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
+            Assert.Equal(3, json["events"][0]["exceptions"].Count());
+            Assert.Equal("DivideByZeroException", json["events"][0]["exceptions"][0]["errorClass"].ToString());
+            Assert.Equal("TimeoutException", json["events"][0]["exceptions"][1]["errorClass"].ToString());
+            Assert.Equal("OperationCanceledException", json["events"][0]["exceptions"][2]["errorClass"].ToString());
+        }
+
+        [Fact]
         public void CheckInnerExceptionsForBasicAggregateException()
         {
             // Arrange
