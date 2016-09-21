@@ -155,6 +155,12 @@ namespace Bugsnag
             get { return Storage.MetadataFilters; }
             set { Storage.MetadataFilters = value; }
         }
+
+        public bool StoreOfflineErrors
+        {
+            get { return Storage.StoreOfflineErrors; }
+            set { Storage.StoreOfflineErrors = value; }
+        }
         #endregion
 
         /// <summary>

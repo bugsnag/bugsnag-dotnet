@@ -4,6 +4,7 @@ using System.Net;
 using System.Reflection;
 using Bugsnag.Payload;
 using Newtonsoft.Json;
+using System.IO.IsolatedStorage;
 
 namespace Bugsnag
 {
@@ -25,11 +26,13 @@ namespace Bugsnag
 
         private Configuration Config { get; set; }
         private NotificationFactory Factory { get; set; }
+        private OfflineStore Store { get; set; }
 
         public Notifier(Configuration config)
         {
             Config = config;
             Factory = new NotificationFactory(config);
+            Store = new OfflineStore();
         }
 
         public void Send(Event errorEvent)
@@ -39,8 +42,36 @@ namespace Bugsnag
                 Send(notification);
         }
 
+        public void SendStoredReports()
+        {
+            try
+            {
+                foreach (var storedReport in Store.ReadStoredJson())
+                {
+                    SendJson(storedReport);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Warning(string.Format("Bugsnag failed to send persisted error reports with exception: {0}", e.ToString()));
+            }
+        }
+
         private void Send(Notification notification)
         {
+            try
+            {
+                SendJson(JsonConvert.SerializeObject(notification, JsonSettings));
+            }
+            catch (Exception e)
+            {
+                Logger.Warning(string.Format("Bugsnag failed to serialise error report with exception: {0}", e.ToString()));
+            }
+        }
+
+        private void SendJson(string json)
+        {
+            var reportSent = false;
             try
             {
                 //  Post JSON to server:
@@ -52,25 +83,29 @@ namespace Bugsnag
 
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
-                    string json = JsonConvert.SerializeObject(notification, JsonSettings);
                     streamWriter.Write(json);
                     streamWriter.Flush();
                 }
-                request.GetResponse().Close();
+
+                using (request.GetResponse())
+                {
+                }
+                reportSent = true;
             }
             catch (Exception e)
             {
                 Logger.Warning("Bugsnag failed to send error report with exception: " + e.ToString());
-
-                // Deliberate empty catch for now
-
-                // Must never double fault - i.e. can't leak an exception from an exception handler
-                // Also the caller might have just wanted to report an "information" bugsnag and we
-                // certainly don't want to fault then
-
-                // However, "offline" handling should be addressed. I.e. bugsnags should be queued
-                // until network is available and sent then, see
-                // https://github.com/bugsnag/bugsnag-dotnet/issues/31
+            }
+            if (!reportSent && Config.StoreOfflineErrors)
+            {
+                try
+                {
+                    Store.StoreJson(json);
+                }
+                catch (Exception e)
+                {
+                    Logger.Warning("Bugsnag failed to persist error report with exception: " + e.ToString());
+                }
             }
         }
     }

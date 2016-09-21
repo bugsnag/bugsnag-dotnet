@@ -24,6 +24,31 @@ namespace Bugsnag.Test.FunctionalTests
 
         [Theory]
         [PropertyData("ExceptionData")]
+        public void CheckOfflineStorage(Exception exp)
+        {
+            var client = new BaseClient(StaticData.TestApiKey);
+            client.Config.Endpoint = "http://localhost:8181/";
+            client.Config.StoreOfflineErrors = true;
+
+            client.Notify(exp);
+
+            JObject json;
+
+            using (var server = new TestServer(client))
+            {
+                client.notifier.SendStoredReports();
+                json = server.GetLastResponse();
+            }
+
+            Assert.NotNull(json);
+            Assert.Equal(StaticData.TestApiKey, json["apiKey"]);
+            Assert.Equal(Notifier.Name, json["notifier"]["name"]);
+            Assert.Equal(Notifier.Version, json["notifier"]["version"]);
+            Assert.Equal(Notifier.Url.AbsoluteUri, json["notifier"]["url"]);
+        }
+
+        [Theory]
+        [PropertyData("ExceptionData")]
         public void CheckBasicPropertiesOfNotifications(Exception exp)
         {
             // Arrange

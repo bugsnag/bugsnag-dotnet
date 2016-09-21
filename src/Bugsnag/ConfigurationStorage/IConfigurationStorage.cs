@@ -82,5 +82,6 @@
         /// prevent sensitive information being sent to Bugsnag.
         /// </summary>
         string[] MetadataFilters { get; set; }
+        bool StoreOfflineErrors { get; set; }
     }
 }

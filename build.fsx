@@ -24,7 +24,7 @@ Target "RestorePackages" (fun _ ->
 )
 
 Target "Clean" (fun _ ->
-  showGitCommand "." "clean -xdf --exclude=packages"
+  showGitCommand "." "clean -xdf src"
   CleanDir buildDir
 )
 

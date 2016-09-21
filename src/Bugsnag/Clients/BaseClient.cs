@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Bugsnag.ConfigurationStorage;
 using Bugsnag.Handlers;
+using System.Threading;
 
 #if !NET35
 using System.Threading.Tasks;
@@ -214,6 +215,11 @@ namespace Bugsnag.Clients
                 Config = new Configuration(configStorage);
                 notifier = new Notifier(Config);
 
+                if (Config.StoreOfflineErrors)
+                {
+                    ThreadPool.QueueUserWorkItem(e => { notifier.SendStoredReports(); });
+                }
+
                 // Install a default exception handler with this client
                 if (Config.AutoNotify)
                     StartAutoNotify();
@@ -255,6 +261,11 @@ namespace Bugsnag.Clients
         {
             var error = new Event(exception, runtimeEnding);
             Notify(error);
+        }
+
+        public void SendStoredReports()
+        {
+            notifier.SendStoredReports();
         }
     }
 }
