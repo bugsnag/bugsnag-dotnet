@@ -4,7 +4,7 @@ open Fake.Testing
 open Fake.Git
 
 let solution = "Bugsnag.sln"
-let version = "1.2.0.0"
+let version = "1.3.0.0"
 let buildConfigs = ["Release"; "MonoRelease"]
 let tests = !! "test/bin/**/Bugsnag.Test.dll"
 let buildDir = "./build/"
