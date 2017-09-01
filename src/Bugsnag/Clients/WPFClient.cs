@@ -12,11 +12,11 @@ namespace Bugsnag.Clients
     public static class WPFClient
     {
         public static Configuration Config;
-        private static BaseClient Client;
+        internal static BaseClient Client;
 
         static WPFClient()
         {
-            Client = new BaseClient(ConfigurationStorage.ConfigSection.Settings);
+            Client = new BaseClient();
             Config = Client.Config;
             Client.Config.BeforeNotify(error =>
             {
@@ -30,7 +30,7 @@ namespace Bugsnag.Clients
 
         public static void Start()
         {
-
+            ErrorExtensions.ClientType = ClientTypes.Wpf; // Set client type
         }
 
         public static void SendStoredReports()

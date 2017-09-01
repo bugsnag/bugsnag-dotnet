@@ -28,4 +28,15 @@ namespace Bugsnag
         [EnumMember(Value = "warning")]
         Warning
     }
+
+    /// <summary>
+    /// Defines the available types of clients for sending errors
+    /// </summary>
+    public enum ClientTypes
+    {
+        Standard,
+        WebApi,
+        WebMvc,
+        Wpf
+    }
 }

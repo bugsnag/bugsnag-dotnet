@@ -83,6 +83,7 @@
     <Compile Include="FunctionalTests\ExceptionTypeTests.cs" />
     <Compile Include="FunctionalTests\StaticData.cs" />
     <Compile Include="FunctionalTests\TestServer.cs" />
+    <Compile Include="FunctionalTests\AppSettingStorageTests.cs" />
     <Compile Include="MetadataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,6 +94,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.Bugsnag.Test.config" />
   </ItemGroup>
   <Choose>

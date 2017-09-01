@@ -56,11 +56,13 @@
     <Compile Include="Clients\WebMVCClient.cs" />
     <Compile Include="Clients\WPFClient.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="ConfigurationStorage\AppSettingStorage.cs" />
     <Compile Include="ConfigurationStorage\BaseStorage.cs" />
     <Compile Include="ConfigurationStorage\ConfigSection.cs" />
     <Compile Include="ConfigurationStorage\IConfigurationStorage.cs" />
     <Compile Include="Diagnostics.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="ErrorExtensions.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="ExceptionParser.cs" />
     <Compile Include="Handlers\UnhandledExceptionHandler.cs" />

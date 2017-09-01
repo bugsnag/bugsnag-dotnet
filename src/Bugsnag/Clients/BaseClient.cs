@@ -45,6 +45,21 @@ namespace Bugsnag.Clients
         private Regex apiRegex = new Regex("^[a-fA-F0-9]{32}$");
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="BaseClient" /> class.
+        /// </summary>
+        /// <remarks>
+        /// When no storage client is provided, use custom configuration if available, or appSettings otherwise
+        /// </remarks>
+        public BaseClient()
+        {
+            // Use the custom configuration section if available
+            if (ConfigurationStorage.ConfigSection.Settings != null)
+                Initialize(ConfigurationStorage.ConfigSection.Settings);
+            else // No custom configuration available, so use app settings
+                Initialize(new AppSettingStorage());
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="BaseClient"/> class. Will use all the default settings and will 
         /// automatically hook into uncaught exceptions.
         /// </summary>
