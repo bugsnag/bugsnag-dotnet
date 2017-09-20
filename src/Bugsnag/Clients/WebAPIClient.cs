@@ -20,7 +20,11 @@ namespace Bugsnag.Clients
                     return;
 
                 if (Config.AutoNotify)
-                    Client.Notify(context.Exception);
+                {
+                    var handledState = new HandledState(SeverityReason.UnhandledExceptionMiddlewareWebAPI);
+                    var error = new Event(context.Exception, false, handledState);
+                    Client.Notify(error);
+                } 
             }
         }
 

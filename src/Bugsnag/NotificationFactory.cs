@@ -78,6 +78,8 @@ namespace Bugsnag
                 App = appInfo,
                 Device = deviceInfo,
                 Severity = errorData.Severity,
+                SeverityReason = errorData.HandledState.SeverityReason.Serialize(),
+                Unhandled = errorData.HandledState.Unhandled,
                 User = userInfo,
                 Context = errorData.Context,
                 GroupingHash = errorData.GroupingHash,
