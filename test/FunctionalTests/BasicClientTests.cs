@@ -85,6 +85,32 @@ namespace Bugsnag.Test.FunctionalTests
 
             // Assert
             Assert.Equal("warning", json["events"][0]["severity"]);
+            Assert.Equal("handledException", json["events"][0]["severityReason"]["type"]);
+            Assert.Equal(false, json["events"][0]["unhandled"]);
+        }
+
+        [Fact]
+        public void ChangingSeverityInCallbackChangesSeverityReason()
+        {
+            // Arrange
+            var client = new BaseClient(StaticData.TestApiKey);
+            client.Config.BeforeNotify(error =>
+            {
+                error.Severity = Severity.Info;
+            });
+
+            // Act
+            JObject json;
+            using (var server = new TestServer(client))
+            {
+                client.Notify(StaticData.TestThrowException);
+                json = server.GetLastResponse();
+            }
+
+            // Assert
+            Assert.Equal("info", json["events"][0]["severity"]);
+            Assert.Equal("userCallbackSetSeverity", json["events"][0]["severityReason"]["type"]);
+            Assert.Equal(false, json["events"][0]["unhandled"]);
         }
 
         [Theory]
@@ -106,6 +132,8 @@ namespace Bugsnag.Test.FunctionalTests
 
             // Assert
             Assert.Equal(expJsonString, json["events"][0]["severity"]);
+            Assert.Equal("userSpecifiedSeverity", json["events"][0]["severityReason"]["type"]);
+            Assert.Equal(false, json["events"][0]["unhandled"]);
         }
 
         [Fact]

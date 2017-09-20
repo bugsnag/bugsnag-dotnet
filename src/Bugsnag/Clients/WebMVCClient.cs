@@ -121,7 +121,11 @@ namespace Bugsnag.Clients
                     return;
 
                 if (Config.AutoNotify)
-                    Client.Notify(filterContext.Exception, Severity.Error);
+                {
+                    var handledState = new HandledState(SeverityReason.UnhandledExceptionMiddlewareWebMVC);
+                    var error = new Event(filterContext.Exception, false, handledState);
+                    Client.Notify(error);
+                }
             }
         }
 

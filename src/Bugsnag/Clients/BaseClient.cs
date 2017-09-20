@@ -92,8 +92,7 @@ namespace Bugsnag.Clients
         /// <param name="exception">The exception to send to Bugsnag</param>
         public void Notify(Exception exception)
         {
-            var error = new Event(exception);
-            error.Severity = Severity.Warning;
+            var error = new Event(exception, false, new HandledState(SeverityReason.HandledException));
             Notify(error);
         }
 
@@ -104,8 +103,7 @@ namespace Bugsnag.Clients
         /// <param name="severity">The associated severity of the exception</param>
         public void Notify(Exception exception, Severity severity)
         {
-            var error = new Event(exception);
-            error.Severity = severity;
+            var error = new Event(exception, false, new HandledState(SeverityReason.UserSpecified, severity));
             Notify(error);
         }
 
@@ -116,8 +114,7 @@ namespace Bugsnag.Clients
         /// <param name="data">The metadata to send with the exception</param>
         public void Notify(Exception exception, Metadata data)
         {
-            var error = new Event(exception);
-            error.Severity = Severity.Warning;
+            var error = new Event(exception, false, new HandledState(SeverityReason.HandledException));
             error.Metadata.AddMetadata(data);
             Notify(error);
         }
@@ -130,8 +127,7 @@ namespace Bugsnag.Clients
         /// <param name="data">The metadata to send with the exception</param>
         public void Notify(Exception exception, Severity severity, Metadata data)
         {
-            var error = new Event(exception);
-            error.Severity = severity;
+            var error = new Event(exception, false, new HandledState(SeverityReason.UserSpecified, severity));
             error.Metadata.AddMetadata(data);
             Notify(error);
         }
@@ -259,7 +255,8 @@ namespace Bugsnag.Clients
         /// <param name="runtimeEnding">True if the unmanaged exception handler indicates that the runtime will end</param>
         protected void HandleDefaultException(Exception exception, bool runtimeEnding)
         {
-            var error = new Event(exception, runtimeEnding);
+            var handledState = new HandledState(SeverityReason.UnhandledException);
+            var error = new Event(exception, runtimeEnding, handledState);
             Notify(error);
         }
 

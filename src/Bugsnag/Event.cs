@@ -31,7 +31,16 @@ namespace Bugsnag
         /// <summary>
         /// Gets or sets the severity of the event
         /// </summary>
-        public Severity Severity { get; set; }
+        public Severity Severity
+        {
+            get { return HandledState.CurrentSeverity; }
+            set { HandledState.CurrentSeverity = value; }
+        }
+
+        /// <summary>
+        /// Gets or set the rationale for error severity and unhandled status
+        /// </summary>
+        internal HandledState HandledState { get; }
 
         /// <summary>
         /// Gets or sets the additional data to be sent with the event
@@ -63,12 +72,8 @@ namespace Bugsnag
         /// </summary>
         /// <param name="exception">The exception to report on</param>
         public Event(Exception exception)
+            : this(exception, false, new HandledState(SeverityReason.HandledException), 2)
         {
-            // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
-            if (exception == null || exception.StackTrace == null)
-                CallTrace = new StackTrace(1, true);
-
-            Intialise(exception, false);
         }
 
         /// <summary>
@@ -77,10 +82,31 @@ namespace Bugsnag
         /// <param name="exception">The exception to report on</param>
         /// <param name="runtimeEnding">True if the runtime is ending otherwise false</param>
         public Event(Exception exception, bool runtimeEnding)
+            : this(exception, runtimeEnding, new HandledState(SeverityReason.HandledException), 2)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Event"/> class.
+        /// </summary>
+        /// <param name="exception">The exception to report on</param>
+        /// <param name="runtimeEnding">True if the runtime is ending otherwise false</param>
+        public Event(Exception exception, bool runtimeEnding, HandledState handledState)
+            : this(exception, runtimeEnding, handledState, 2)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Event"/> class.
+        /// </summary>
+        /// <param name="exception">The exception to report on</param>
+        /// <param name="runtimeEnding">True if the runtime is ending otherwise false</param>
+        protected Event(Exception exception, bool runtimeEnding, HandledState handledState, int skippedFrames)
+        {
+            HandledState = handledState;
             // Record a full notify stack trace if the exception has none (ignoring the first constructor stack frame)
             if (exception == null || exception.StackTrace == null)
-                CallTrace = new StackTrace(1, true);
+                CallTrace = new StackTrace(skippedFrames, true);
 
             Intialise(exception, runtimeEnding);
         }
@@ -94,7 +120,6 @@ namespace Bugsnag
         {
             Exception = exception;
             IsRuntimeEnding = runtimeEnding;
-            Severity = Severity.Error;
             Metadata = new Metadata();
         }
     }

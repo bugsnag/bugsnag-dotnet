@@ -371,6 +371,9 @@ namespace Bugsnag
                     Logger.Warning("[Before Notify] Exception : " + exp.ToString());
                 }
             }
+            var state = errorEvent.HandledState;
+            if (state.CurrentSeverity != state.OriginalSeverity)
+                state.SeverityReason = SeverityReason.CallbackSpecified;
             return true;
         }
     }

@@ -61,6 +61,18 @@ namespace Bugsnag.Payload
         public Severity Severity { get; set; }
 
         /// <summary>
+        /// Gets or sets the severity reason of the event
+        /// </summary>
+        [JsonProperty("severityReason")]
+        public Dictionary<string, object> SeverityReason { get; set; }
+
+        /// <summary>
+        /// Gets or set the unhandled state. An unhandled event was reported by a system- or framework-level handler
+        /// </summary>
+        [JsonProperty("unhandled")]
+        public bool Unhandled { get; set; }
+
+        /// <summary>
         /// Gets or sets the grouping hash. All errors with the same grouping Hash will be grouped together (optional)
         /// </summary>
         [JsonProperty("groupingHash")]
