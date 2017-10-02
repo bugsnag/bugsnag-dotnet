@@ -13,6 +13,7 @@ Releasing
 
 * Update the CHANGELOG.md
 * Update the version of the build in `appveyor.yml`, located in the root directory.
+* Update the version of the build in `build.fsx`, located in the root directory.
 * Update the version of the build in `Bugsnag.nuspec` and `BugsnagMono.nuspec`, located in the root directory.
 * Update the version of the build in `CommonVersionInfo.cs`, located in the `src/Common`.
 * Push the change, this should kick off a build.
