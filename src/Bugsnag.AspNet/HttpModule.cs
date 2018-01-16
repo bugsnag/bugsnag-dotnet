@@ -29,13 +29,13 @@ namespace Bugsnag.AspNet
       Notify(application.Server.GetLastError(), new HttpContextWrapper(application.Context));
     }
 
-    private void Notify(Exception exception, HttpContextWrapper httpContextWrapper)
+    private void Notify(System.Exception exception, HttpContextWrapper httpContextWrapper)
     {
       try
       {
         _client.Notify(exception, Severity.Error);
       }
-      catch (Exception internalException)
+      catch (System.Exception internalException)
       {
         Trace.WriteLine(internalException);
       }

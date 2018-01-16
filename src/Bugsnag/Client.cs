@@ -7,7 +7,7 @@ namespace Bugsnag
 {
   public class Client
   {
-    private readonly NotificationFactory _notificationFactory;
+    private readonly ReportFactory _reportFactory;
 
     private readonly Transport _transport;
 
@@ -19,60 +19,60 @@ namespace Bugsnag
 
     private readonly Dictionary<IAsyncResult, bool> _inflight;
 
-    public Client(IConfiguration configuration) : this(configuration, new Transport(), new NotificationFactory(configuration))
+    public Client(IConfiguration configuration) : this(configuration, new Transport(), new ReportFactory(configuration))
     {
 
     }
 
-    public Client(IConfiguration configuration, Transport transport, NotificationFactory notificationFactory)
+    public Client(IConfiguration configuration, Transport transport, ReportFactory reportFactory)
     {
       _endpoint = configuration.Endpoint;
       _releaseStage = configuration.ReleaseStage;
       _notifyReleaseStages = configuration.NotifyReleaseStages;
       _transport = transport;
-      _notificationFactory = notificationFactory;
+      _reportFactory = reportFactory;
       _inflight = new Dictionary<IAsyncResult, bool>();
     }
 
-    public void Notify(Exception exception)
+    public void Notify(System.Exception exception)
     {
       Notify(exception, Severity.Error);
     }
 
-    public void Notify(Exception exception, Severity severity)
+    public void Notify(System.Exception exception, Severity severity)
     {
       if (_notifyReleaseStages != null && !string.IsNullOrEmpty(_releaseStage) && !_notifyReleaseStages.Any(stage => stage == _releaseStage))
       {
         return;
       }
 
-      var notification = _notificationFactory.Generate(exception, severity);
+      var report = _reportFactory.Generate(exception, severity);
 
-      Notify(notification);
+      Notify(report);
     }
 
-    public void Notify(Payload.Notification notification)
+    public void Notify(Report report)
     {
       byte[] rawPayload = null;
 
       try
       {
-        var payload = SimpleJson.SimpleJson.SerializeObject(notification);
+        var payload = SimpleJson.SimpleJson.SerializeObject(report);
         rawPayload = System.Text.Encoding.UTF8.GetBytes(payload);
       }
-      catch (Exception exception)
+      catch (System.Exception exception)
       {
         Trace.WriteLine(exception);
       }
 
       if (rawPayload != null)
       {
-        var asyncResult = _transport.BeginSend(_endpoint, rawPayload, NotificationCallback, new ClientState(notification, rawPayload));
+        var asyncResult = _transport.BeginSend(_endpoint, rawPayload, ReportCallback, new ClientState(report, rawPayload));
         _inflight.Add(asyncResult, true);
       }
     }
 
-    private void NotificationCallback(IAsyncResult asyncResult)
+    private void ReportCallback(IAsyncResult asyncResult)
     {
       var state = (ClientState)asyncResult.AsyncState;
       var responseCode = _transport.EndSend(asyncResult);
@@ -82,13 +82,13 @@ namespace Bugsnag
 
     private class ClientState
     {
-      public Payload.Notification Notification { get; private set; }
+      public Report Report { get; private set; }
 
       public byte[] Payload { get; private set; }
 
-      public ClientState(Payload.Notification notification, byte[] payload)
+      public ClientState(Report report, byte[] payload)
       {
-        Notification = notification;
+        Report = report;
         Payload = payload;
       }
     }

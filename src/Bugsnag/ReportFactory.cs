@@ -1,27 +1,26 @@
 using System.Linq;
 using System.Collections.Generic;
-using Bugsnag.Payload;
 
 namespace Bugsnag
 {
-  public class NotificationFactory
+  public class ReportFactory
   {
     private readonly string _apiKey;
     private readonly App _app;
 
-    public NotificationFactory(IConfiguration configuration)
+    public ReportFactory(IConfiguration configuration)
     {
       _app = new App(configuration.AppVersion, configuration.ReleaseStage, configuration.AppType);
       _apiKey = configuration.ApiKey;
     }
 
-    public Notification Generate(System.Exception exception, Severity severity)
+    public Report Generate(System.Exception exception, Severity severity)
     {
       var exceptions = GenerateExceptions(exception).ToArray();
       var @event = new Event(exceptions, severity, _app);
-      var notification = new Notification(_apiKey, @event) { Exception = exception };
+      var report = new Report(_apiKey, @event) { Exception = exception };
 
-      return notification;
+      return report;
     }
 
     public IEnumerable<Exception> GenerateExceptions(System.Exception exception)

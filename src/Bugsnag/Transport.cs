@@ -14,18 +14,18 @@ namespace Bugsnag
 
       public Uri Endpoint { get; private set; }
 
-      public byte[] Notification { get; private set; }
+      public byte[] Report { get; private set; }
 
       public WebRequest Request { get; private set; }
 
       public HttpWebResponse Response { get; set; }
 
-      public TransportState(AsyncCallback callback, object state, Uri endpoint, byte[] notification, WebRequest request)
+      public TransportState(AsyncCallback callback, object state, Uri endpoint, byte[] report, WebRequest request)
       {
         Callback = callback;
         State = state;
         Endpoint = endpoint;
-        Notification = notification;
+        Report = report;
         Request = request;
       }
     }
@@ -50,12 +50,12 @@ namespace Bugsnag
       }
     }
 
-    public IAsyncResult BeginSend(Uri endpoint, byte[] notification, AsyncCallback callback, object state)
+    public IAsyncResult BeginSend(Uri endpoint, byte[] report, AsyncCallback callback, object state)
     {
       var request = WebRequest.Create(endpoint);
       request.Method = "POST";
       request.ContentType = "application/json";
-      var internalState = new TransportState(callback, state, endpoint, notification, request);
+      var internalState = new TransportState(callback, state, endpoint, report, request);
       var asyncResult = request.BeginGetRequestStream(new AsyncCallback(WriteCallback), internalState);
       return new TransportAsyncResult(asyncResult, state);
     }
@@ -96,7 +96,7 @@ namespace Bugsnag
       {
         using (var stream = state.Request.EndGetRequestStream(asynchronousResult))
         {
-          stream.Write(state.Notification, 0, state.Notification.Length);
+          stream.Write(state.Report, 0, state.Report.Length);
         }
       }
       catch (WebException exception)

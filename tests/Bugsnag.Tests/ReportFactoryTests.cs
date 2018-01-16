@@ -3,22 +3,22 @@ using Xunit;
 
 namespace Bugsnag.Tests
 {
-  public class NotificationFactoryTests
+  public class ReportFactoryTests
   {
     [Fact]
     public void BasicTest()
     {
       var configuration = new TestConfiguration();
-      var payloadGenerator = new NotificationFactory(configuration);
+      var payloadGenerator = new ReportFactory(configuration);
 
       try
       {
-        throw new Exception("test");
+        throw new System.Exception("test");
       }
-      catch (Exception exception)
+      catch (System.Exception exception)
       {
-        var notification = payloadGenerator.Generate(exception, Severity.Error);
-        Assert.NotNull(notification);
+        var report = payloadGenerator.Generate(exception, Severity.Error);
+        Assert.NotNull(report);
       }
     }
 

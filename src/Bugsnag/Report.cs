@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace Bugsnag.Payload
+namespace Bugsnag
 {
-  public class Notification : Dictionary<string, object>
+  public class Report : Dictionary<string, object>
   {
     private static Dictionary<string, string> NotifierInfo = new Dictionary<string, string> {
       { "name", ".NET Bugsnag Notifier" },
@@ -11,11 +11,11 @@ namespace Bugsnag.Payload
     };
 
     /// <summary>
-    /// The initial exception that this notification was generated from
+    /// The initial exception that this report was generated from
     /// </summary>
     public System.Exception Exception { get; set; }
 
-    public Notification(string apiKey, Event @event)
+    public Report(string apiKey, Event @event)
     {
       this["apiKey"] = apiKey;
       this["notifier"] = NotifierInfo;
