@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -9,7 +8,7 @@ namespace Bugsnag
   {
     private readonly ReportFactory _reportFactory;
 
-    private readonly Transport _transport;
+    private readonly ITransport _transport;
 
     private readonly Uri _endpoint;
 
@@ -17,21 +16,18 @@ namespace Bugsnag
 
     private readonly string[] _notifyReleaseStages;
 
-    private readonly Dictionary<IAsyncResult, bool> _inflight;
-
-    public Client(IConfiguration configuration) : this(configuration, new Transport(), new ReportFactory(configuration))
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new ReportFactory(configuration))
     {
 
     }
 
-    public Client(IConfiguration configuration, Transport transport, ReportFactory reportFactory)
+    public Client(IConfiguration configuration, ITransport transport, ReportFactory reportFactory)
     {
       _endpoint = configuration.Endpoint;
       _releaseStage = configuration.ReleaseStage;
       _notifyReleaseStages = configuration.NotifyReleaseStages;
       _transport = transport;
       _reportFactory = reportFactory;
-      _inflight = new Dictionary<IAsyncResult, bool>();
     }
 
     public void Notify(System.Exception exception)
@@ -67,29 +63,7 @@ namespace Bugsnag
 
       if (rawPayload != null)
       {
-        var asyncResult = _transport.BeginSend(_endpoint, rawPayload, ReportCallback, new ClientState(report, rawPayload));
-        _inflight.Add(asyncResult, true);
-      }
-    }
-
-    private void ReportCallback(IAsyncResult asyncResult)
-    {
-      var state = (ClientState)asyncResult.AsyncState;
-      var responseCode = _transport.EndSend(asyncResult);
-      // don't do anything with the result right now
-      _inflight.Remove(asyncResult);
-    }
-
-    private class ClientState
-    {
-      public Report Report { get; private set; }
-
-      public byte[] Payload { get; private set; }
-
-      public ClientState(Report report, byte[] payload)
-      {
-        Report = report;
-        Payload = payload;
+        _transport.Send(_endpoint, rawPayload);
       }
     }
   }
