@@ -16,20 +16,16 @@ namespace Bugsnag
 
     private readonly object _queueLock;
 
-    private readonly Dictionary<IAsyncResult, bool> _inflight;
-
-    private readonly object _inflightLock;
-
     private readonly Transport _transport;
 
     private ThreadQueueTransport()
     {
       _transport = new Transport();
       _queue = new Queue<WorkItem>();
-      _worker = new Thread(new ThreadStart(ProcessQueue));
+      _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
       _queueLock = new object();
-      _inflight = new Dictionary<IAsyncResult, bool>();
-      _inflightLock = new object();
+
+      _worker.Start();
     }
 
     public static ThreadQueueTransport Instance
@@ -53,40 +49,36 @@ namespace Bugsnag
       lock (_queueLock)
       {
         _queue.Enqueue(new WorkItem(endpoint, report));
+        Monitor.Pulse(_queueLock);
       }
     }
 
     private void ProcessQueue()
     {
-      WorkItem workItem = null;
-
-      lock (_queueLock)
+      while (true)
       {
-        if (_queue.Peek() != null)
+        WorkItem workItem = null;
+
+        lock (_queueLock)
         {
+          while (_queue.Count == 0)
+          {
+            Monitor.Wait(_queueLock);
+          }
           workItem = _queue.Dequeue();
         }
-      }
 
-      if (workItem != null)
-      {
-        lock (_inflightLock)
+        if (workItem != null)
         {
-          var asyncResult = _transport.BeginSend(workItem.Endpoint, workItem.Report, ReportCallback, workItem);
-          _inflight.Add(asyncResult, true);
+          _transport.BeginSend(workItem.Endpoint, workItem.Report, ReportCallback, workItem);
         }
       }
     }
 
     private void ReportCallback(IAsyncResult asyncResult)
     {
-      var state = (WorkItem)asyncResult.AsyncState;
       var responseCode = _transport.EndSend(asyncResult);
       // don't do anything with the result right now
-      lock (_inflightLock)
-      {
-        _inflight.Remove(asyncResult);
-      }
     }
 
     private class WorkItem

@@ -79,7 +79,12 @@ namespace Bugsnag
       var state = (TransportState)asynchronousResult.AsyncState;
       try
       {
-        state.Response = (HttpWebResponse)state.Request.EndGetResponse(asynchronousResult);
+        var response = (HttpWebResponse)state.Request.EndGetResponse(asynchronousResult);
+        using (var stream = response.GetResponseStream())
+        {
+          // we don't care about the content of the http response, only the status code
+        }
+        state.Response = response;
       }
       catch (WebException exception)
       {
