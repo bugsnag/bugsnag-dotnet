@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Bugsnag
 {
-  public class ReportFactory
+  public class ReportBuilder
   {
     private readonly string _apiKey;
     private readonly App _app;
 
-    public ReportFactory(IConfiguration configuration)
+    public ReportBuilder(IConfiguration configuration)
     {
       _app = new App(configuration.AppVersion, configuration.ReleaseStage, configuration.AppType);
       _apiKey = configuration.ApiKey;

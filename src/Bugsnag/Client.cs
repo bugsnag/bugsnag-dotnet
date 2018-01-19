@@ -6,20 +6,20 @@ namespace Bugsnag
   {
     private readonly IConfiguration _configuration;
 
-    private readonly ReportFactory _reportFactory;
+    private readonly ReportBuilder _reportBuilder;
 
     private readonly ITransport _transport;
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new ReportFactory(configuration))
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new ReportBuilder(configuration))
     {
 
     }
 
-    public Client(IConfiguration configuration, ITransport transport, ReportFactory reportFactory)
+    public Client(IConfiguration configuration, ITransport transport, ReportBuilder reportBuilder)
     {
       _configuration = configuration;
       _transport = transport;
-      _reportFactory = reportFactory;
+      _reportBuilder = reportBuilder;
     }
 
     public IConfiguration Configuration { get { return _configuration; } }
@@ -36,7 +36,7 @@ namespace Bugsnag
         return;
       }
 
-      var report = _reportFactory.Generate(exception, severity);
+      var report = _reportBuilder.Generate(exception, severity);
 
       Notify(report);
     }

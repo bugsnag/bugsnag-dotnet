@@ -3,13 +3,13 @@ using Xunit;
 
 namespace Bugsnag.Tests
 {
-  public class ReportFactoryTests
+  public class ReportBuilderTests
   {
     [Fact]
     public void BasicTest()
     {
       var configuration = new TestConfiguration();
-      var payloadGenerator = new ReportFactory(configuration);
+      var payloadGenerator = new ReportBuilder(configuration);
 
       try
       {
