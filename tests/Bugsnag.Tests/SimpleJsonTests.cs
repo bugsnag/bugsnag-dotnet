@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -7,13 +8,36 @@ namespace Bugsnag.Tests
     [Fact]
     public void CanSerialiseReport()
     {
-      var stackTraceLine = new StackTraceLine("IBroken.cs", 5, "public void Boop()", true);
-      var exception = new Exception("Exception", "Oh no an exception", new[] { stackTraceLine });
-      var app = new App("1.0", "test", "client");
-      var @event = new Event(new[] { exception }, Severity.Error, app);
-      var report = new Report("123abc", @event);
+      System.Exception exception = null;
+      var configuration = new TestConfiguration();
+
+      try
+      {
+        throw new System.Exception("test");
+      }
+      catch (System.Exception caughtException)
+      {
+        exception = caughtException;
+      }
+
+      var report = new Report(configuration, exception, Severity.Error);
       var json = SimpleJson.SimpleJson.SerializeObject(report);
       Assert.NotNull(json);
+    }
+
+    private class TestConfiguration : IConfiguration
+    {
+      public string ApiKey => "123456";
+
+      public Uri Endpoint => new Uri("https://notify.bugsnag.com");
+
+      public string ReleaseStage => "test";
+
+      public string[] NotifyReleaseStages => null;
+
+      public string AppVersion => "1.0";
+
+      public string AppType => "test";
     }
   }
 }

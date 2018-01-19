@@ -3,23 +3,25 @@ using Xunit;
 
 namespace Bugsnag.Tests
 {
-  public class ReportBuilderTests
+  public class ReportTests
   {
     [Fact]
     public void BasicTest()
     {
+      System.Exception exception = null;
       var configuration = new TestConfiguration();
-      var payloadGenerator = new ReportBuilder(configuration);
 
       try
       {
         throw new System.Exception("test");
       }
-      catch (System.Exception exception)
+      catch (System.Exception caughtException)
       {
-        var report = payloadGenerator.Generate(exception, Severity.Error);
-        Assert.NotNull(report);
+        exception = caughtException;
       }
+
+      var report = new Report(configuration, exception, Severity.Error);
+      Assert.NotNull(report);
     }
 
     private class TestConfiguration : IConfiguration

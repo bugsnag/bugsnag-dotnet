@@ -6,20 +6,28 @@ namespace Bugsnag
   {
     private readonly IConfiguration _configuration;
 
-    private readonly ReportBuilder _reportBuilder;
-
     private readonly ITransport _transport;
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new ReportBuilder(configuration))
+    static class InternalMiddlewareDefinitions
+    {
+      public static Middleware ReleaseStageFilter = (c, r) => {
+        r.Deliver = r.Deliver && !c.InvalidReleaseStage();
+      };
+    }
+
+    private static Middleware[] InternalMiddleware = new Middleware[] {
+      InternalMiddlewareDefinitions.ReleaseStageFilter
+    }; 
+
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance)
     {
 
     }
 
-    public Client(IConfiguration configuration, ITransport transport, ReportBuilder reportBuilder)
+    public Client(IConfiguration configuration, ITransport transport)
     {
       _configuration = configuration;
       _transport = transport;
-      _reportBuilder = reportBuilder;
     }
 
     public IConfiguration Configuration { get { return _configuration; } }
@@ -31,34 +39,39 @@ namespace Bugsnag
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      if (Configuration.InvalidReleaseStage())
-      {
-        return;
-      }
-
-      var report = _reportBuilder.Generate(exception, severity);
+      var report = new Report(_configuration, exception, severity);
 
       Notify(report);
     }
 
     public void Notify(Report report)
     {
-      byte[] rawPayload = null;
-
-      try
+      foreach (var middleware in InternalMiddleware)
       {
-        var payload = SimpleJson.SimpleJson.SerializeObject(report);
-        rawPayload = System.Text.Encoding.UTF8.GetBytes(payload);
-      }
-      catch (System.Exception exception)
-      {
-        Trace.WriteLine(exception);
+        middleware(Configuration, report);
       }
 
-      if (rawPayload != null)
+      if (report.Deliver)
       {
-        _transport.Send(Configuration.Endpoint, rawPayload);
+        byte[] rawPayload = null;
+
+        try
+        {
+          var payload = SimpleJson.SimpleJson.SerializeObject(report);
+          rawPayload = System.Text.Encoding.UTF8.GetBytes(payload);
+        }
+        catch (System.Exception exception)
+        {
+          Trace.WriteLine(exception);
+        }
+
+        if (rawPayload != null)
+        {
+          _transport.Send(Configuration.Endpoint, rawPayload);
+        }
       }
     }
   }
+
+  public delegate void Middleware(IConfiguration configuration, Report report);
 }
