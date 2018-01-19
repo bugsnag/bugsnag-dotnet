@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bugsnag
 {
@@ -7,7 +8,7 @@ namespace Bugsnag
     public Event(IConfiguration configuration, System.Exception exception, Severity severity)
     {
       this["payloadVersion"] = 2;
-      this["exceptions"] = new Exceptions(exception);
+      this["exceptions"] = new Exceptions(exception).ToArray();
       this["app"] = new App(configuration);
 
       switch (severity)
@@ -23,5 +24,7 @@ namespace Bugsnag
           break;
       }
     }
+
+    public IEnumerable<Exception> Exceptions { get { return (IEnumerable<Exception>)this["exceptions"]; } }
   }
 }

@@ -20,6 +20,8 @@ namespace Bugsnag
       this["notifier"] = NotifierInfo;
       this["events"] = new[] { new Event(configuration, exception, severity) };
     }
+
+    public IEnumerable<Event> Events { get { return (IEnumerable<Event>)this["events"]; } }
   }
 
   internal static class PayloadExtensions

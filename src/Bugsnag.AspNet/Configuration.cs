@@ -60,5 +60,24 @@ namespace Bugsnag.AspNet
     {
       get { return this["releaseStage"] as string; }
     }
+
+    [ConfigurationProperty("filePrefixes", IsRequired = false)]
+    private string InternalFilePrefixes
+    {
+      get { return this["filePrefixes"] as string; }
+    }
+
+    public string[] FilePrefixes
+    {
+      get
+      {
+        if (InternalFilePrefixes != null)
+        {
+          return InternalFilePrefixes.Split(',');
+        }
+
+        return null;
+      }
+    }
   }
 }

@@ -9,7 +9,8 @@ namespace Bugsnag
     private readonly ITransport _transport;
 
     private static Middleware[] InternalMiddleware = new Middleware[] {
-      Bugsnag.InternalMiddleware.ReleaseStageFilter
+      Bugsnag.InternalMiddleware.ReleaseStageFilter,
+      Bugsnag.InternalMiddleware.RemoveFilePrefixes
     }; 
 
     public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance)

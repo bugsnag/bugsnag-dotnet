@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bugsnag
 {
@@ -34,7 +35,9 @@ namespace Bugsnag
     {
       this.AddToPayload("errorClass", exception.GetType().FriendlyClassName());
       this.AddToPayload("message", exception.Message);
-      this.AddToPayload("stacktrace", new StackTrace(exception));
+      this.AddToPayload("stacktrace", new StackTrace(exception).ToArray());
     }
+
+    public IEnumerable<StackTraceLine> StackTrace { get { return (IEnumerable<StackTraceLine>)this["stacktrace"]; } }
   }
 }

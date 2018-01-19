@@ -60,5 +60,17 @@ namespace Bugsnag
 
       // TODO: what should we set these to when the method is null?
     }
+
+    public string FileName
+    {
+      get
+      {
+        return (string)this["file"];
+      }
+      set
+      {
+        this["file"] = value;
+      }
+    }
   }
 }
