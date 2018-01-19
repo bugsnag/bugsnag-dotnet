@@ -10,7 +10,8 @@ namespace Bugsnag
 
     private static Middleware[] InternalMiddleware = new Middleware[] {
       Bugsnag.InternalMiddleware.ReleaseStageFilter,
-      Bugsnag.InternalMiddleware.RemoveFilePrefixes
+      Bugsnag.InternalMiddleware.RemoveFilePrefixes,
+      Bugsnag.InternalMiddleware.DetectInProjectNamespaces,
     }; 
 
     public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance)

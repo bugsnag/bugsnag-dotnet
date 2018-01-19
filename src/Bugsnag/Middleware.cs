@@ -32,5 +32,25 @@ namespace Bugsnag
         }
       }
     };
+
+    public static Middleware DetectInProjectNamespaces = (configuration, report) =>
+    {
+      if (configuration.ProjectNamespaces.Any())
+      {
+        foreach (var @event in report.Events)
+        {
+          foreach (var exception in @event.Exceptions)
+          {
+            foreach (var stackTraceLine in exception.StackTrace)
+            {
+              foreach (var @namespace in configuration.ProjectNamespaces)
+              {
+                stackTraceLine.InProject = stackTraceLine.MethodName.StartsWith(@namespace);
+              }
+            }
+          }
+        }
+      }
+    };
   }
 }

@@ -79,5 +79,24 @@ namespace Bugsnag.AspNet
         return null;
       }
     }
+
+    [ConfigurationProperty("projectNamespaces", IsRequired = false)]
+    private string InternalProjectNamespaces
+    {
+      get { return this["projectNamespaces"] as string; }
+    }
+
+    public string[] ProjectNamespaces
+    {
+      get
+      {
+        if (InternalProjectNamespaces != null)
+        {
+          return InternalProjectNamespaces.Split(',');
+        }
+
+        return null;
+      }
+    }
   }
 }

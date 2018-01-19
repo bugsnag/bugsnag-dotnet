@@ -17,5 +17,7 @@ namespace Bugsnag
     string AppType { get; }
 
     string[] FilePrefixes { get; }
+
+    string[] ProjectNamespaces { get; }
   }
 }

@@ -17,5 +17,7 @@ namespace Bugsnag.Tests
     public string AppType => "test";
 
     public string[] FilePrefixes => new string[] { };
+
+    public string[] ProjectNamespaces => new string[] { };
   }
 }

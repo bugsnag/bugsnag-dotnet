@@ -72,5 +72,29 @@ namespace Bugsnag
         this["file"] = value;
       }
     }
+
+    public string MethodName
+    {
+      get
+      {
+        return (string)this["method"];
+      }
+      set
+      {
+        this["method"] = value;
+      }
+    }
+
+    public bool InProject
+    {
+      get
+      {
+        return (bool)this["inProject"];
+      }
+      set
+      {
+        this["inProject"] = value;
+      }
+    }
   }
 }
