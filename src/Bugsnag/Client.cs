@@ -1,20 +1,14 @@
-using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Bugsnag
 {
   public class Client
   {
+    private readonly IConfiguration _configuration;
+
     private readonly ReportFactory _reportFactory;
 
     private readonly ITransport _transport;
-
-    private readonly Uri _endpoint;
-
-    private readonly string _releaseStage;
-
-    private readonly string[] _notifyReleaseStages;
 
     public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new ReportFactory(configuration))
     {
@@ -23,12 +17,12 @@ namespace Bugsnag
 
     public Client(IConfiguration configuration, ITransport transport, ReportFactory reportFactory)
     {
-      _endpoint = configuration.Endpoint;
-      _releaseStage = configuration.ReleaseStage;
-      _notifyReleaseStages = configuration.NotifyReleaseStages;
+      _configuration = configuration;
       _transport = transport;
       _reportFactory = reportFactory;
     }
+
+    public IConfiguration Configuration { get { return _configuration; } }
 
     public void Notify(System.Exception exception)
     {
@@ -37,7 +31,7 @@ namespace Bugsnag
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      if (_notifyReleaseStages != null && !string.IsNullOrEmpty(_releaseStage) && !_notifyReleaseStages.Any(stage => stage == _releaseStage))
+      if (Configuration.InvalidReleaseStage())
       {
         return;
       }
@@ -63,7 +57,7 @@ namespace Bugsnag
 
       if (rawPayload != null)
       {
-        _transport.Send(_endpoint, rawPayload);
+        _transport.Send(Configuration.Endpoint, rawPayload);
       }
     }
   }
