@@ -8,15 +8,8 @@ namespace Bugsnag
 
     private readonly ITransport _transport;
 
-    static class InternalMiddlewareDefinitions
-    {
-      public static Middleware ReleaseStageFilter = (c, r) => {
-        r.Deliver = r.Deliver && !c.InvalidReleaseStage();
-      };
-    }
-
     private static Middleware[] InternalMiddleware = new Middleware[] {
-      InternalMiddlewareDefinitions.ReleaseStageFilter
+      Bugsnag.InternalMiddleware.ReleaseStageFilter
     }; 
 
     public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance)
@@ -72,6 +65,4 @@ namespace Bugsnag
       }
     }
   }
-
-  public delegate void Middleware(IConfiguration configuration, Report report);
 }
