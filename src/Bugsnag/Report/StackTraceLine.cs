@@ -50,7 +50,7 @@ namespace Bugsnag
 
         var lineNumber = stackFrame.FriendlyLineNumber();
 
-        var file = stackFrame.GetFileName();
+        var file = stackFrame.GetFileName() ?? "<unknown>";
 
         this.AddToPayload("file", file);
         this.AddToPayload("lineNumber", lineNumber);
