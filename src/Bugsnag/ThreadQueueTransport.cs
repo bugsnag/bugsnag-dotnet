@@ -18,11 +18,14 @@ namespace Bugsnag
 
     private readonly Transport _transport;
 
+    private int _requestCounter;
+
     private ThreadQueueTransport()
     {
+      _requestCounter = 0;
       _transport = new Transport();
       _queue = new Queue<WorkItem>();
-      _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
+      _worker = new Thread(new ThreadStart(ProcessQueue));
       _queueLock = new object();
 
       _worker.Start();
@@ -65,6 +68,9 @@ namespace Bugsnag
           {
             Monitor.Wait(_queueLock);
           }
+
+          _worker.IsBackground = false;
+          Interlocked.Increment(ref _requestCounter);
           workItem = _queue.Dequeue();
         }
 
@@ -77,6 +83,7 @@ namespace Bugsnag
 
     private void ReportCallback(IAsyncResult asyncResult)
     {
+      _worker.IsBackground = Interlocked.Decrement(ref _requestCounter) == 0;
       var responseCode = _transport.EndSend(asyncResult);
       // don't do anything with the result right now
     }
