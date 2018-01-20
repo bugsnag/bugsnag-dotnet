@@ -38,6 +38,6 @@ namespace Bugsnag
       this.AddToPayload("stacktrace", new StackTrace(exception).ToArray());
     }
 
-    public IEnumerable<StackTraceLine> StackTrace { get { return (IEnumerable<StackTraceLine>)this["stacktrace"]; } }
+    public IEnumerable<StackTraceLine> StackTrace { get { return this["stacktrace"] as IEnumerable<StackTraceLine>; } }
   }
 }

@@ -25,6 +25,6 @@ namespace Bugsnag
       }
     }
 
-    public IEnumerable<Exception> Exceptions { get { return (IEnumerable<Exception>)this["exceptions"]; } }
+    public IEnumerable<Exception> Exceptions { get { return this["exceptions"] as IEnumerable<Exception>; } }
   }
 }

@@ -21,7 +21,7 @@ namespace Bugsnag
       this["events"] = new[] { new Event(configuration, exception, severity) };
     }
 
-    public IEnumerable<Event> Events { get { return (IEnumerable<Event>)this["events"]; } }
+    public IEnumerable<Event> Events { get { return this["events"] as IEnumerable<Event>; } }
   }
 
   internal static class PayloadExtensions

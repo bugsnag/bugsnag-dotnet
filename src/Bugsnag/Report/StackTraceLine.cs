@@ -77,7 +77,7 @@ namespace Bugsnag
     {
       get
       {
-        return (string)this["method"];
+        return this["method"] as string;
       }
       set
       {
