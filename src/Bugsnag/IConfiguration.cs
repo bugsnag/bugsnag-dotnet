@@ -19,5 +19,7 @@ namespace Bugsnag
     string[] FilePrefixes { get; }
 
     string[] ProjectNamespaces { get; }
+
+    string[] IgnoreClasses { get; }
   }
 }

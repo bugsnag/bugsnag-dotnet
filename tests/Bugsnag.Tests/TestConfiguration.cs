@@ -19,5 +19,7 @@ namespace Bugsnag.Tests
     public string[] FilePrefixes => new string[] { };
 
     public string[] ProjectNamespaces => new string[] { };
+
+    public string[] IgnoreClasses => new string[] { };
   }
 }

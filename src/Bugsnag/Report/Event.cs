@@ -25,6 +25,10 @@ namespace Bugsnag
       }
     }
 
-    public IEnumerable<Exception> Exceptions { get { return this["exceptions"] as IEnumerable<Exception>; } }
+    public Exception[] Exceptions
+    {
+      get { return this["exceptions"] as Exception[]; }
+      set { this.AddToPayload("exceptions", value); }
+    }
   }
 }

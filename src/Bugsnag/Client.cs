@@ -10,6 +10,7 @@ namespace Bugsnag
 
     private static Middleware[] InternalMiddleware = new Middleware[] {
       Bugsnag.InternalMiddleware.ReleaseStageFilter,
+      Bugsnag.InternalMiddleware.RemoveIgnoredExceptions,
       Bugsnag.InternalMiddleware.RemoveFilePrefixes,
       Bugsnag.InternalMiddleware.DetectInProjectNamespaces,
     }; 

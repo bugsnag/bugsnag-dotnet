@@ -39,5 +39,7 @@ namespace Bugsnag
     }
 
     public IEnumerable<StackTraceLine> StackTrace { get { return this["stacktrace"] as IEnumerable<StackTraceLine>; } }
+
+    public string ErrorClass { get { return this["errorClass"] as string; } }
   }
 }

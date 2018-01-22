@@ -98,5 +98,24 @@ namespace Bugsnag.AspNet
         return null;
       }
     }
+
+    [ConfigurationProperty("projectNamespaces", IsRequired = false)]
+    private string InternalIgnoreClasses
+    {
+      get { return this["ignoreClasses"] as string; }
+    }
+
+    public string[] IgnoreClasses
+    {
+      get
+      {
+        if (InternalIgnoreClasses != null)
+        {
+          return InternalIgnoreClasses.Split(',');
+        }
+
+        return null;
+      }
+    }
   }
 }

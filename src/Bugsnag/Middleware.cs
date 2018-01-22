@@ -52,5 +52,17 @@ namespace Bugsnag
         }
       }
     };
+
+    public static Middleware RemoveIgnoredExceptions = (configuration, report) =>
+    {
+      if (configuration.IgnoreClasses.Any())
+      {
+        foreach (var @event in report.Events)
+        {
+          @event.Exceptions = @event.Exceptions.Where(e => !configuration.IgnoreClasses.Any(@class => @class == e.ErrorClass)).ToArray();
+          // TODO: if we filter out all of the exceptions should we still send the report?
+        }
+      }
+    };
   }
 }
