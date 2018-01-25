@@ -27,7 +27,7 @@ namespace Bugsnag
     {
       this["name"] = name; // limit this to 30 characters? provide a default incase of null or empty?
       this["timestamp"] = DateTime.UtcNow;
-      this.AddToPayload("metadata", metadata); // can we limit the size of this somehow? Should it be <string, object>?
+      this.AddToPayload("metaData", metadata); // can we limit the size of this somehow? Should it be <string, object>?
 
       switch (type)
       {
