@@ -7,7 +7,7 @@ namespace Bugsnag
   {
     public Event(IConfiguration configuration, System.Exception exception, Severity severity)
     {
-      this["payloadVersion"] = 2;
+      this["payloadVersion"] = 4;
       this["exceptions"] = new Exceptions(exception).ToArray();
       this["app"] = new App(configuration);
 
@@ -29,6 +29,18 @@ namespace Bugsnag
     {
       get { return this["exceptions"] as Exception[]; }
       set { this.AddToPayload("exceptions", value); }
+    }
+
+    public string Context
+    {
+      get { return this["context"] as string; }
+      set { this.AddToPayload("context", value); }
+    }
+
+    public string GroupingHash
+    {
+      get { return this["groupingHash"] as string; }
+      set { this.AddToPayload("groupingHash", value); }
     }
   }
 }
