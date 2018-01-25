@@ -10,16 +10,26 @@ namespace Bugsnag
       { "url", "https://github.com/bugsnag/bugsnag-net" }
     };
 
+    private readonly System.Exception _originalException;
+
+    private readonly Severity _originalSeverity;
+
     public bool Deliver { get; set; }
 
-    public Report(IConfiguration configuration, System.Exception exception, Severity severity)
+    public Report(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs)
     {
       Deliver = true;
+      _originalException = exception;
+      _originalSeverity = severity;
 
       this["apiKey"] = configuration.ApiKey;
       this["notifier"] = NotifierInfo;
-      this["events"] = new[] { new Event(configuration, exception, severity) };
+      this["events"] = new[] { new Event(configuration, exception, severity, breadcrumbs) };
     }
+
+    public System.Exception OriginalException { get { return _originalException; } }
+
+    public Severity OriginalSeverity { get { return _originalSeverity; } }
 
     public IEnumerable<Event> Events { get { return this["events"] as IEnumerable<Event>; } }
   }

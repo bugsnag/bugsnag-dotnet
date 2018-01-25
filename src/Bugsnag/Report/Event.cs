@@ -5,11 +5,12 @@ namespace Bugsnag
 {
   public class Event : Dictionary<string, object>
   {
-    public Event(IConfiguration configuration, System.Exception exception, Severity severity)
+    public Event(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs)
     {
       this["payloadVersion"] = 4;
       this["exceptions"] = new Exceptions(exception).ToArray();
       this["app"] = new App(configuration);
+      this.AddToPayload("breadcrumbs", breadcrumbs);
 
       switch (severity)
       {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -19,7 +20,7 @@ namespace Bugsnag.Tests
         exception = caughtException;
       }
 
-      var report = new Report(configuration, exception, Severity.Error);
+      var report = new Report(configuration, exception, Severity.Error, new List<Breadcrumb> { new Breadcrumb("test", BreadcrumbType.Manual) });
       Assert.NotNull(report);
     }
   }
