@@ -12,6 +12,10 @@ namespace Bugsnag
 
     private readonly IStorage<Breadcrumb> _breadcrumbStore;
 
+    private readonly List<Middleware> _middleware;
+
+    private readonly object _middlewareLock = new object();
+
     private static Middleware[] InternalMiddleware = new Middleware[] {
       Bugsnag.InternalMiddleware.ReleaseStageFilter,
       Bugsnag.InternalMiddleware.RemoveIgnoredExceptions,
@@ -30,11 +34,20 @@ namespace Bugsnag
       _configuration = configuration;
       _transport = transport;
       _breadcrumbStore = breadcrumbStore;
+      _middleware = new List<Middleware>();
     }
 
     public IConfiguration Configuration { get { return _configuration; } }
 
     protected IStorage<Breadcrumb> BreadcrumbStore {  get { return _breadcrumbStore; } }
+
+    public void BeforeNotify(Middleware middleware)
+    {
+      lock (_middlewareLock)
+      {
+        _middleware.Add(middleware);
+      }
+    }
 
     public void Notify(System.Exception exception)
     {
@@ -62,6 +75,22 @@ namespace Bugsnag
       foreach (var middleware in InternalMiddleware)
       {
         middleware(Configuration, report);
+      }
+
+      lock (_middlewareLock)
+      {
+        foreach (var middleware in _middleware)
+        {
+          try
+          {
+            middleware(Configuration, report);
+          }
+          catch (System.Exception exception)
+          {
+            Trace.WriteLine(exception);
+            // we could add the exception calling the middleware to the report? Or to the metadata in the report
+          }
+        }
       }
 
       if (report.Deliver)
