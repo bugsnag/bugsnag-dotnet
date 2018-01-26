@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Bugsnag
+namespace Bugsnag.Payload
 {
   public class Report : Dictionary<string, object>
   {
@@ -12,11 +12,11 @@ namespace Bugsnag
 
     private readonly System.Exception _originalException;
 
-    private readonly Severity _originalSeverity;
+    private readonly Bugsnag.Payload.Severity _originalSeverity;
 
     public bool Deliver { get; set; }
 
-    public Report(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs)
+    public Report(IConfiguration configuration, System.Exception exception, Bugsnag.Payload.Severity severity, IEnumerable<Breadcrumb> breadcrumbs)
     {
       Deliver = true;
       _originalException = exception;
@@ -29,7 +29,7 @@ namespace Bugsnag
 
     public System.Exception OriginalException { get { return _originalException; } }
 
-    public Severity OriginalSeverity { get { return _originalSeverity; } }
+    public Bugsnag.Payload.Severity OriginalSeverity { get { return _originalSeverity; } }
 
     public IEnumerable<Event> Events { get { return this["events"] as IEnumerable<Event>; } }
   }

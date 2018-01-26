@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using Bugsnag.Payload;
 
 namespace Bugsnag
 {
@@ -36,12 +37,21 @@ namespace Bugsnag
 
     public void Notify(System.Exception exception)
     {
-      Notify(exception, Severity.Error);
+      var report = new Report(_configuration, exception, Payload.Severity.ForHandledException(), BreadcrumbStore);
+
+      Notify(report);
     }
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      var report = new Report(_configuration, exception, severity, BreadcrumbStore);
+      var report = new Report(_configuration, exception, Payload.Severity.ForUserSpecifiedSeverity(severity), BreadcrumbStore);
+
+      Notify(report);
+    }
+
+    public void AutoNotify(System.Exception exception)
+    {
+      var report = new Report(_configuration, exception, Payload.Severity.ForUnhandledException(), BreadcrumbStore);
 
       Notify(report);
     }

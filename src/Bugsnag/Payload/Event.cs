@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bugsnag
+namespace Bugsnag.Payload
 {
   public class Event : Dictionary<string, object>
   {
@@ -12,17 +12,9 @@ namespace Bugsnag
       this["app"] = new App(configuration);
       this.AddToPayload("breadcrumbs", breadcrumbs);
 
-      switch (severity)
+      foreach (var item in severity)
       {
-        case Severity.Info:
-          this["severity"] = "info";
-          break;
-        case Severity.Warning:
-          this["severity"] = "warning";
-          break;
-        default:
-          this["severity"] = "error";
-          break;
+        this[item.Key] = item.Value;
       }
     }
 

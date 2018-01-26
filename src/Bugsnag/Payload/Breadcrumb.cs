@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Bugsnag
+namespace Bugsnag.Payload
 {
   public class Breadcrumb : Dictionary<string, object>
   {

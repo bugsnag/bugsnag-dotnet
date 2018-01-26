@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Bugsnag
+namespace Bugsnag.Payload
 {
   public class App : Dictionary<string, object>
   {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bugsnag
+namespace Bugsnag.Payload
 {
   public class Exceptions : IEnumerable<Exception>
   {

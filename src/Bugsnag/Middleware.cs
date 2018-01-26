@@ -1,4 +1,5 @@
 using System.Linq;
+using Bugsnag.Payload;
 
 namespace Bugsnag
 {
