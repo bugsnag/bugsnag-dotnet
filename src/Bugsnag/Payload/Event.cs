@@ -10,6 +10,7 @@ namespace Bugsnag.Payload
       this["payloadVersion"] = 4;
       this["exceptions"] = new Exceptions(exception).ToArray();
       this["app"] = new App(configuration);
+      this["device"] = new Device();
       this.AddToPayload("breadcrumbs", breadcrumbs);
 
       foreach (var item in severity)
