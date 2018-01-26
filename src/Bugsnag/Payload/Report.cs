@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Bugsnag.Payload
@@ -38,9 +39,19 @@ namespace Bugsnag.Payload
   {
     public static void AddToPayload<T>(this Dictionary<string, T> dictionary, string key, T value)
     {
-      if (value != null)
+      if (value == null)
       {
-        dictionary[key] = value;
+        return;
+      }
+
+      switch (value)
+      {
+        case System.String s:
+          if (!String.IsNullOrWhiteSpace(s)) dictionary[key] = value;
+          break;
+        default:
+          dictionary[key] = value;
+          break;
       }
     }
   }
