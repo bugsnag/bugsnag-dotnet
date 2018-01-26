@@ -65,5 +65,19 @@ namespace Bugsnag
         }
       }
     };
+
+    public static Middleware AttachGlobalMetadata = (configuration, report) =>
+    {
+      if (configuration.GlobalMetadata != null)
+      {
+        foreach (var @event in report.Events)
+        {
+          foreach (var item in configuration.GlobalMetadata)
+          {
+            @event.Metadata.Add(item.Key, item.Value);
+          }
+        }
+      }
+    };
   }
 }

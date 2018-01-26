@@ -17,6 +17,7 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.RemoveIgnoredExceptions,
       Bugsnag.InternalMiddleware.RemoveFilePrefixes,
       Bugsnag.InternalMiddleware.DetectInProjectNamespaces,
+      Bugsnag.InternalMiddleware.AttachGlobalMetadata,
     };
 
     public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new InMemoryStorage<Breadcrumb>())

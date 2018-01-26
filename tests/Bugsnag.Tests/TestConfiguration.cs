@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Bugsnag.Tests
 {
@@ -21,5 +22,7 @@ namespace Bugsnag.Tests
     public string[] ProjectNamespaces => new string[] { };
 
     public string[] IgnoreClasses => new string[] { };
+
+    public IEnumerable<KeyValuePair<string, string>> GlobalMetadata => new KeyValuePair<string, string>[] { };
   }
 }

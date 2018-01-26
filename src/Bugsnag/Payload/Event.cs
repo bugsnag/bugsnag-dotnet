@@ -11,6 +11,7 @@ namespace Bugsnag.Payload
       this["exceptions"] = new Exceptions(exception).ToArray();
       this["app"] = new App(configuration);
       this["device"] = new Device();
+      this["metaData"] = new Metadata();
       this.AddToPayload("breadcrumbs", breadcrumbs);
 
       foreach (var item in severity)
@@ -35,6 +36,11 @@ namespace Bugsnag.Payload
     {
       get { return this["groupingHash"] as string; }
       set { this.AddToPayload("groupingHash", value); }
+    }
+
+    public Metadata Metadata
+    {
+      get { return this["metaData"] as Metadata; }
     }
   }
 }
