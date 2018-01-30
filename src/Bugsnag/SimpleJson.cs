@@ -516,13 +516,29 @@ namespace SimpleJson
         private const int BUILDER_CAPACITY = 2000;
 
         private static readonly char[] EscapeTable;
-        private static readonly char[] EscapeCharacters = new char[] { '"', '\\', '\b', '\f', '\n', '\r', '\t' };
+        private static readonly char[] EscapeCharacters;
         private static readonly string EscapeCharactersString = new string(EscapeCharacters);
 
         static SimpleJson()
         {
-            EscapeTable = new char[93];
-            EscapeTable['"']  = '"';
+            var escapeCharacters = new List<char>() { '"', '\\', '\b', '\f', '\n', '\r', '\t' };
+
+            EscapeTable = new char[159];
+            foreach (char item in System.Linq.Enumerable.Range(0, 32))
+            {
+              escapeCharacters.Add(item);
+              EscapeTable[item] = '!';
+            }
+
+            foreach (char item in System.Linq.Enumerable.Range(127, 32))
+            {
+              escapeCharacters.Add(item);
+              EscapeTable[item] = '!';
+            }
+
+            EscapeCharacters = escapeCharacters.ToArray();
+
+            EscapeTable['"'] = '"';
             EscapeTable['\\'] = '\\';
             EscapeTable['\b'] = 'b';
             EscapeTable['\f'] = 'f';
@@ -1103,6 +1119,7 @@ namespace SimpleJson
             }
 
             builder.Append('"');
+            var hexSeqBuffer = new char[4];
             int safeCharacterCount = 0;
             char[] charArray = aString.ToCharArray();
 
@@ -1126,7 +1143,17 @@ namespace SimpleJson
                     }
 
                     builder.Append('\\');
-                    builder.Append(EscapeTable[c]);
+
+                    if (EscapeTable[c] == '!')
+                    {
+                        IntToHex(c, hexSeqBuffer);
+                        builder.Append('u');
+                        builder.Append(hexSeqBuffer);
+                    }
+                    else
+                    {
+                        builder.Append(EscapeTable[c]);
+                    }
                 }
             }
 
@@ -1137,6 +1164,23 @@ namespace SimpleJson
 
             builder.Append('"');
             return true;
+        }
+
+        static void IntToHex(int value, char[] hex)
+        {
+            for (var i = 0; i < 4; i ++)
+            {
+                var num = value % 16;
+                if (num < 10)
+                {
+                    hex[3 - i] = (char)('0' + num);
+                }
+                else
+                {
+                    hex[3 - i] = (char)('A' + (num - 10));
+                }
+                value >>= 4;
+            }
         }
 
         static bool SerializeNumber(object number, StringBuilder builder)
