@@ -8,9 +8,13 @@ namespace Bugsnag.AspNet
   {
     private readonly Client _client;
 
+    private static bool initialised;
+
+    private static readonly object _lock = new object();
+
     public HttpModule()
     {
-      _client = new Client(Configuration.Settings);
+      _client = new Client();
     }
 
     public void Dispose()
@@ -19,23 +23,30 @@ namespace Bugsnag.AspNet
 
     public void Init(HttpApplication context)
     {
-      context.Error += OnError;
+      lock (_lock)
+      {
+        if (!initialised)
+        {
+          context.Error += OnError;
+          initialised = true;
+        }
+      }
     }
 
     private void OnError(object sender, EventArgs e)
     {
       var application = (HttpApplication)sender;
 
-      Notify(application.Server.GetLastError(), new HttpContextWrapper(application.Context));
+      AutoNotify(application.Server.GetLastError(), new HttpContextWrapper(application.Context));
     }
 
-    private void Notify(System.Exception exception, HttpContextWrapper httpContextWrapper)
+    public void AutoNotify(Exception exception, HttpContextBase httpContext)
     {
       try
       {
-        _client.Notify(exception, Severity.Error);
+        _client.AutoNotify(exception, httpContext);
       }
-      catch (System.Exception internalException)
+      catch (Exception internalException)
       {
         Trace.WriteLine(internalException);
       }
