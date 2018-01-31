@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Bugsnag.Payload;
 using Xunit;
@@ -25,6 +26,16 @@ namespace Bugsnag.Tests
 
       var json = SimpleJson.SimpleJson.SerializeObject(report);
       Assert.NotNull(json);
+    }
+
+    [Fact]
+    public void CircularReferenceTest()
+    {
+      var primary = new Dictionary<string, object>();
+      var secondary = new Dictionary<string, object>() { { "primary", primary } };
+      primary["secondary"] = secondary;
+      var json = SimpleJson.SimpleJson.SerializeObject(primary);
+      Assert.Contains("[Circular]", json);
     }
   }
 }

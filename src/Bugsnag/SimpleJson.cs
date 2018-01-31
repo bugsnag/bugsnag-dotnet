@@ -617,16 +617,16 @@ namespace SimpleJson
         /// <param name="json">A IDictionary&lt;string,object> / IList&lt;object></param>
         /// <param name="jsonSerializerStrategy">Serializer strategy to use</param>
         /// <returns>A JSON encoded string, or null if object 'json' is not serializable</returns>
-        public static string SerializeObject(object json, IJsonSerializerStrategy jsonSerializerStrategy)
+        public static string SerializeObject(object json, IJsonSerializerStrategy jsonSerializerStrategy, Stack<object> stack)
         {
             StringBuilder builder = new StringBuilder(BUILDER_CAPACITY);
-            bool success = SerializeValue(jsonSerializerStrategy, json, builder);
+            bool success = SerializeValue(jsonSerializerStrategy, json, builder, stack);
             return (success ? builder.ToString() : null);
         }
 
         public static string SerializeObject(object json)
         {
-            return SerializeObject(json, CurrentJsonSerializerStrategy);
+            return SerializeObject(json, CurrentJsonSerializerStrategy, new Stack<object>());
         }
 
         public static string EscapeToJavascriptString(string jsonString)
@@ -1020,51 +1020,63 @@ namespace SimpleJson
             return TOKEN_NONE;
         }
 
-        static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder)
+        static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder, Stack<object> stack)
         {
-            bool success = true;
-            string stringValue = value as string;
-            if (stringValue != null)
-                success = SerializeString(stringValue, builder);
-            else
+            if (stack.Contains(value))
             {
-                IDictionary<string, object> dict = value as IDictionary<string, object>;
-                if (dict != null)
-                {
-                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder);
-                }
-                else
-                {
-                    IDictionary<string, string> stringDictionary = value as IDictionary<string, string>;
-                    if (stringDictionary != null)
-                    {
-                        success = SerializeObject(jsonSerializerStrategy, stringDictionary.Keys, stringDictionary.Values, builder);
-                    }
-                    else
-                    {
-                        IEnumerable enumerableValue = value as IEnumerable;
-                        if (enumerableValue != null)
-                            success = SerializeArray(jsonSerializerStrategy, enumerableValue, builder);
-                        else if (IsNumeric(value))
-                            success = SerializeNumber(value, builder);
-                        else if (value is bool)
-                            builder.Append((bool)value ? "true" : "false");
-                        else if (value == null)
-                            builder.Append("null");
-                        else
-                        {
-                            object serializedObject;
-                            success = jsonSerializerStrategy.TrySerializeNonPrimitiveObject(value, out serializedObject);
-                            if (success)
-                                SerializeValue(jsonSerializerStrategy, serializedObject, builder);
-                        }
-                    }
-                }
+                return SerializeString("[Circular]", builder);
             }
+            stack.Push(value);
+            bool success;
+            switch (value)
+            {
+                case String s:
+                    success = SerializeString(s, builder);
+                    break;
+                case IDictionary<string, object> dict:
+                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, stack);
+                    break;
+                case IDictionary<string, string> stringDictionary:
+                    success = SerializeObject(jsonSerializerStrategy, stringDictionary.Keys, stringDictionary.Values, builder, stack);
+                    break;
+                case IEnumerable enumerable:
+                    success = SerializeArray(jsonSerializerStrategy, enumerable, builder, stack);
+                    break;
+                case sbyte _:
+                case byte _:
+                case short _:
+                case ushort _:
+                case int _:
+                case uint _:
+                case long _:
+                case ulong _:
+                case float _:
+                case double _:
+                case decimal _:
+                    success = SerializeNumber(value, builder);
+                    break;
+                case bool @bool:
+                    builder.Append(@bool ? "true" : "false");
+                    success = true;
+                    break;
+                case null:
+                    builder.Append("null");
+                    success = true;
+                    break;
+                default:
+                    object serializedObject;
+                    success = jsonSerializerStrategy.TrySerializeNonPrimitiveObject(value, out serializedObject);
+                    if (success)
+                    {
+                        SerializeValue(jsonSerializerStrategy, serializedObject, builder, stack);
+                    }
+                    break;
+            }
+            stack.Pop();
             return success;
         }
 
-        static bool SerializeObject(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable keys, IEnumerable values, StringBuilder builder)
+        static bool SerializeObject(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable keys, IEnumerable values, StringBuilder builder, Stack<object> stack)
         {
             builder.Append("{");
             IEnumerator ke = keys.GetEnumerator();
@@ -1080,9 +1092,9 @@ namespace SimpleJson
                 if (stringKey != null)
                     SerializeString(stringKey, builder);
                 else
-                    if (!SerializeValue(jsonSerializerStrategy, value, builder)) return false;
+                    if (!SerializeValue(jsonSerializerStrategy, value, builder, stack)) return false;
                 builder.Append(":");
-                if (!SerializeValue(jsonSerializerStrategy, value, builder))
+                if (!SerializeValue(jsonSerializerStrategy, value, builder, stack))
                     return false;
                 first = false;
             }
@@ -1090,7 +1102,7 @@ namespace SimpleJson
             return true;
         }
 
-        static bool SerializeArray(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable anArray, StringBuilder builder)
+        static bool SerializeArray(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable anArray, StringBuilder builder, Stack<object> stack)
         {
             builder.Append("[");
             bool first = true;
@@ -1098,7 +1110,7 @@ namespace SimpleJson
             {
                 if (!first)
                     builder.Append(",");
-                if (!SerializeValue(jsonSerializerStrategy, value, builder))
+                if (!SerializeValue(jsonSerializerStrategy, value, builder, stack))
                     return false;
                 first = false;
             }
@@ -1200,26 +1212,6 @@ namespace SimpleJson
             else
                 builder.Append(Convert.ToDouble(number, CultureInfo.InvariantCulture).ToString("r", CultureInfo.InvariantCulture));
             return true;
-        }
-
-        /// <summary>
-        /// Determines if a given object is numeric in any way
-        /// (can be integer, double, null, etc).
-        /// </summary>
-        static bool IsNumeric(object value)
-        {
-            if (value is sbyte) return true;
-            if (value is byte) return true;
-            if (value is short) return true;
-            if (value is ushort) return true;
-            if (value is int) return true;
-            if (value is uint) return true;
-            if (value is long) return true;
-            if (value is ulong) return true;
-            if (value is float) return true;
-            if (value is double) return true;
-            if (value is decimal) return true;
-            return false;
         }
 
         private static IJsonSerializerStrategy _currentJsonSerializerStrategy;
