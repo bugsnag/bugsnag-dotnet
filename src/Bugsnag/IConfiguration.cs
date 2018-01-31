@@ -58,7 +58,7 @@ namespace Bugsnag
     /// <summary>
     /// This can be used to include these values as metadata in all error reports submitted to Bugsnag.
     /// </summary>
-    IEnumerable<KeyValuePair<string, string>> GlobalMetadata { get; }
+    KeyValuePair<string, string>[] GlobalMetadata { get; }
 
     /// <summary>
     /// Used to filter these keys from data being sent to Bugsnag.

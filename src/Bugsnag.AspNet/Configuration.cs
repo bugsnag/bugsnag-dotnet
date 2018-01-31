@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
 
@@ -149,14 +150,11 @@ namespace Bugsnag.AspNet
       get { return (GlobalMetadataCollection)this["metadata"]; }
     }
 
-    public IEnumerable<KeyValuePair<string, string>> GlobalMetadata
+    public KeyValuePair<string, string>[] GlobalMetadata
     {
       get
       {
-        foreach (GlobalMetadataItem item in InternalGlobalMetadata)
-        {
-          yield return new KeyValuePair<string, string>(item.Key, item.Value);
-        }
+        return InternalGlobalMetadata.Cast<GlobalMetadataItem>().Select(i => new KeyValuePair<string, string>(i.Key, i.Value)).ToArray();
       }
     }
 
