@@ -97,6 +97,8 @@ namespace Bugsnag
       {
         byte[] rawPayload = null;
 
+        Bugsnag.InternalMiddleware.ApplyMetadataFilters(Configuration, report);
+
         try
         {
           var payload = SimpleJson.SimpleJson.SerializeObject(report);

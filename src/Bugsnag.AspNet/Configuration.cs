@@ -124,6 +124,25 @@ namespace Bugsnag.AspNet
       }
     }
 
+    [ConfigurationProperty("metadataFilters", IsRequired = false)]
+    private string InternalMetadataFilters
+    {
+      get { return this["metadataFilters"] as string; }
+    }
+
+    public string[] MetadataFilters
+    {
+      get
+      {
+        if (InternalMetadataFilters != null)
+        {
+          return InternalMetadataFilters.Split(',');
+        }
+
+        return null;
+      }
+    }
+
     [ConfigurationProperty("metadata", IsRequired = false)]
     private GlobalMetadataCollection InternalGlobalMetadata
     {

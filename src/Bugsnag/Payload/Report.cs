@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Bugsnag.Payload
 {
@@ -86,6 +89,84 @@ namespace Bugsnag.Payload
           dictionary[key] = value;
           break;
       }
+    }
+
+    public static void FilterPayload(this IDictionary dictionary, string[] filters)
+    {
+      dictionary.FilterPayload(filters, new Dictionary<object, bool>());
+    }
+
+    public static void FilterPayload(this IDictionary dictionary, string[] filters, IDictionary seen)
+    {
+      if (seen.Contains(dictionary))
+      {
+        return;
+      }
+
+      seen.Add(dictionary, true);
+
+      foreach (var key in filters)
+      {
+        if (key != null && dictionary.Contains(key))
+        {
+          dictionary[key] = "[Filtered]"; 
+        }
+      }
+
+      foreach (DictionaryEntry k in dictionary)
+      {
+        switch (k.Value)
+        {
+          case string _:
+            break;
+          case Uri uri:
+            uri.FilterUri(filters);
+            break;
+          case IDictionary subDictionary:
+            subDictionary.FilterPayload(filters, seen);
+            break;
+          case IEnumerable enumerable:
+            enumerable.FilterPayload(filters, seen);
+            break;
+        }
+      }
+
+      seen.Remove(dictionary);
+    }
+
+    public static void FilterPayload(this IEnumerable enumerable, string[] filters, IDictionary seen)
+    {
+      if (seen.Contains(enumerable))
+      {
+        return;
+      }
+
+      seen.Add(enumerable, true);
+
+      foreach (var item in enumerable)
+      {
+        switch (item)
+        {
+          case string _:
+            break;
+          case Uri uri:
+            uri.FilterUri(filters);
+            break;
+          case IDictionary dictionary:
+            dictionary.FilterPayload(filters, seen);
+            break;
+          case IEnumerable subEnumerable:
+            subEnumerable.FilterPayload(filters, seen);
+            break;
+        }
+      }
+
+      seen.Remove(enumerable);
+    }
+
+    public static void FilterUri(this Uri uri, string[] filters)
+    {
+      // need to figure out a good way to modify this, it is basically readonly at this point
     }
   }
 }

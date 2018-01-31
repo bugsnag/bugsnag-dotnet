@@ -29,7 +29,7 @@ namespace Bugsnag
     /// </summary>
     public static Middleware RemoveFilePrefixes = (configuration, report) =>
     {
-      if (configuration.FilePrefixes.Any())
+      if (configuration.FilePrefixes != null && configuration.FilePrefixes.Any())
       {
         foreach (var @event in report.Events)
         {
@@ -55,7 +55,7 @@ namespace Bugsnag
     /// </summary>
     public static Middleware DetectInProjectNamespaces = (configuration, report) =>
     {
-      if (configuration.ProjectNamespaces.Any())
+      if (configuration.ProjectNamespaces != null && configuration.ProjectNamespaces.Any())
       {
         foreach (var @event in report.Events)
         {
@@ -78,7 +78,7 @@ namespace Bugsnag
     /// </summary>
     public static Middleware RemoveIgnoredExceptions = (configuration, report) =>
     {
-      if (configuration.IgnoreClasses.Any())
+      if (configuration.IgnoreClasses != null && configuration.IgnoreClasses.Any())
       {
         foreach (var @event in report.Events)
         {
@@ -102,6 +102,16 @@ namespace Bugsnag
             @event.Metadata.Add(item.Key, item.Value);
           }
         }
+      }
+    };
+
+    public static Middleware ApplyMetadataFilters = (configuration, report) =>
+    {
+      if (configuration.MetadataFilters != null)
+      {
+        // should this be applied to the whole report? We should probably focus it to specific sections
+        // of the payload
+        report.FilterPayload(configuration.MetadataFilters);
       }
     };
   }

@@ -32,5 +32,7 @@ namespace Bugsnag
     public string[] IgnoreClasses { get; set; }
 
     public IEnumerable<KeyValuePair<string, string>> GlobalMetadata { get; set; }
+
+    public string[] MetadataFilters { get; set; }
   }
 }

@@ -617,16 +617,16 @@ namespace SimpleJson
         /// <param name="json">A IDictionary&lt;string,object> / IList&lt;object></param>
         /// <param name="jsonSerializerStrategy">Serializer strategy to use</param>
         /// <returns>A JSON encoded string, or null if object 'json' is not serializable</returns>
-        public static string SerializeObject(object json, IJsonSerializerStrategy jsonSerializerStrategy, Stack<object> stack)
+        public static string SerializeObject(object json, IJsonSerializerStrategy jsonSerializerStrategy, IDictionary seen)
         {
             StringBuilder builder = new StringBuilder(BUILDER_CAPACITY);
-            bool success = SerializeValue(jsonSerializerStrategy, json, builder, stack);
+            bool success = SerializeValue(jsonSerializerStrategy, json, builder, seen);
             return (success ? builder.ToString() : null);
         }
 
         public static string SerializeObject(object json)
         {
-            return SerializeObject(json, CurrentJsonSerializerStrategy, new Stack<object>());
+            return SerializeObject(json, CurrentJsonSerializerStrategy, new Dictionary<object, bool>());
         }
 
         public static string EscapeToJavascriptString(string jsonString)
@@ -1020,13 +1020,13 @@ namespace SimpleJson
             return TOKEN_NONE;
         }
 
-        static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder, Stack<object> stack)
+        static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder, IDictionary seen)
         {
-            if (stack.Contains(value))
+            if (seen.Contains(value))
             {
                 return SerializeString("[Circular]", builder);
             }
-            stack.Push(value);
+            seen.Add(value, true);
             bool success;
             switch (value)
             {
@@ -1034,13 +1034,13 @@ namespace SimpleJson
                     success = SerializeString(s, builder);
                     break;
                 case IDictionary<string, object> dict:
-                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, stack);
+                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
                     break;
                 case IDictionary<string, string> stringDictionary:
-                    success = SerializeObject(jsonSerializerStrategy, stringDictionary.Keys, stringDictionary.Values, builder, stack);
+                    success = SerializeObject(jsonSerializerStrategy, stringDictionary.Keys, stringDictionary.Values, builder, seen);
                     break;
                 case IEnumerable enumerable:
-                    success = SerializeArray(jsonSerializerStrategy, enumerable, builder, stack);
+                    success = SerializeArray(jsonSerializerStrategy, enumerable, builder, seen);
                     break;
                 case sbyte _:
                 case byte _:
@@ -1068,15 +1068,15 @@ namespace SimpleJson
                     success = jsonSerializerStrategy.TrySerializeNonPrimitiveObject(value, out serializedObject);
                     if (success)
                     {
-                        SerializeValue(jsonSerializerStrategy, serializedObject, builder, stack);
+                        SerializeValue(jsonSerializerStrategy, serializedObject, builder, seen);
                     }
                     break;
             }
-            stack.Pop();
+            seen.Remove(value);
             return success;
         }
 
-        static bool SerializeObject(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable keys, IEnumerable values, StringBuilder builder, Stack<object> stack)
+        static bool SerializeObject(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable keys, IEnumerable values, StringBuilder builder, IDictionary seen)
         {
             builder.Append("{");
             IEnumerator ke = keys.GetEnumerator();
@@ -1092,9 +1092,9 @@ namespace SimpleJson
                 if (stringKey != null)
                     SerializeString(stringKey, builder);
                 else
-                    if (!SerializeValue(jsonSerializerStrategy, value, builder, stack)) return false;
+                    if (!SerializeValue(jsonSerializerStrategy, value, builder, seen)) return false;
                 builder.Append(":");
-                if (!SerializeValue(jsonSerializerStrategy, value, builder, stack))
+                if (!SerializeValue(jsonSerializerStrategy, value, builder, seen))
                     return false;
                 first = false;
             }
@@ -1102,7 +1102,7 @@ namespace SimpleJson
             return true;
         }
 
-        static bool SerializeArray(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable anArray, StringBuilder builder, Stack<object> stack)
+        static bool SerializeArray(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable anArray, StringBuilder builder, IDictionary seen)
         {
             builder.Append("[");
             bool first = true;
@@ -1110,7 +1110,7 @@ namespace SimpleJson
             {
                 if (!first)
                     builder.Append(",");
-                if (!SerializeValue(jsonSerializerStrategy, value, builder, stack))
+                if (!SerializeValue(jsonSerializerStrategy, value, builder, seen))
                     return false;
                 first = false;
             }
