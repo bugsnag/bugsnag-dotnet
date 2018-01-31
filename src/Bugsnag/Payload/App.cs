@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace Bugsnag.Payload
 {
+  /// <summary>
+  /// Represents the "app" key in the error report payload.
+  /// </summary>
   public class App : Dictionary<string, object>
   {
     public App(IConfiguration configuration) : this(configuration.AppVersion, configuration.ReleaseStage, configuration.AppType)

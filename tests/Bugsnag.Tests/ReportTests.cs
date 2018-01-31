@@ -10,7 +10,7 @@ namespace Bugsnag.Tests
     public void BasicTest()
     {
       System.Exception exception = null;
-      var configuration = new TestConfiguration();
+      var configuration = new Configuration("123456");
 
       try
       {
@@ -21,7 +21,7 @@ namespace Bugsnag.Tests
         exception = caughtException;
       }
 
-      var report = new Report(configuration, exception, Payload.Severity.ForHandledException(), new List<Breadcrumb> { new Breadcrumb("test", BreadcrumbType.Manual) });
+      var report = new Report(configuration, exception, Bugsnag.Payload.Severity.ForHandledException(), new List<Breadcrumb> { new Breadcrumb("test", BreadcrumbType.Manual) });
       Assert.NotNull(report);
     }
   }

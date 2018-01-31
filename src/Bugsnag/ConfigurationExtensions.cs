@@ -2,13 +2,25 @@ using System.Linq;
 
 namespace Bugsnag
 {
-  static class ConfigurationExtensions
+  /// <summary>
+  /// Provide logic that can be derived from a configuration object.
+  /// </summary>
+  public static class ConfigurationExtensions
   {
-    public static bool InvalidReleaseStage(this IConfiguration configuration)
+    /// <summary>
+    /// Determines if the combination of "ReleaseStage" and "NotifyReleaseStages" means
+    /// that we should not send the error report
+    /// </summary>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static bool ValidReleaseStage(this IConfiguration configuration)
     {
-      return configuration.NotifyReleaseStages != null &&
-              !string.IsNullOrEmpty(configuration.ReleaseStage) &&
-              !configuration.NotifyReleaseStages.Any(stage => stage == configuration.ReleaseStage);
+      if (configuration.NotifyReleaseStages == null)
+      {
+        return true;
+      }
+
+      return configuration.NotifyReleaseStages.Any(stage => stage == configuration.ReleaseStage);
     }
   }
 }

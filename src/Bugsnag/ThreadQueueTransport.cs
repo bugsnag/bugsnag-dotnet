@@ -7,31 +7,23 @@ namespace Bugsnag
   public class ThreadQueueTransport : ITransport
   {
     private static ThreadQueueTransport instance = null;
-
     private static readonly object instanceLock = new object();
 
-    private readonly Queue<WorkItem> _queue;
+    private readonly BlockingQueue<WorkItem> _queue;
 
     private readonly Thread _worker;
 
-    private static readonly object _queueLock = new object();
-
     private readonly Transport _transport;
 
-    private int _requestCounter;
-
-    private static readonly object _workerLock = new object();
+    private long _activeRequestCounter;
 
     private ThreadQueueTransport()
     {
-      _requestCounter = 0;
+      _activeRequestCounter = 0;
       _transport = new Transport();
-      _queue = new Queue<WorkItem>();
-      lock (_workerLock)
-      {
-        _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
-        _worker.Start();
-      }
+      _queue = new BlockingQueue<WorkItem>();
+      _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
+      _worker.Start();
     }
 
     public static ThreadQueueTransport Instance
@@ -52,49 +44,25 @@ namespace Bugsnag
 
     public void Send(Uri endpoint, byte[] report)
     {
-      lock (_queueLock)
-      {
-        lock (_workerLock)
-        {
-          _worker.IsBackground = false;
-        }
-        _queue.Enqueue(new WorkItem(endpoint, report));
-        Monitor.Pulse(_queueLock);
-      }
+      Interlocked.Increment(ref _activeRequestCounter);
+      _queue.Enqueue(new WorkItem(endpoint, report));
     }
 
     private void ProcessQueue()
     {
       while (true)
       {
-        WorkItem workItem = null;
-
-        lock (_queueLock)
-        {
-          while (_queue.Count == 0)
-          {
-            Monitor.Wait(_queueLock);
-          }
-
-          Interlocked.Increment(ref _requestCounter);
-          workItem = _queue.Dequeue();
-        }
-
-        if (workItem != null)
-        {
-          _transport.BeginSend(workItem.Endpoint, workItem.Report, ReportCallback, workItem);
-        }
+        var workItem = _queue.Dequeue();
+        _worker.IsBackground = false;
+        _transport.BeginSend(workItem.Endpoint, workItem.Report, ReportCallback, workItem);
       }
     }
 
     private void ReportCallback(IAsyncResult asyncResult)
     {
-      lock (_workerLock)
-      {
-        _worker.IsBackground = Interlocked.Decrement(ref _requestCounter) == 0;
-      }
-      var responseCode = _transport.EndSend(asyncResult);
-      // don't do anything with the result right now
+      _transport.EndSend(asyncResult);
+      var finishedProcessing = Interlocked.Decrement(ref _activeRequestCounter) == 0;
+      _worker.IsBackground = finishedProcessing;
     }
 
     private class WorkItem
@@ -110,6 +78,40 @@ namespace Bugsnag
 
       public Uri Endpoint { get { return _endpoint; } }
       public byte[] Report { get { return _report; } }
+    }
+
+    private class BlockingQueue<T>
+    {
+      private readonly Queue<T> _queue;
+      private readonly object _queueLock;
+
+      public BlockingQueue()
+      {
+        _queueLock = new object();
+        _queue = new Queue<T>();
+      }
+
+      public void Enqueue(T item)
+      {
+        lock (_queueLock)
+        {
+          _queue.Enqueue(item);
+          Monitor.Pulse(_queueLock);
+        }
+      }
+
+      public T Dequeue()
+      {
+        lock (_queueLock)
+        {
+          while (_queue.Count == 0)
+          {
+            Monitor.Wait(_queueLock);
+          }
+
+          return _queue.Dequeue();
+        }
+      }
     }
   }
 }

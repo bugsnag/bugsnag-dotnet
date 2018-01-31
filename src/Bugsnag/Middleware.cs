@@ -3,14 +3,30 @@ using Bugsnag.Payload;
 
 namespace Bugsnag
 {
+  /// <summary>
+  /// Signature for Bugsnag client middleware that can be used to manipulate the
+  /// error report before it is sent.
+  /// </summary>
+  /// <param name="configuration"></param>
+  /// <param name="report"></param>
   public delegate void Middleware(IConfiguration configuration, Report report);
 
+  /// <summary>
+  /// The middleware that is applied by default by the Bugsnag client.
+  /// </summary>
   static class InternalMiddleware
   {
+    /// <summary>
+    /// Sets the Delivery flag to false if the configuration is setup so that
+    /// the report should not be sent based on the release stage information.
+    /// </summary>
     public static Middleware ReleaseStageFilter = (c, r) => {
-      r.Deliver = r.Deliver && !c.InvalidReleaseStage();
+      r.Deliver = r.Deliver && c.ValidReleaseStage();
     };
 
+    /// <summary>
+    /// Strips any provided file prefixes from stack trace lines included in the report.
+    /// </summary>
     public static Middleware RemoveFilePrefixes = (configuration, report) =>
     {
       if (configuration.FilePrefixes.Any())
@@ -34,6 +50,9 @@ namespace Bugsnag
       }
     };
 
+    /// <summary>
+    /// Marks stack trace lines as being 'in project' if they are from a provided namespace.
+    /// </summary>
     public static Middleware DetectInProjectNamespaces = (configuration, report) =>
     {
       if (configuration.ProjectNamespaces.Any())
@@ -54,6 +73,9 @@ namespace Bugsnag
       }
     };
 
+    /// <summary>
+    /// Strips exceptions from the report if they include any 'ignored classes'
+    /// </summary>
     public static Middleware RemoveIgnoredExceptions = (configuration, report) =>
     {
       if (configuration.IgnoreClasses.Any())
@@ -66,6 +88,9 @@ namespace Bugsnag
       }
     };
 
+    /// <summary>
+    /// Attaches global metadata if provided by the configuration to each error report.
+    /// </summary>
     public static Middleware AttachGlobalMetadata = (configuration, report) =>
     {
       if (configuration.GlobalMetadata != null)

@@ -31,7 +31,7 @@ namespace Bugsnag.AspNet
       get { return this["appVersion"] as string; }
     }
 
-    [ConfigurationProperty("endpoint", IsRequired = false, DefaultValue = "https://notify.bugsnag.com")]
+    [ConfigurationProperty("endpoint", IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultEndpoint)]
     private string InternalEndpoint
     {
       get { return this["endpoint"] as string; }

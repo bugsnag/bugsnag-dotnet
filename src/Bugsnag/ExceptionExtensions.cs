@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +8,12 @@ namespace Bugsnag
 {
   public static class ExceptionExtensions
   {
+    /// <summary>
+    /// Returns a "friendly" class name for a Type. Applying special formatting
+    /// rules for generic types and parameters.
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static string FriendlyClassName(this Type type)
     {
       if (type.IsGenericParameter)
@@ -31,6 +37,12 @@ namespace Bugsnag
       return string.Format("{0}<{1}>", className, genericArgumentNames);
     }
 
+    /// <summary>
+    /// Returns a "friendly" method name for a MethodBase object. Formatting all of the parts of the
+    /// method signature and definition.
+    /// </summary>
+    /// <param name="method"></param>
+    /// <returns></returns>
     public static string FriendlyMethodName(this MethodBase method)
     {
       var builder = new StringBuilder();
@@ -56,6 +68,12 @@ namespace Bugsnag
       return builder.ToString();
     }
 
+    /// <summary>
+    /// Returns the line number for a stackframe, falling back to the ILOffset
+    /// if the file line number is 0.
+    /// </summary>
+    /// <param name="frame"></param>
+    /// <returns></returns>
     public static int FriendlyLineNumber(this StackFrame frame)
     {
       var lineNumber = frame.GetFileLineNumber();

@@ -3,8 +3,17 @@ using System.Collections.Generic;
 
 namespace Bugsnag.Payload
 {
+  /// <summary>
+  /// Represents an individual breadcrumb in the error report payload.
+  /// </summary>
   public class Breadcrumb : Dictionary<string, object>
   {
+    /// <summary>
+    /// Build a new breadcrumb from an error report. This is used to attach a previously occurring exception to the
+    /// next error report.
+    /// </summary>
+    /// <param name="report"></param>
+    /// <returns></returns>
     public static Breadcrumb FromReport(Report report)
     {
       var name = report.OriginalException.GetType().ToString();

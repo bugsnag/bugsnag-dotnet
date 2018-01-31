@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace Bugsnag
 {
+  /// <summary>
+  /// Handle the reflection differences between the full .net framework and
+  /// what is provided by netstandard
+  /// </summary>
   public static class Reflection
   {
     public static Assembly GetAssembly(this Type type)

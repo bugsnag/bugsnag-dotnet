@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Bugsnag.Payload
 {
+  /// <summary>
+  /// Represents a set of Bugsnag payload stacktrace lines that are generated from a single StackTrace provided
+  /// by the runtime.
+  /// </summary>
   public class StackTrace : IEnumerable<StackTraceLine>
   {
     private readonly System.Diagnostics.StackTrace _originalStackTrace;
@@ -38,6 +42,9 @@ namespace Bugsnag.Payload
     }
   }
 
+  /// <summary>
+  /// Represents an individual stack trace line in the Bugsnag payload.
+  /// </summary>
   public class StackTraceLine : Dictionary<string, object>
   {
     public StackTraceLine(System.Diagnostics.StackFrame stackFrame)

@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace Bugsnag.Payload
 {
+  /// <summary>
+  /// Represents a single event in a Bugsnag payload.
+  /// </summary>
   public class Event : Dictionary<string, object>
   {
     public Event(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs)

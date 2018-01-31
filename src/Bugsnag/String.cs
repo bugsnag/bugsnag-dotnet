@@ -3,6 +3,9 @@ using System;
 
 namespace Bugsnag
 {
+  /// <summary>
+  /// Shim this method for net35, source taken from the reference source on GitHub.
+  /// </summary>
   static class String
   {
     public static bool IsNullOrWhiteSpace(System.String value)

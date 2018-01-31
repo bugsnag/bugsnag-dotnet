@@ -4,6 +4,10 @@ using System.Linq;
 
 namespace Bugsnag.Payload
 {
+  /// <summary>
+  /// Represents a set of Bugsnag payload exceptions that are generated from a single exception by resolving
+  /// the inner exceptions present.
+  /// </summary>
   public class Exceptions : IEnumerable<Exception>
   {
     private readonly System.Exception _originalException;
@@ -29,6 +33,9 @@ namespace Bugsnag.Payload
     }
   }
 
+  /// <summary>
+  /// Represents an individual exception in the Bugsnag payload.
+  /// </summary>
   public class Exception : Dictionary<string, object>
   {
     public Exception(System.Exception exception)
