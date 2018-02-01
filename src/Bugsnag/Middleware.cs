@@ -14,14 +14,16 @@ namespace Bugsnag
   /// <summary>
   /// The middleware that is applied by default by the Bugsnag client.
   /// </summary>
-  static class InternalMiddleware
+  public static class InternalMiddleware
   {
     /// <summary>
     /// Sets the Delivery flag to false if the configuration is setup so that
     /// the report should not be sent based on the release stage information.
     /// </summary>
-    public static Middleware ReleaseStageFilter = (c, r) => {
-      r.Deliver = r.Deliver && c.ValidReleaseStage();
+    public static Middleware ReleaseStageFilter = (configuration, report) => {
+      report.Deliver = report.Deliver && configuration.ReleaseStage == null ||
+        configuration.NotifyReleaseStages == null ||
+        configuration.NotifyReleaseStages.Any(stage => stage == configuration.ReleaseStage);
     };
 
     /// <summary>
