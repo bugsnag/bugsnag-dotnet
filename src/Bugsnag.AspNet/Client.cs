@@ -34,10 +34,12 @@ namespace Bugsnag.AspNet
 
     private void Notify(Payload.Report report, HttpContextBase httpContext)
     {
-      var request = new Payload.Request(new Request(httpContext));
+      var request = new Request(httpContext);
+      var payloadRequest = new Payload.Request(request);
 
       foreach (var @event in report.Events)
       {
+        @event.Context = httpContext.Request.RawUrl;
         @event["request"] = request;
       }
 
