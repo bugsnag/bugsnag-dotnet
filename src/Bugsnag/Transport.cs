@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Threading;
 
@@ -50,11 +52,19 @@ namespace Bugsnag
       }
     }
 
-    public IAsyncResult BeginSend(Uri endpoint, byte[] report, AsyncCallback callback, object state)
+    public IAsyncResult BeginSend(Uri endpoint, KeyValuePair<string, string>[] headers, byte[] report, AsyncCallback callback, object state)
     {
       var request = WebRequest.Create(endpoint);
       request.Method = "POST";
       request.ContentType = "application/json";
+      if (headers != null)
+      {
+        foreach (var header in headers)
+        {
+          request.Headers[header.Key] = header.Value;
+        }
+      }
+      request.Headers["Bugsnag-Sent-At"] = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
       var internalState = new TransportState(callback, state, endpoint, report, request);
       var asyncResult = request.BeginGetRequestStream(new AsyncCallback(WriteCallback), internalState);
       return new TransportAsyncResult(asyncResult, state);

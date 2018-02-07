@@ -64,5 +64,20 @@ namespace Bugsnag
     /// Used to filter these keys from data being sent to Bugsnag.
     /// </summary>
     string[] MetadataFilters { get; }
+
+    /// <summary>
+    /// Should the client send session tracking information.
+    /// </summary>
+    bool TrackSessions { get; }
+
+    /// <summary>
+    /// The endpoint that the Bugsnag client will submit session data to.
+    /// </summary>
+    Uri SessionEndpoint { get; }
+
+    /// <summary>
+    /// Used to determine how often to flush session data to Bugsnag.
+    /// </summary>
+    TimeSpan SessionTrackingInterval { get; }
   }
 }

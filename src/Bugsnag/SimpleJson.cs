@@ -1033,11 +1033,8 @@ namespace SimpleJson
                 case String s:
                     success = SerializeString(s, builder);
                     break;
-                case IDictionary<string, object> dict:
+                case IDictionary dict:
                     success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
-                    break;
-                case IDictionary<string, string> stringDictionary:
-                    success = SerializeObject(jsonSerializerStrategy, stringDictionary.Keys, stringDictionary.Values, builder, seen);
                     break;
                 case IEnumerable enumerable:
                     success = SerializeArray(jsonSerializerStrategy, enumerable, builder, seen);

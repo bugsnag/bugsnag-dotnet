@@ -21,7 +21,7 @@ namespace Bugsnag.Tests
         exception = caughtException;
       }
 
-      var report = new Report(configuration, exception, Bugsnag.Payload.Severity.ForHandledException(), new List<Breadcrumb> { new Breadcrumb("test", BreadcrumbType.Manual) });
+      var report = new Report(configuration, exception, Bugsnag.Payload.Severity.ForHandledException(), new List<Breadcrumb> { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session());
       Assert.NotNull(report);
     }
   }

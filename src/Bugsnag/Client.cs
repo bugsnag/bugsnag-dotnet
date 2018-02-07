@@ -10,7 +10,9 @@ namespace Bugsnag
 
     private readonly ITransport _transport;
 
-    private readonly IStorage<Breadcrumb> _breadcrumbStore;
+    private readonly Breadcrumbs _breadcrumbs;
+
+    private readonly SessionTracking _sessionTracking;
 
     private readonly List<Middleware> _middleware;
 
@@ -24,22 +26,25 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.AttachGlobalMetadata,
     };
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new InMemoryStorage<Breadcrumb>())
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new InMemoryBreadcrumbs(), new InMemorySessionTracking(configuration)) // wrong!
     {
 
     }
 
-    public Client(IConfiguration configuration, ITransport transport, IStorage<Breadcrumb> breadcrumbStore)
+    public Client(IConfiguration configuration, ITransport transport, Breadcrumbs breadcrumbs, SessionTracking sessionTracking)
     {
       _configuration = configuration;
       _transport = transport;
-      _breadcrumbStore = breadcrumbStore;
+      _breadcrumbs = breadcrumbs;
+      _sessionTracking = sessionTracking;
       _middleware = new List<Middleware>();
     }
 
     public IConfiguration Configuration { get { return _configuration; } }
 
-    protected IStorage<Breadcrumb> BreadcrumbStore {  get { return _breadcrumbStore; } }
+    public Breadcrumbs Breadcrumbs { get { return _breadcrumbs; } }
+
+    public SessionTracking SessionTracking { get { return _sessionTracking; } }
 
     public void BeforeNotify(Middleware middleware)
     {
@@ -51,21 +56,24 @@ namespace Bugsnag
 
     public void Notify(System.Exception exception)
     {
-      var report = new Report(_configuration, exception, Payload.Severity.ForHandledException(), BreadcrumbStore);
+      // TODO: get the current session and pass it in here
+      var report = new Report(_configuration, exception, Payload.Severity.ForHandledException(), Breadcrumbs.Retrieve(), null);
 
       Notify(report);
     }
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      var report = new Report(_configuration, exception, Payload.Severity.ForUserSpecifiedSeverity(severity), BreadcrumbStore);
+      // TODO: get the current session and pass it in here
+      var report = new Report(_configuration, exception, Payload.Severity.ForUserSpecifiedSeverity(severity), Breadcrumbs.Retrieve(), null);
 
       Notify(report);
     }
 
     public void AutoNotify(System.Exception exception)
     {
-      var report = new Report(_configuration, exception, Payload.Severity.ForUnhandledException(), BreadcrumbStore);
+      // TODO: get the current session and pass it in here
+      var report = new Report(_configuration, exception, Payload.Severity.ForUnhandledException(), Breadcrumbs.Retrieve(), null);
 
       Notify(report);
     }
@@ -95,42 +103,12 @@ namespace Bugsnag
 
       if (report.Deliver)
       {
-        byte[] rawPayload = null;
-
         Bugsnag.InternalMiddleware.ApplyMetadataFilters(Configuration, report);
 
-        try
-        {
-          var payload = SimpleJson.SimpleJson.SerializeObject(report);
-          rawPayload = System.Text.Encoding.UTF8.GetBytes(payload);
-        }
-        catch (System.Exception exception)
-        {
-          Trace.WriteLine(exception);
-        }
+        _transport.Send(report);
 
-        if (rawPayload != null)
-        {
-          _transport.Send(Configuration.Endpoint, rawPayload);
-        }
-
-        LeaveBreadcrumb(Breadcrumb.FromReport(report));
+        Breadcrumbs.Leave(Breadcrumb.FromReport(report));
       }
-    }
-
-    public void LeaveBreadcrumb(string message)
-    {
-      LeaveBreadcrumb(message, BreadcrumbType.Manual, null);
-    }
-
-    public void LeaveBreadcrumb(string message, BreadcrumbType type, IDictionary<string, string> metadata)
-    {
-      LeaveBreadcrumb(new Breadcrumb(message, type, metadata));
-    }
-
-    public void LeaveBreadcrumb(Breadcrumb breadcrumb)
-    {
-      _breadcrumbStore.Add(breadcrumb);
     }
   }
 }

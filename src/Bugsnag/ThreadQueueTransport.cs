@@ -1,3 +1,4 @@
+using Bugsnag.Payload;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,7 +10,7 @@ namespace Bugsnag
     private static ThreadQueueTransport instance = null;
     private static readonly object instanceLock = new object();
 
-    private readonly BlockingQueue<WorkItem> _queue;
+    private readonly BlockingQueue<ITransportablePayload> _queue;
 
     private readonly Thread _worker;
 
@@ -21,7 +22,7 @@ namespace Bugsnag
     {
       _activeRequestCounter = 0;
       _transport = new Transport();
-      _queue = new BlockingQueue<WorkItem>();
+      _queue = new BlockingQueue<ITransportablePayload>();
       _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
       _worker.Start();
     }
@@ -42,19 +43,17 @@ namespace Bugsnag
       }
     }
 
-    public void Send(Uri endpoint, byte[] report)
-    {
-      Interlocked.Increment(ref _activeRequestCounter);
-      _queue.Enqueue(new WorkItem(endpoint, report));
-    }
-
     private void ProcessQueue()
     {
       while (true)
       {
-        var workItem = _queue.Dequeue();
+        var payload = _queue.Dequeue();
         _worker.IsBackground = false;
-        _transport.BeginSend(workItem.Endpoint, workItem.Report, ReportCallback, workItem);
+        var serializedPayload = payload.Serialize();
+        if (serializedPayload != null)
+        {
+          _transport.BeginSend(payload.Endpoint, payload.Headers, serializedPayload, ReportCallback, payload);
+        }
       }
     }
 
@@ -65,19 +64,10 @@ namespace Bugsnag
       _worker.IsBackground = finishedProcessing;
     }
 
-    private class WorkItem
+    public void Send(ITransportablePayload payload)
     {
-      private readonly Uri _endpoint;
-      private readonly byte[] _report;
-
-      public WorkItem(Uri endpoint, byte[] report)
-      {
-        _endpoint = endpoint;
-        _report = report;
-      }
-
-      public Uri Endpoint { get { return _endpoint; } }
-      public byte[] Report { get { return _report; } }
+      Interlocked.Increment(ref _activeRequestCounter);
+      _queue.Enqueue(payload);
     }
 
     private class BlockingQueue<T>

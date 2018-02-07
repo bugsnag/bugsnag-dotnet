@@ -180,5 +180,30 @@ namespace Bugsnag.AspNet
         return ((GlobalMetadataItem)element).Key;
       }
     }
+
+    [ConfigurationProperty("trackSessions", IsRequired = false, DefaultValue = true)]
+    public bool TrackSessions
+    {
+      get
+      {
+        return (bool)this["trackSessions"];
+      }
+    }
+
+    [ConfigurationProperty("sessionsEndpoint", IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultSessionEndpoint)]
+    private string InternalSessionEndpoint
+    {
+      get { return this["sessionsEndpoint"] as string; }
+    }
+
+    public Uri SessionEndpoint
+    {
+      get { return new Uri(InternalSessionEndpoint); }
+    }
+
+    public TimeSpan SessionTrackingInterval
+    {
+      get { return TimeSpan.FromSeconds(60); }
+    }
   }
 }

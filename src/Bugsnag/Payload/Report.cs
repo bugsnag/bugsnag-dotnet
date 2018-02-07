@@ -1,25 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 
 namespace Bugsnag.Payload
 {
-  public class Report : Dictionary<string, object>
+  public class Report : Dictionary<string, object>, ITransportablePayload
   {
-    /// <summary>
-    /// A single instance of the current notifier info to attach to all error reports.
-    /// </summary>
-    private static Dictionary<string, string> NotifierInfo = new Dictionary<string, string> {
-      { "name", ".NET Bugsnag Notifier" },
-      { "version", typeof(Client).GetAssembly().GetName().Version.ToString(3) },
-      { "url", "https://github.com/bugsnag/bugsnag-net" }
-    };
+    private static readonly string _payloadVersion = "4";
 
     private readonly System.Exception _originalException;
 
     private readonly Severity _originalSeverity;
+
+    private readonly KeyValuePair<string, string>[] _headers;
 
     /// <summary>
     /// Represents an error report that can be sent to the Bugsnag error notification endpoint.
@@ -28,15 +22,24 @@ namespace Bugsnag.Payload
     /// <param name="exception"></param>
     /// <param name="severity"></param>
     /// <param name="breadcrumbs"></param>
-    public Report(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs)
+    public Report(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs, Session session)
     {
       Deliver = true;
+      Endpoint = configuration.Endpoint;
       _originalException = exception;
       _originalSeverity = severity;
+      _headers = new KeyValuePair<string, string>[] {
+        new KeyValuePair<string, string>(Payload.Headers.ApiKeyHeader, configuration.ApiKey),
+        new KeyValuePair<string, string>(Payload.Headers.PayloadVersionHeader, _payloadVersion),
+      };
 
       this["apiKey"] = configuration.ApiKey;
-      this["notifier"] = NotifierInfo;
-      this["events"] = new[] { new Event(configuration, exception, severity, breadcrumbs) };
+      this["notifier"] = NotifierInfo.Instance;
+
+      var app = new App(configuration);
+      var device = new Device();
+
+      this["events"] = new[] { new Event(_payloadVersion, app, device, exception, severity, breadcrumbs, session) };
     }
 
     /// <summary>
@@ -61,6 +64,13 @@ namespace Bugsnag.Payload
     /// event per payload but the Bugsnag error reporting API supports/requires this key to be an array.
     /// </summary>
     public IEnumerable<Event> Events { get { return this["events"] as IEnumerable<Event>; } }
+
+    /// <summary>
+    /// THe endpoint to send the error report to.
+    /// </summary>
+    public Uri Endpoint { get; set; }
+
+    public KeyValuePair<string, string>[] Headers { get { return _headers; } }
   }
 
   internal static class PayloadExtensions
@@ -89,6 +99,23 @@ namespace Bugsnag.Payload
           dictionary[key] = value;
           break;
       }
+    }
+
+    public static byte[] Serialize(this IDictionary dictionary)
+    {
+      byte[] data = null;
+
+      try
+      {
+        var payload = SimpleJson.SimpleJson.SerializeObject(dictionary);
+        data = System.Text.Encoding.UTF8.GetBytes(payload);
+      }
+      catch (System.Exception exception)
+      {
+        Trace.WriteLine(exception);
+      }
+
+      return data;
     }
 
     public static void FilterPayload(this IDictionary dictionary, string[] filters)

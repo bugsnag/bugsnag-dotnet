@@ -9,25 +9,31 @@ namespace Bugsnag.Tests.Payload
     [Fact]
     public void HasExpectedPayloadVersion()
     {
-      var configuration = new Configuration("123456");
+      var app = new App("version", "releaseStage", "type");
+      var device = new Device("hostname");
       var exception = new System.DllNotFoundException();
       var severity = Bugsnag.Payload.Severity.ForUnhandledException();
       var breadcrumbs = Enumerable.Empty<Breadcrumb>();
+      var session = new Session();
 
-      var @event = new Event(configuration, exception, severity, breadcrumbs);
+      var payloadVersion = "4";
 
-      Assert.Equal(4, @event["payloadVersion"]);
+      var @event = new Event(payloadVersion, app, device, exception, severity, breadcrumbs, session);
+
+      Assert.Equal(payloadVersion, @event["payloadVersion"]);
     }
 
     [Fact]
     public void SeverityKeysAreAddedCorrectly()
     {
-      var configuration = new Configuration("123456");
+      var app = new App("version", "releaseStage", "type");
+      var device = new Device("hostname");
       var exception = new System.DllNotFoundException();
       var severity = Bugsnag.Payload.Severity.ForUnhandledException();
       var breadcrumbs = Enumerable.Empty<Breadcrumb>();
+      var session = new Session();
 
-      var @event = new Event(configuration, exception, severity, breadcrumbs);
+      var @event = new Event("1", app, device, exception, severity, breadcrumbs, session);
 
       foreach (var key in severity.Keys)
       {

@@ -13,8 +13,9 @@ namespace Bugsnag.Tests.Payload
       var exception = new System.DllNotFoundException();
       var severity = Bugsnag.Payload.Severity.ForUnhandledException();
       var breadcrumbs = Enumerable.Empty<Breadcrumb>();
+      var session = new Session();
 
-      var @event = new Report(configuration, exception, severity, breadcrumbs);
+      var @event = new Report(configuration, exception, severity, breadcrumbs, session);
 
       Assert.Equal(configuration.ApiKey, @event["apiKey"]);
       Assert.NotNull(@event["notifier"]);

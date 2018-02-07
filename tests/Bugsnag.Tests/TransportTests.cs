@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -12,17 +12,16 @@ namespace Bugsnag.Tests
     public async void Test()
     {
       var numerOfRequests = 1;
-      var server = new TestServer(5001, numerOfRequests);
+      var server = new TestServer(numerOfRequests);
       server.Start();
 
-      var endpoint = new Uri("http://localhost:5001");
       var transport = new Transport();
-      for (int i = 0; i < numerOfRequests; i++)
-      {
-        var rawPayload = System.Text.Encoding.UTF8.GetBytes($"{{ \"count\": {i} }}");
-        var responseCode = await Task.Factory.FromAsync((callback, state) => transport.BeginSend(endpoint, rawPayload, callback, state), transport.EndSend, null);
-        Assert.Equal(HttpStatusCode.OK, responseCode);
-      }
+
+      var headers = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Test-Header", "wow!") };
+
+      var rawPayload = System.Text.Encoding.UTF8.GetBytes($"{{ \"count\": {numerOfRequests} }}");
+      var responseCode = await Task.Factory.FromAsync((callback, state) => transport.BeginSend(server.Endpoint, headers, rawPayload, callback, state), transport.EndSend, null);
+      Assert.Equal(HttpStatusCode.OK, responseCode);
 
       var requests = await server.Requests();
 

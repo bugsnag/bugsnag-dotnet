@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -11,21 +12,32 @@ namespace Bugsnag.Tests
     {
       var numberOfRequests = 500;
 
-      var server = new TestServer(5000, numberOfRequests);
+      var server = new TestServer(numberOfRequests);
 
       server.Start();
 
-      var endpoint = new Uri("http://localhost:5000");
-
       for (int i = 0; i < numberOfRequests; i++)
       {
-        var rawPayload = System.Text.Encoding.UTF8.GetBytes($"{{ \"count\": {i} }}");
-        ThreadQueueTransport.Instance.Send(endpoint, rawPayload);
+        var payload = new SamplePayload(i, server.Endpoint);
+        ThreadQueueTransport.Instance.Send(payload);
       }
 
       var requests = await server.Requests();
 
       Assert.Equal(numberOfRequests, requests.Count());
+    }
+
+    private class SamplePayload : Dictionary<string, int>, ITransportablePayload
+    {
+      public SamplePayload(int count, Uri endpoint)
+      {
+        this["count"] = count;
+        Endpoint = endpoint;
+      }
+
+      public Uri Endpoint { get; set; }
+
+      public KeyValuePair<string, string>[] Headers => new KeyValuePair<string, string>[] { };
     }
   }
 }

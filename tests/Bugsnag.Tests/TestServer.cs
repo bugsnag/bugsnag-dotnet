@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bugsnag.Tests
@@ -13,18 +15,22 @@ namespace Bugsnag.Tests
   {
     private readonly IWebHost _webHost;
     private readonly RequestCollection<string> _requests;
+    private readonly int _port;
 
-    public TestServer(int port, int expectedNumberOfRequests)
+    public TestServer(int expectedNumberOfRequests)
     {
+      _port = PortAllocations.Instance.NextFreePort();
       _requests = new RequestCollection<string>(expectedNumberOfRequests);
       _webHost = new WebHostBuilder()
         .ConfigureServices(services => services.AddSingleton(typeof(RequestCollection<string>), _requests))
         .UseStartup<Startup>()
         .UseKestrel(options => {
-          options.Listen(IPAddress.Loopback, port);
+          options.Listen(IPAddress.Loopback, _port);
         })
         .Build();
     }
+
+    public Uri Endpoint { get { return new Uri($"http://localhost:{_port}"); } }
 
     public void Start()
     {
@@ -36,6 +42,25 @@ namespace Bugsnag.Tests
       var items = await _requests.Items();
       await _webHost.StopAsync();
       return items;
+    }
+
+    class PortAllocations
+    {
+      private static readonly Lazy<PortAllocations> instance = new Lazy<PortAllocations>(() => new PortAllocations());
+
+      public static PortAllocations Instance { get { return instance.Value; } }
+
+      private int _nextFreePort;
+
+      private PortAllocations()
+      {
+        _nextFreePort = 4999;
+      }
+
+      public int NextFreePort()
+      {
+        return Interlocked.Increment(ref _nextFreePort);
+      }
     }
 
     class Startup

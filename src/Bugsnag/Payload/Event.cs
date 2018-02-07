@@ -8,14 +8,15 @@ namespace Bugsnag.Payload
   /// </summary>
   public class Event : Dictionary<string, object>
   {
-    public Event(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs)
+    public Event(string payloadVersion, App app, Device device, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs, Session session)
     {
-      this["payloadVersion"] = 4;
+      this["payloadVersion"] = payloadVersion;
       this["exceptions"] = new Exceptions(exception).ToArray();
-      this["app"] = new App(configuration);
-      this["device"] = new Device();
+      this["app"] = app;
+      this["device"] = device;
       this["metaData"] = new Metadata();
       this.AddToPayload("breadcrumbs", breadcrumbs);
+      this.AddToPayload("session", session);
 
       foreach (var item in severity)
       {

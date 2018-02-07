@@ -7,10 +7,14 @@ namespace Bugsnag
   {
     public const string DefaultEndpoint = "https://notify.bugsnag.com";
 
+    public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
+
     public Configuration(string apiKey)
     {
       ApiKey = apiKey;
       Endpoint = new Uri(DefaultEndpoint);
+      SessionEndpoint = new Uri(DefaultSessionEndpoint);
+      SessionTrackingInterval = TimeSpan.FromSeconds(60);
     }
 
     public string ApiKey { get; set; }
@@ -34,5 +38,11 @@ namespace Bugsnag
     public KeyValuePair<string, string>[] GlobalMetadata { get; set; }
 
     public string[] MetadataFilters { get; set; }
+
+    public bool TrackSessions { get; set; }
+
+    public Uri SessionEndpoint { get; set; }
+
+    public TimeSpan SessionTrackingInterval { get; set; }
   }
 }
