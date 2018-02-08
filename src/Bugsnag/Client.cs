@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Bugsnag.Payload;
+using Bugsnag.SessionTracking;
 
 namespace Bugsnag
 {
@@ -12,7 +13,7 @@ namespace Bugsnag
 
     private readonly Breadcrumbs _breadcrumbs;
 
-    private readonly SessionTracking _sessionTracking;
+    private readonly SessionTracker _sessionTracking;
 
     private readonly List<Middleware> _middleware;
 
@@ -26,12 +27,12 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.AttachGlobalMetadata,
     };
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new InMemoryBreadcrumbs(), new InMemorySessionTracking(configuration)) // wrong!
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new InMemoryBreadcrumbs(), new InMemorySessionTracker(configuration)) // wrong!
     {
 
     }
 
-    public Client(IConfiguration configuration, ITransport transport, Breadcrumbs breadcrumbs, SessionTracking sessionTracking)
+    public Client(IConfiguration configuration, ITransport transport, Breadcrumbs breadcrumbs, SessionTracker sessionTracking)
     {
       _configuration = configuration;
       _transport = transport;
@@ -44,7 +45,7 @@ namespace Bugsnag
 
     public Breadcrumbs Breadcrumbs { get { return _breadcrumbs; } }
 
-    public SessionTracking SessionTracking { get { return _sessionTracking; } }
+    public SessionTracker SessionTracking { get { return _sessionTracking; } }
 
     public void BeforeNotify(Middleware middleware)
     {

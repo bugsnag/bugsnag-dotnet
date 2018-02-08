@@ -5,7 +5,7 @@ namespace Bugsnag.AspNet
 {
   public class Client : Bugsnag.Client
   {
-    public Client() : base(AspNet.Configuration.Settings, ThreadQueueTransport.Instance, new HttpContextBreadcrumbs(), new HttpContextSessionTracking(AspNet.Configuration.Settings))
+    public Client() : base(AspNet.Configuration.Settings, ThreadQueueTransport.Instance, new HttpContextBreadcrumbs(), new HttpContextSessionTracker(AspNet.Configuration.Settings))
     {
 
     }

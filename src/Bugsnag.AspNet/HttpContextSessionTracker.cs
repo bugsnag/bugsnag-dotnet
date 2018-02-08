@@ -1,14 +1,14 @@
-using System.Collections.Generic;
 using System.Web;
 using Bugsnag.Payload;
+using Bugsnag.SessionTracking;
 
 namespace Bugsnag.AspNet
 {
-  public class HttpContextSessionTracking : SessionTracking
+  public class HttpContextSessionTracker : SessionTracker
   {
     private static string _key = "Bugsnag.SessionTracking";
 
-    public HttpContextSessionTracking(IConfiguration configuration) : base(configuration)
+    public HttpContextSessionTracker(IConfiguration configuration) : base(configuration)
     {
 
     }
