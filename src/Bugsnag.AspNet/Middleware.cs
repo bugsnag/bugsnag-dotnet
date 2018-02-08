@@ -9,7 +9,7 @@ namespace Bugsnag.AspNet
 
       if (httpContext != null)
       {
-        var payloadRequest = new Request(httpContext);
+        var payloadRequest = new Payload.Request(new Request(httpContext));
         foreach (var @event in report.Events)
         {
           @event["request"] = payloadRequest;

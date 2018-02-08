@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag", "src\Bugsnag\Bugsnag.csproj", "{6786F339-353C-413B-9165-422ED8D9EDF5}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.Tests", "tests\Bugsnag.Tests\Bugsnag.Tests.csproj", "{6CA748E2-A807-42E9-A960-D467461248DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.AspNet.Mvc", "src\Bugsnag.AspNet.Mvc\Bugsnag.AspNet.Mvc.csproj", "{688FE7BD-2469-4860-80DA-5358372617CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.AspNet.Tests", "tests\Bugsnag.AspNet.Tests\Bugsnag.AspNet.Tests.csproj", "{E323A548-C347-408E-B75F-1F3D654728DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.Tests.Server", "tests\Bugsnag.Tests.Server\Bugsnag.Tests.Server.csproj", "{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{688FE7BD-2469-4860-80DA-5358372617CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{688FE7BD-2469-4860-80DA-5358372617CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{688FE7BD-2469-4860-80DA-5358372617CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E323A548-C347-408E-B75F-1F3D654728DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E323A548-C347-408E-B75F-1F3D654728DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E323A548-C347-408E-B75F-1F3D654728DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E323A548-C347-408E-B75F-1F3D654728DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

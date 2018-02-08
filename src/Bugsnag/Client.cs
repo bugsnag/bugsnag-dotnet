@@ -81,7 +81,7 @@ namespace Bugsnag
 
     public void Notify(Report report)
     {
-      foreach (var middleware in DefaultInternalMiddleware)
+      foreach (var middleware in InternalMiddleware)
       {
         middleware(Configuration, report);
       }

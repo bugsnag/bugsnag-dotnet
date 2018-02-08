@@ -8,7 +8,11 @@ namespace Bugsnag.AspNet
   {
     private readonly List<Middleware> _internalMiddleware;
 
-    public Client() : base(AspNet.Configuration.Settings, ThreadQueueTransport.Instance, new HttpContextBreadcrumbs(), new HttpContextSessionTracker(AspNet.Configuration.Settings))
+    public Client() : this(AspNet.Configuration.Settings)
+    {
+    }
+
+    public Client(IConfiguration configuration) : base(configuration, ThreadQueueTransport.Instance, new HttpContextBreadcrumbs(), new HttpContextSessionTracker(configuration))
     {
       _internalMiddleware = new List<Middleware>(DefaultInternalMiddleware) {
         AspNet.InternalMiddleware.AttachRequestInformation,

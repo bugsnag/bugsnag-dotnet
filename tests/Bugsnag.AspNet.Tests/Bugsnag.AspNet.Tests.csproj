@@ -1,10 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
-
+    <TargetFrameworks>net461</TargetFrameworks>
+    <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170425-07" />
@@ -15,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bugsnag\Bugsnag.csproj" />
-    <ProjectReference Include="..\..\tests\Bugsnag.Tests.Server\Bugsnag.Tests.Server.csproj" />
+    <ProjectReference Include="..\..\src\Bugsnag.AspNet\Bugsnag.AspNet.csproj" />
+    <ProjectReference Include="..\Bugsnag.Tests.Server\Bugsnag.Tests.Server.csproj" />
   </ItemGroup>
 </Project>
