@@ -10,11 +10,11 @@ namespace Bugsnag.Payload
   {
     public Event(string payloadVersion, App app, Device device, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs, Session session)
     {
-      this["payloadVersion"] = payloadVersion;
-      this["exceptions"] = new Exceptions(exception).ToArray();
-      this["app"] = app;
-      this["device"] = device;
-      this["metaData"] = new Metadata();
+      this.AddToPayload("payloadVersion", payloadVersion);
+      this.AddToPayload("exceptions", new Exceptions(exception).ToArray());
+      this.AddToPayload("app", app);
+      this.AddToPayload("device", device);
+      this.AddToPayload("metaData", new Metadata());
       this.AddToPayload("breadcrumbs", breadcrumbs);
       this.AddToPayload("session", session);
 
@@ -45,6 +45,12 @@ namespace Bugsnag.Payload
     public Metadata Metadata
     {
       get { return this["metaData"] as Metadata; }
+    }
+
+    public User User
+    {
+      get { return this["user"] as User; }
+      set { this.AddToPayload("user", value); }
     }
   }
 }

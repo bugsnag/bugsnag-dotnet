@@ -53,21 +53,25 @@ namespace Bugsnag.Payload
 
     Severity(bool handled, Bugsnag.Severity severity, SeverityReason reason)
     {
-      this["unhandled"] = !handled;
+      this.AddToPayload("unhandled", !handled);
       this.AddToPayload("severityReason", reason);
+
+      string severityValue;
 
       switch (severity)
       {
         case Bugsnag.Severity.Info:
-          this["severity"] = "info";
+          severityValue = "info";
           break;
         case Bugsnag.Severity.Warning:
-          this["severity"] = "warning";
+          severityValue = "warning";
           break;
         default:
-          this["severity"] = "error";
+          severityValue = "error";
           break;
       }
+
+      this.AddToPayload("severity", severityValue);
     }
 
     public bool Handled
@@ -84,7 +88,7 @@ namespace Bugsnag.Payload
       }
       set
       {
-        this["unhandled"] = !value;
+        this.AddToPayload("unhandled", !value);
       }
     }
 

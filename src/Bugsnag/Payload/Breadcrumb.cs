@@ -16,15 +16,24 @@ namespace Bugsnag.Payload
     /// <returns></returns>
     public static Breadcrumb FromReport(Report report)
     {
-      var name = report.OriginalException.GetType().ToString();
-      var type = BreadcrumbType.Error;
-      var metadata = new Dictionary<string, string>
+      if (report.Context.OriginalException != null)
       {
-        { "message", report.OriginalException.Message },
-        { "severity", report.OriginalSeverity.ToString() },
-      };
+        var name = report.Context.OriginalException.GetType().ToString();
+        var type = BreadcrumbType.Error;
+        var metadata = new Dictionary<string, string>
+          {
+            { "message", report.Context.OriginalException.Message },
+          };
 
-      return new Breadcrumb(name, type, metadata);
+        if (report.Context.OriginalSeverity != null)
+        {
+          metadata["severity"] = report.Context.OriginalSeverity.ToString();
+        }
+
+        return new Breadcrumb(name, type, metadata);
+      }
+
+      return null;
     }
 
     public Breadcrumb(string name, BreadcrumbType type) : this(name, type, null)
@@ -34,38 +43,42 @@ namespace Bugsnag.Payload
 
     public Breadcrumb(string name, BreadcrumbType type, IDictionary<string, string> metadata)
     {
-      this["name"] = name; // limit this to 30 characters? provide a default incase of null or empty?
-      this["timestamp"] = DateTime.UtcNow;
+      this.AddToPayload("name", name); // limit this to 30 characters? provide a default incase of null or empty?
+      this.AddToPayload("timestamp", DateTime.UtcNow);
       this.AddToPayload("metaData", metadata); // can we limit the size of this somehow? Should it be <string, object>?
+
+      string breadcrumbType;
 
       switch (type)
       {
         case BreadcrumbType.Navigation:
-          this["type"] = "navigation";
+          breadcrumbType = "navigation";
           break;
         case BreadcrumbType.Request:
-          this["type"] = "request";
+          breadcrumbType = "request";
           break;
         case BreadcrumbType.Process:
-          this["type"] = "process";
+          breadcrumbType = "process";
           break;
         case BreadcrumbType.Log:
-          this["type"] = "log";
+          breadcrumbType = "log";
           break;
         case BreadcrumbType.User:
-          this["type"] = "user";
+          breadcrumbType = "user";
           break;
         case BreadcrumbType.State:
-          this["type"] = "state";
+          breadcrumbType = "state";
           break;
         case BreadcrumbType.Error:
-          this["type"] = "error";
+          breadcrumbType = "error";
           break;
         case BreadcrumbType.Manual:
         default:
-          this["type"] = "manual";
+          breadcrumbType = "manual";
           break;
       }
+
+      this.AddToPayload("type", breadcrumbType);
     }
   }
 }

@@ -19,7 +19,7 @@ namespace Bugsnag
 
     private readonly object _middlewareLock = new object();
 
-    private static Middleware[] InternalMiddleware = new Middleware[] {
+    protected static Middleware[] DefaultInternalMiddleware = new Middleware[] {
       Bugsnag.InternalMiddleware.ReleaseStageFilter,
       Bugsnag.InternalMiddleware.RemoveIgnoredExceptions,
       Bugsnag.InternalMiddleware.RemoveFilePrefixes,
@@ -41,11 +41,11 @@ namespace Bugsnag
       _middleware = new List<Middleware>();
     }
 
-    public IConfiguration Configuration { get { return _configuration; } }
+    public IConfiguration Configuration => _configuration;
 
-    public Breadcrumbs Breadcrumbs { get { return _breadcrumbs; } }
+    public Breadcrumbs Breadcrumbs => _breadcrumbs;
 
-    public SessionTracker SessionTracking { get { return _sessionTracking; } }
+    public SessionTracker SessionTracking => _sessionTracking;
 
     public void BeforeNotify(Middleware middleware)
     {
@@ -55,33 +55,33 @@ namespace Bugsnag
       }
     }
 
+    protected virtual List<Middleware> InternalMiddleware { get; } = new List<Middleware>(DefaultInternalMiddleware);
+
     public void Notify(System.Exception exception)
     {
-      // TODO: get the current session and pass it in here
-      var report = new Report(_configuration, exception, Payload.Severity.ForHandledException(), Breadcrumbs.Retrieve(), null);
-
-      Notify(report);
+      Notify(exception, Payload.Severity.ForHandledException());
     }
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      // TODO: get the current session and pass it in here
-      var report = new Report(_configuration, exception, Payload.Severity.ForUserSpecifiedSeverity(severity), Breadcrumbs.Retrieve(), null);
-
-      Notify(report);
+      Notify(exception, Payload.Severity.ForUserSpecifiedSeverity(severity));
     }
 
     public void AutoNotify(System.Exception exception)
     {
-      // TODO: get the current session and pass it in here
-      var report = new Report(_configuration, exception, Payload.Severity.ForUnhandledException(), Breadcrumbs.Retrieve(), null);
+      Notify(exception, Payload.Severity.ForUnhandledException());
+    }
+
+    public void Notify(System.Exception exception, Payload.Severity severity)
+    {
+      var report = new Report(_configuration, exception, severity, Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
 
       Notify(report);
     }
 
     public void Notify(Report report)
     {
-      foreach (var middleware in InternalMiddleware)
+      foreach (var middleware in DefaultInternalMiddleware)
       {
         middleware(Configuration, report);
       }

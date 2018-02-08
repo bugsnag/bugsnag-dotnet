@@ -1,47 +1,49 @@
 using System;
+using System.Collections.Generic;
 using System.Web;
 
 namespace Bugsnag.AspNet
 {
   public class Client : Bugsnag.Client
   {
+    private readonly List<Middleware> _internalMiddleware;
+
     public Client() : base(AspNet.Configuration.Settings, ThreadQueueTransport.Instance, new HttpContextBreadcrumbs(), new HttpContextSessionTracker(AspNet.Configuration.Settings))
     {
+      _internalMiddleware = new List<Middleware>(DefaultInternalMiddleware) {
+        AspNet.InternalMiddleware.AttachRequestInformation,
+        AspNet.InternalMiddleware.SetRequestContext,
+      };
+    }
 
+    protected override List<Middleware> InternalMiddleware
+    {
+      get
+      {
+        return _internalMiddleware;
+      }
     }
 
     public void Notify(Exception exception, HttpContextBase httpContext)
     {
-      var report = new Payload.Report(Configuration, exception, Payload.Severity.ForHandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
-
-      Notify(report, httpContext);
+      Notify(exception, Payload.Severity.ForHandledException(), httpContext);
     }
 
-    public void Notify(Exception exception, HttpContextBase httpContext, Severity severity)
+    public void Notify(Exception exception, Severity severity, HttpContextBase httpContext)
     {
-      var report = new Payload.Report(Configuration, exception, Payload.Severity.ForUserSpecifiedSeverity(severity), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
-
-      Notify(report, httpContext);
-
+      Notify(exception, Payload.Severity.ForUserSpecifiedSeverity(severity), httpContext);
     }
 
     public void AutoNotify(Exception exception, HttpContextBase httpContext)
     {
-      var report = new Payload.Report(Configuration, exception, Payload.Severity.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
-
-      Notify(report, httpContext);
+      Notify(exception, Payload.Severity.ForUnhandledException(), httpContext);
     }
 
-    private void Notify(Payload.Report report, HttpContextBase httpContext)
+    public void Notify(Exception exception, Payload.Severity severity, HttpContextBase httpContext)
     {
-      var request = new Request(httpContext);
-      var payloadRequest = new Payload.Request(request);
+      var report = new Payload.Report(Configuration, exception, severity, Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
 
-      foreach (var @event in report.Events)
-      {
-        @event.Context = httpContext.Request.RawUrl;
-        @event["request"] = request;
-      }
+      report.Context.HttpContext(httpContext);
 
       Notify(report);
     }

@@ -21,7 +21,10 @@ namespace Bugsnag
     {
       lock (_backingStoreLock)
       {
-        BreadcrumbCollection.Add(breadcrumb);
+        if (breadcrumb != null)
+        {
+          BreadcrumbCollection.Add(breadcrumb);
+        }
       }
     }
 
