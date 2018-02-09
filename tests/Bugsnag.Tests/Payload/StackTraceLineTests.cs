@@ -11,9 +11,7 @@ namespace Bugsnag.Tests.Payload
     [Fact]
     public void HandleEmptyStackTrace()
     {
-      var exceptionStackTrace = new System.Diagnostics.StackTrace(new Exception(), false);
-
-      var stackTrace = new Bugsnag.Payload.StackTrace(exceptionStackTrace);
+      var stackTrace = new Bugsnag.Payload.StackTrace(new Exception());
 
       Assert.Empty(stackTrace);
     }

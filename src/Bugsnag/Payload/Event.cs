@@ -11,7 +11,7 @@ namespace Bugsnag.Payload
     public Event(string payloadVersion, App app, Device device, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs, Session session)
     {
       this.AddToPayload("payloadVersion", payloadVersion);
-      this.AddToPayload("exceptions", new Exceptions(exception).ToArray());
+      this.AddToPayload("exceptions", new Exceptions(exception, 5).ToArray());
       this.AddToPayload("app", app);
       this.AddToPayload("device", device);
       this.AddToPayload("metaData", new Metadata());

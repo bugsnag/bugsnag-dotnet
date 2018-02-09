@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
@@ -11,19 +11,21 @@ namespace Bugsnag.Tests
     [MemberData(nameof(TestData))]
     public void FriendlyMethodNameTest(MethodBase method, string expected)
     {
-      Assert.Equal(expected, method.FriendlyMethodName());
+      Assert.Equal(expected, new Bugsnag.Payload.Method(method).DisplayName());
     }
 
     public static IEnumerable<object[]> TestData()
     {
       yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestGenericMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestGenericMethod<T>(T p1)" };
-      yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestMethod(System.Int32 val)" };
-      yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestMethod2)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestMethod2(System.Int32 val1, System.Single val2, System.String val3)" };
-      yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestPartialGenericMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestPartialGenericMethod<T>(System.Int32 val, T p1)" };
+      yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestMethod(int val)" };
+      yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestMethod2)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestMethod2(int val1, float val2, string val3)" };
+      yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestPartialGenericMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestPartialGenericMethod<T>(int val, T p1)" };
       yield return new object[] { typeof(NonGenericClass).GetMethod(nameof(NonGenericClass.TestGenericReturnTypeMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+NonGenericClass.TestGenericReturnTypeMethod<T>()" };
 
-      // unfortunately cannot get this generic argument name correctly. Should be T but will have to make do with System.Int32
-      yield return new object[] { typeof(GenericClass<int>).GetMethod(nameof(GenericClass<int>.TestMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+GenericClass<T>.TestMethod(System.Int32 p1)" };
+      // can't get the method parameter to be T due to the fact that we get the
+      // methodinfo from the closed generic type and it's tricky/impossible to
+      // resolve back to the open generic type and retrieve the same method info
+      yield return new object[] { typeof(GenericClass<int>).GetMethod(nameof(GenericClass<int>.TestMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+GenericClass<T>.TestMethod(int p1)" };
       yield return new object[] { typeof(GenericClass<int>).GetMethod(nameof(GenericClass<int>.TestMultipleGenericMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+GenericClass<T>.TestMultipleGenericMethod<U>(U p2)" };
       yield return new object[] { typeof(GenericClass<int>).GetMethod(nameof(GenericClass<int>.TestVoidMethod)), "Bugsnag.Tests.ExceptionExtensionsTests+GenericClass<T>.TestVoidMethod()" };
     }

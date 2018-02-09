@@ -29,10 +29,13 @@ namespace Bugsnag
 
     public static Type[] GetGenericArguments(this Type type)
     {
-#if NET35 || NET40 || NET45
+#if NET35 || NET40
       return type.GetGenericArguments();
 #else
-      return type.GetTypeInfo().GenericTypeParameters;
+      var typeInfo = type.GetTypeInfo();
+      return typeInfo.IsGenericTypeDefinition
+        ? typeInfo.GenericTypeParameters
+        : typeInfo.GenericTypeArguments;
 #endif
     }
   }

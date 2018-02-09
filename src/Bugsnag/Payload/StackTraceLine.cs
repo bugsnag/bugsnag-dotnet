@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Bugsnag.Payload
 {
@@ -9,30 +10,34 @@ namespace Bugsnag.Payload
   /// </summary>
   public class StackTrace : IEnumerable<StackTraceLine>
   {
-    private readonly System.Diagnostics.StackTrace _originalStackTrace;
+    private readonly System.Exception _originalException;
 
-    public StackTrace(System.Exception exception) : this(new System.Diagnostics.StackTrace(exception, true))
+    public StackTrace(System.Exception exception)
     {
-
-    }
-
-    public StackTrace(System.Diagnostics.StackTrace stackTrace)
-    {
-      _originalStackTrace = stackTrace;
+      _originalException = exception;
     }
 
     public IEnumerator<StackTraceLine> GetEnumerator()
     {
-      var frames = _originalStackTrace.GetFrames();
-
-      if (frames == null)
+      if (_originalException == null)
       {
         yield break;
       }
 
-      foreach (var frame in frames)
+      var needFileInfo = true;
+      var stackTrace = new System.Diagnostics.StackTrace(_originalException, needFileInfo);
+      var stackFrames = stackTrace.GetFrames();
+
+      if (stackFrames == null)
       {
-        yield return new StackTraceLine(frame);
+        yield break;
+      }
+
+      foreach (var frame in stackFrames)
+      {
+        var stackFrame = new StackTraceLine(frame);
+
+        yield return stackFrame;
       }
     }
 
@@ -47,25 +52,14 @@ namespace Bugsnag.Payload
   /// </summary>
   public class StackTraceLine : Dictionary<string, object>
   {
-    public StackTraceLine(System.Diagnostics.StackFrame stackFrame)
+    public StackTraceLine(StackFrame stackFrame)
     {
       var method = stackFrame.GetMethod();
-
-      if (method != null)
-      {
-        var methodName = method.FriendlyMethodName();
-
-        var lineNumber = stackFrame.FriendlyLineNumber();
-
-        var file = stackFrame.GetFileName() ?? "<unknown>";
-
-        this.AddToPayload("file", file);
-        this.AddToPayload("lineNumber", lineNumber);
-        this.AddToPayload("method", methodName);
-        this.AddToPayload("inProject", false);
-      }
-
-      // TODO: what should we set these to when the method is null?
+      this.AddToPayload("file", stackFrame.GetFileName());
+      this.AddToPayload("lineNumber", stackFrame.GetFileLineNumber());
+      this.AddToPayload("method", new Method(method).DisplayName());
+      this.AddToPayload("inProject", false);
+      this.AddToPayload("code", new Code(stackFrame, 5).Display());
     }
 
     public string FileName

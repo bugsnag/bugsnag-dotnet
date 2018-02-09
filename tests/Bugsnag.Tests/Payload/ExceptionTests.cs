@@ -11,7 +11,7 @@ namespace Bugsnag.Tests.Payload
     {
       var exception = new System.Exception("oh noes!");
 
-      var exceptions = new Exceptions(exception);
+      var exceptions = new Exceptions(exception, 5);
 
       Assert.Equal(1, exceptions.Count());
     }
@@ -22,7 +22,7 @@ namespace Bugsnag.Tests.Payload
       var innerException = new System.Exception();
       var exception = new System.Exception("oh noes!", innerException);
 
-      var exceptions = new Exceptions(exception);
+      var exceptions = new Exceptions(exception, 5);
 
       Assert.Equal(2, exceptions.Count());
     }
