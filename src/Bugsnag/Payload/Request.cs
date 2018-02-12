@@ -15,9 +15,9 @@ namespace Bugsnag.Payload
 
     string HttpMethod { get; }
 
-    Uri Url { get; }
+    string Url { get; }
 
-    Uri Referer { get; }
+    string Referer { get; }
   }
 
   /// <summary>

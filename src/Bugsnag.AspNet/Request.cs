@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Web;
@@ -10,16 +10,16 @@ namespace Bugsnag.AspNet
     private readonly string _clientIp;
     private readonly IDictionary<string, string> _headers;
     private readonly string _httpMethod;
-    private readonly Uri _url;
-    private readonly Uri _referer;
+    private readonly string _url;
+    private readonly string _referer;
 
     public Request(HttpContextBase httpContext)
     {
       _clientIp = httpContext.Request.UserHostAddress;
       _headers = httpContext.Request.Headers.AllKeys.ToDictionary(k => k, k => httpContext.Request.Headers[k]);
       _httpMethod = httpContext.Request.HttpMethod;
-      _url = httpContext.Request.Url;
-      _referer = httpContext.Request.UrlReferrer;
+      _url = httpContext.Request.Url.ToString();
+      _referer = httpContext.Request.UrlReferrer.ToString();
     }
 
     public string ClientIp => _clientIp;
@@ -28,8 +28,8 @@ namespace Bugsnag.AspNet
 
     public string HttpMethod => _httpMethod;
 
-    public Uri Url => _url;
+    public string Url => _url;
 
-    public Uri Referer => _referer;
+    public string Referer => _referer;
   }
 }

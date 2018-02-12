@@ -15,9 +15,9 @@ namespace Bugsnag.Tests.Payload
 
       public string HttpMethod => "GET";
 
-      public Uri Url => new Uri("https://bugsnag.com");
+      public string Url => "https://bugsnag.com";
 
-      public Uri Referer => new Uri("https://bugsnag.com");
+      public string Referer => "https://bugsnag.com";
     }
 
     [Fact]

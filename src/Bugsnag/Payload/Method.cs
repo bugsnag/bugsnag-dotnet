@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -22,10 +22,15 @@ namespace Bugsnag.Payload
 
       var builder = new StringBuilder();
 
-      var declaringTypeName = TypeNameHelper.GetTypeDisplayName(_methodBase.DeclaringType, includeGenericParameterNames: true);
-      if (!string.IsNullOrEmpty(declaringTypeName))
+      var type = _methodBase.DeclaringType;
+
+      if (type != null)
       {
-        builder.Append(declaringTypeName).Append(".");
+        var declaringTypeName = TypeNameHelper.GetTypeDisplayName(type, includeGenericParameterNames: true);
+        if (!string.IsNullOrEmpty(declaringTypeName))
+        {
+          builder.Append(declaringTypeName).Append(".");
+        }
       }
 
       builder.Append(_methodBase.Name);

@@ -9,6 +9,11 @@ namespace Bugsnag
 
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
+    public Configuration() : this(string.Empty)
+    {
+
+    }
+
     public Configuration(string apiKey)
     {
       ApiKey = apiKey;

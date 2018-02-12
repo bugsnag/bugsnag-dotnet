@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.AspNet.Tests", "tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.Tests.Server", "tests\Bugsnag.Tests.Server\Bugsnag.Tests.Server.csproj", "{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.AspNet.Core", "src\Bugsnag.AspNet.Core\Bugsnag.AspNet.Core.csproj", "{6E9BE618-DD79-4EB1-898C-7422ACEA60C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92B70E7D-FC95-4C15-9857-4AF1EAE18F33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E9BE618-DD79-4EB1-898C-7422ACEA60C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E9BE618-DD79-4EB1-898C-7422ACEA60C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E9BE618-DD79-4EB1-898C-7422ACEA60C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E9BE618-DD79-4EB1-898C-7422ACEA60C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
