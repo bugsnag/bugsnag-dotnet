@@ -3,9 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace Bugsnag.AspNet
+namespace Bugsnag.ConfigurationSection
 {
-  public class Configuration : ConfigurationSection, IConfiguration
+  public class Configuration : System.Configuration.ConfigurationSection, IConfiguration
   {
     private static Configuration _configuration = ConfigurationManager.GetSection("bugsnag") as Configuration;
 

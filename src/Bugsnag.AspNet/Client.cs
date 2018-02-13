@@ -8,7 +8,7 @@ namespace Bugsnag.AspNet
   {
     private readonly List<Middleware> _internalMiddleware;
 
-    public Client() : this(AspNet.Configuration.Settings)
+    public Client() : this(ConfigurationSection.Configuration.Settings)
     {
     }
 
