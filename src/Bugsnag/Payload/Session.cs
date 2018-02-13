@@ -21,7 +21,7 @@ namespace Bugsnag.Payload
     {
       get
       {
-        return ((DateTime)this["startedAt"]).ToString("yyyy-MM-ddTHH:mm:00");
+        return ((DateTime)this.Get("startedAt")).ToString("yyyy-MM-ddTHH:mm:00");
       }
     }
   }

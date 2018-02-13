@@ -41,7 +41,8 @@ namespace Bugsnag
             {
               foreach (var filePrefix in configuration.FilePrefixes)
               {
-                if (stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
+                if (!string.IsNullOrEmpty(stackTraceLine.FileName)
+                  && stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
                 {
                   stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
                 }

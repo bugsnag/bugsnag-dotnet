@@ -41,6 +41,12 @@ namespace Bugsnag.Payload
       }
     }
 
+    public static U Get<T, U>(this Dictionary<T, U> dictionary, T key)
+    {
+      dictionary.TryGetValue(key, out U value);
+      return value;
+    }
+
     public static byte[] Serialize(this IDictionary dictionary)
     {
       byte[] data = null;

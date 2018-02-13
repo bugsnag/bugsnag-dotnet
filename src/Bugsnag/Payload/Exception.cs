@@ -71,8 +71,8 @@ namespace Bugsnag.Payload
       this.AddToPayload("stacktrace", new StackTrace(exception).ToArray());
     }
 
-    public IEnumerable<StackTraceLine> StackTrace { get { return this["stacktrace"] as IEnumerable<StackTraceLine>; } }
+    public IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
 
-    public string ErrorClass { get { return this["errorClass"] as string; } }
+    public string ErrorClass { get { return this.Get("errorClass") as string; } }
   }
 }

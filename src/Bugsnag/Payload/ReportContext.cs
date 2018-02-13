@@ -6,18 +6,18 @@ namespace Bugsnag.Payload
   {
     public ReportContext(System.Exception exception, Severity severity)
     {
-      this["bugsnag.original.exception"] = exception;
-      this["bugsnag.original.severity"] = severity;
+      this.AddToPayload("bugsnag.original.exception", exception);
+      this.AddToPayload("bugsnag.original.severity", severity);
     }
 
     public System.Exception OriginalException
     {
-      get { return this["bugsnag.original.exception"] as System.Exception; }
+      get { return this.Get("bugsnag.original.exception") as System.Exception; }
     }
 
     public Severity OriginalSeverity
     {
-      get { return this["bugsnag.original.severity"] as Severity; }
+      get { return this.Get("bugsnag.original.severity") as Severity; }
     }
   }
 }

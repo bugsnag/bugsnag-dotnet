@@ -66,11 +66,11 @@ namespace Bugsnag.Payload
     {
       get
       {
-        return (string)this["file"];
+        return this.Get("file") as string;
       }
       set
       {
-        this["file"] = value;
+        this.AddToPayload("file", value);
       }
     }
 
@@ -78,11 +78,11 @@ namespace Bugsnag.Payload
     {
       get
       {
-        return this["method"] as string;
+        return this.Get("method") as string;
       }
       set
       {
-        this["method"] = value;
+        this.AddToPayload("method", value);
       }
     }
 
@@ -90,11 +90,11 @@ namespace Bugsnag.Payload
     {
       get
       {
-        return (bool)this["inProject"];
+        return (bool)this.Get("inProject");
       }
       set
       {
-        this["inProject"] = value;
+        this.AddToPayload("inProject", value);
       }
     }
   }

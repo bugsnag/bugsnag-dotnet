@@ -78,7 +78,7 @@ namespace Bugsnag.Payload
     {
       get
       {
-        switch (this["unhandled"])
+        switch (this.Get("unhandled"))
         {
           case bool unhandled:
             return !unhandled;

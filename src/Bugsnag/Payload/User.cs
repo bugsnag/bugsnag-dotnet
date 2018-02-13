@@ -8,7 +8,7 @@ namespace Bugsnag.Payload
     {
       get
       {
-        return this["id"];
+        return this.Get("id");
       }
       set
       {
@@ -20,7 +20,7 @@ namespace Bugsnag.Payload
     {
       get
       {
-        return this["name"];
+        return this.Get("name");
       }
       set
       {
@@ -32,7 +32,7 @@ namespace Bugsnag.Payload
     {
       get
       {
-        return this["email"];
+        return this.Get("email");
       }
       set
       {

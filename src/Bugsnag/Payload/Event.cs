@@ -26,30 +26,30 @@ namespace Bugsnag.Payload
 
     public Exception[] Exceptions
     {
-      get { return this["exceptions"] as Exception[]; }
+      get { return this.Get("exceptions") as Exception[]; }
       set { this.AddToPayload("exceptions", value); }
     }
 
     public string Context
     {
-      get { return this["context"] as string; }
+      get { return this.Get("context") as string; }
       set { this.AddToPayload("context", value); }
     }
 
     public string GroupingHash
     {
-      get { return this["groupingHash"] as string; }
+      get { return this.Get("groupingHash") as string; }
       set { this.AddToPayload("groupingHash", value); }
     }
 
     public Metadata Metadata
     {
-      get { return this["metaData"] as Metadata; }
+      get { return this.Get("metaData") as Metadata; }
     }
 
     public User User
     {
-      get { return this["user"] as User; }
+      get { return this.Get("user") as User; }
       set { this.AddToPayload("user", value); }
     }
   }
