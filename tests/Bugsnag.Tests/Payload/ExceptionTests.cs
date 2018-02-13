@@ -13,7 +13,7 @@ namespace Bugsnag.Tests.Payload
 
       var exceptions = new Exceptions(exception, 5);
 
-      Assert.Equal(1, exceptions.Count());
+      Assert.Single(exceptions);
     }
 
     [Fact]

@@ -39,7 +39,7 @@ namespace Bugsnag.Tests
 
       var requests = await server.Requests();
 
-      Assert.Equal(1, requests.Count());
+      Assert.Single(requests);
     }
   }
 }

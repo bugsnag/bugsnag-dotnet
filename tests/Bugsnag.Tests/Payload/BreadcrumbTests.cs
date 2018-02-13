@@ -12,7 +12,7 @@ namespace Bugsnag.Tests.Payload
     {
       var breadcrumb = new Breadcrumb("test", BreadcrumbType.Manual);
 
-      Assert.IsType(typeof(DateTime), breadcrumb["timestamp"]);
+      Assert.IsType<DateTime>(breadcrumb["timestamp"]);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ namespace Bugsnag.Tests.Payload
 
       Assert.Equal("error", breadcrumb["type"]);
       Assert.NotNull(breadcrumb["metaData"]);
-      Assert.IsType(typeof(DateTime), breadcrumb["timestamp"]);
+      Assert.IsType<DateTime>(breadcrumb["timestamp"]);
     }
   }
 }

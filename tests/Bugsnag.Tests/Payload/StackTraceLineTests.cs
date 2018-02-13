@@ -32,7 +32,7 @@ namespace Bugsnag.Tests.Payload
 
       var stackTrace = new Bugsnag.Payload.StackTrace(ex);
 
-      Assert.Equal(1, stackTrace.Count());
+      Assert.Single(stackTrace);
 
       var stackTraceLine = stackTrace.First();
 
