@@ -9,7 +9,6 @@
     <PackageIconUrl>https://dbd6j53uzcole.cloudfront.net/assets/images/website/logo-mark.0b14965b.png</PackageIconUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TargetFrameworks>net35;net40;net45;netstandard1.3</TargetFrameworks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' != 'netstandard1.3'">true</DisableImplicitFrameworkReferences>
     <LangVersion>7.1</LangVersion>
     <WarningsAsErrors />
