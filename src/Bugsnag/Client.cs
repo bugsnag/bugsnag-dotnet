@@ -11,9 +11,9 @@ namespace Bugsnag
 
     private readonly ITransport _transport;
 
-    private readonly Breadcrumbs _breadcrumbs;
+    private readonly IBreadcrumbs _breadcrumbs;
 
-    private readonly SessionTracker _sessionTracking;
+    private readonly ISessionTracker _sessionTracking;
 
     private readonly List<Middleware> _middleware;
 
@@ -32,7 +32,7 @@ namespace Bugsnag
 
     }
 
-    public Client(IConfiguration configuration, ITransport transport, Breadcrumbs breadcrumbs, SessionTracker sessionTracking)
+    public Client(IConfiguration configuration, ITransport transport, IBreadcrumbs breadcrumbs, ISessionTracker sessionTracking)
     {
       _configuration = configuration;
       _transport = transport;
@@ -43,9 +43,9 @@ namespace Bugsnag
 
     public IConfiguration Configuration => _configuration;
 
-    public Breadcrumbs Breadcrumbs => _breadcrumbs;
+    public IBreadcrumbs Breadcrumbs => _breadcrumbs;
 
-    public SessionTracker SessionTracking => _sessionTracking;
+    public ISessionTracker SessionTracking => _sessionTracking;
 
     public void BeforeNotify(Middleware middleware)
     {

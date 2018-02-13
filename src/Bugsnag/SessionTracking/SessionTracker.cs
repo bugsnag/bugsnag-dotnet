@@ -2,7 +2,14 @@ using Bugsnag.Payload;
 
 namespace Bugsnag.SessionTracking
 {
-  public abstract class SessionTracker
+  public interface ISessionTracker
+  {
+    void CreateSession();
+
+    Session CurrentSession { get; }
+  }
+
+  public abstract class SessionTracker : ISessionTracker
   {
     private readonly IConfiguration _configuration;
 

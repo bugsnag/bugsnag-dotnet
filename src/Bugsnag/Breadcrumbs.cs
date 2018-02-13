@@ -3,7 +3,18 @@ using System.Collections.Generic;
 
 namespace Bugsnag
 {
-  public abstract class Breadcrumbs
+  public interface IBreadcrumbs
+  {
+    void Leave(string message);
+
+    void Leave(string message, BreadcrumbType type, IDictionary<string, string> metadata);
+
+    void Leave(Breadcrumb breadcrumb);
+
+    IEnumerable<Breadcrumb> Retrieve();
+  }
+
+  public abstract class Breadcrumbs : IBreadcrumbs
   {
     private readonly object _backingStoreLock = new object();
 
@@ -28,7 +39,7 @@ namespace Bugsnag
       }
     }
 
-    public Breadcrumb[] Retrieve()
+    public IEnumerable<Breadcrumb> Retrieve()
     {
       lock (_backingStoreLock)
       {

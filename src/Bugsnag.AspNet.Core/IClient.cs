@@ -1,4 +1,5 @@
 using System;
+using Bugsnag.SessionTracking;
 using Microsoft.AspNetCore.Http;
 
 namespace Bugsnag.AspNet.Core
@@ -19,6 +20,8 @@ namespace Bugsnag.AspNet.Core
     /// Used to leave breadcrumbs that will be attached to any errrors seen
     /// in the current request.
     /// </summary>
-    Breadcrumbs Breadcrumbs { get; }
+    IBreadcrumbs Breadcrumbs { get; }
+
+    ISessionTracker SessionTracking { get; }
   }
 }

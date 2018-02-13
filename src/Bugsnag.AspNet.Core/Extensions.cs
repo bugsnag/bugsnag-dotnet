@@ -1,6 +1,9 @@
 using System;
+using Bugsnag.SessionTracking;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Bugsnag.AspNet.Core
 {
@@ -15,9 +18,14 @@ namespace Bugsnag.AspNet.Core
     /// <returns></returns>
     public static IServiceCollection AddBugsnag(this IServiceCollection services)
     {
+      services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
       return services
+        .AddSingleton<ISessionTracker, HttpContextSessionTracking>()
+        .AddSingleton<IBreadcrumbs, HttpContextBreadcrumbs>()
+        .AddSingleton<ITransport>(ThreadQueueTransport.Instance)
         .AddSingleton<IStartupFilter, BugsnagStartupFilter>()
-        .AddScoped<IClient, Client>();
+        .AddSingleton<IClient, Client>();
     }
 
     public static IServiceCollection AddBugsnag(this IServiceCollection services, Action<Configuration> configuration)

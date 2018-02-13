@@ -27,14 +27,6 @@ namespace Bugsnag.AspNet.Core
         client.AutoNotify(exception, context);
         throw;
       }
-
-      // check that ExceptionHandlerMiddleware has not swallowed any exceptions
-      var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
-
-      if (exceptionFeature != null)
-      {
-        client.AutoNotify(exceptionFeature.Error, context);
-      }
     }
   }
 }
