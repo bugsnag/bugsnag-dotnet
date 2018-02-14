@@ -3,12 +3,14 @@
 var target = Argument("target", "Default");
 
 // this can be changed once we are pushing the nuget packages up
-var nugetPackageOutput = MakeAbsolute(Directory("./examples/aspnetcore20-mvc/packages"));
+var nugetPackageOutput = MakeAbsolute(Directory("./packages"));
 
 var configuration = Argument("configuration", "Release");
 
 var tests = new[] {"Bugsnag.Tests", "Bugsnag.AspNet.Tests"};
 var projects = new[] {"Bugsnag", "Bugsnag.AspNet", "Bugsnag.AspNet.Core", "Bugsnag.AspNet.Mvc", "Bugsnag.ConfigurationSection"};
+
+var examples = GetSubDirectories("./examples");
 
 Task("Clean")
     .Does(() =>
@@ -52,11 +54,38 @@ Task("Pack")
         settings
           .SetVerbosity(Verbosity.Minimal)
           .WithTarget("pack")
+          .SetConfiguration("Release")
+          .WithProperty("IncludeSymbols", "true")
           .WithProperty("PackageOutputPath", nugetPackageOutput.FullPath));
     }
 });
 
+Task("PopulateExamplePackages")
+  .IsDependentOn("Pack")
+  .Does(() =>
+{
+      var packages = new DirectoryPath("./packages");
+      foreach (var directory in GetSubDirectories("./examples"))
+      {
+          CopyDirectory(packages, directory.Combine(new DirectoryPath("packages")));
+      }
+});
+
+Task("BuildExamples")
+  .IsDependentOn("PopulateExamplePackages")
+  .Does(() =>
+{
+      foreach (var example in examples)
+      {
+        var docker = StartProcess("docker-compose", new ProcessSettings { Arguments = "build", WorkingDirectory = example });
+        if (docker != 0)
+        {
+          throw new Exception("docker build failed");
+        }
+      }
+});
+
 Task("Default")
-    .IsDependentOn("Pack");
+    .IsDependentOn("BuildExamples");
 
 RunTarget(target);

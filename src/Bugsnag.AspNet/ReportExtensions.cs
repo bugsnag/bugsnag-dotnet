@@ -12,7 +12,7 @@ namespace Bugsnag.AspNet
 
     public static HttpContextBase HttpContext(this ReportContext reportContext)
     {
-      return reportContext["bugsnag.aspnet.httpcontext"] as HttpContextBase;
+      return reportContext.Get("bugsnag.aspnet.httpcontext") as HttpContextBase;
     }
   }
 }

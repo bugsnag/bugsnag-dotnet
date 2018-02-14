@@ -39,6 +39,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bugsnag">
+      <HintPath>packages\Bugsnag.2.0.0-alpha\lib\net35\Bugsnag.dll</HintPath>
+    </Reference>
+    <Reference Include="Bugsnag.AspNet">
+      <HintPath>packages\Bugsnag.AspNet.2.0.0-alpha\lib\net35\Bugsnag.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Bugsnag.ConfigurationSection">
+      <HintPath>packages\Bugsnag.ConfigurationSection.2.0.0-alpha\lib\net35\Bugsnag.ConfigurationSection.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
@@ -71,6 +80,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

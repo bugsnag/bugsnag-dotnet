@@ -6,15 +6,24 @@ namespace Bugsnag.AspNet
 {
   public class HttpModule : IHttpModule
   {
-    private readonly Client _client;
-
-    private static bool initialised;
+    private static Client _client;
 
     private static readonly object _lock = new object();
 
-    public HttpModule()
+    private Client Client
     {
-      _client = new Client();
+      get
+      {
+        lock (_lock)
+        {
+          if (_client == null)
+          {
+            _client = new Client();
+          }
+        }
+
+        return _client;
+      }
     }
 
     public void Dispose()
@@ -23,14 +32,7 @@ namespace Bugsnag.AspNet
 
     public void Init(HttpApplication context)
     {
-      lock (_lock)
-      {
-        if (!initialised)
-        {
-          context.Error += OnError;
-          initialised = true;
-        }
-      }
+      context.Error += OnError;
     }
 
     private void OnError(object sender, EventArgs e)
@@ -44,7 +46,7 @@ namespace Bugsnag.AspNet
     {
       try
       {
-        _client.AutoNotify(exception, httpContext);
+        Client.AutoNotify(exception, httpContext);
       }
       catch (Exception internalException)
       {

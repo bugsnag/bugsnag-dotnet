@@ -68,19 +68,19 @@ namespace Bugsnag.ConfigurationSection
       get { return this["releaseStage"] as string; }
     }
 
-    [ConfigurationProperty("filePrefixes", IsRequired = false)]
-    private string InternalFilePrefixes
+    [ConfigurationProperty("projectRoots", IsRequired = false)]
+    private string InternalProjectRoots
     {
-      get { return this["filePrefixes"] as string; }
+      get { return this["projectRoots"] as string; }
     }
 
     public string[] ProjectRoots
     {
       get
       {
-        if (InternalFilePrefixes != null)
+        if (InternalProjectRoots != null)
         {
-          return InternalFilePrefixes.Split(',');
+          return InternalProjectRoots.Split(',');
         }
 
         return null;

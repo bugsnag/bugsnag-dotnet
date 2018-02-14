@@ -54,7 +54,6 @@ namespace Bugsnag.Payload
         list.Add(ex);
         ex = ex.InnerException;
       }
-      list.Reverse();
       return list;
     }
   }
