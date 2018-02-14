@@ -34,7 +34,7 @@ namespace Bugsnag
 
     public string AppType { get; set; }
 
-    public string[] FilePrefixes { get; set; }
+    public string[] ProjectRoots { get; set; }
 
     public string[] ProjectNamespaces { get; set; }
 

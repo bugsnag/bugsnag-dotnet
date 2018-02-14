@@ -24,8 +24,8 @@ namespace aspnetcore20_mvc
         {
             services.AddBugsnag(config => {
                 config.ApiKey = "<API_KEY>";
-                config.ProjectNamespaces = new[]{"aspnetcore20_mvc"};
-                config.FilePrefixes = new[]{"C:\\app\\  "};
+                config.ProjectNamespaces = new[]{ "aspnetcore20_mvc" };
+                config.ProjectRoots = new[]{ @"C:\app\" };
             });
             services.AddMvc();
         }

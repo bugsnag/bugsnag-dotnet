@@ -74,7 +74,7 @@ namespace Bugsnag.ConfigurationSection
       get { return this["filePrefixes"] as string; }
     }
 
-    public string[] FilePrefixes
+    public string[] ProjectRoots
     {
       get
       {

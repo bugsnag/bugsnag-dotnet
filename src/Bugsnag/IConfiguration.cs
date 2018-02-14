@@ -41,7 +41,7 @@ namespace Bugsnag
     /// These will be used to strip the beginning of the file name from stack trace lines in order to produce uniform
     /// stack trace file names to aid in grouping.
     /// </summary>
-    string[] FilePrefixes { get; }
+    string[] ProjectRoots { get; }
 
     /// <summary>
     /// These will be used to mark stack trace lines as being 'In Project' if the line occurs in one of the provided

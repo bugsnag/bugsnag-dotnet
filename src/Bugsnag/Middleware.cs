@@ -27,11 +27,11 @@ namespace Bugsnag
     };
 
     /// <summary>
-    /// Strips any provided file prefixes from stack trace lines included in the report.
+    /// Strips any provided project roots from stack trace lines included in the report.
     /// </summary>
-    public static Middleware RemoveFilePrefixes = (configuration, report) =>
+    public static Middleware RemoveProjectRoots = (configuration, report) =>
     {
-      if (configuration.FilePrefixes != null && configuration.FilePrefixes.Any())
+      if (configuration.ProjectRoots != null && configuration.ProjectRoots.Any())
       {
         foreach (var @event in report.Events)
         {
@@ -39,7 +39,7 @@ namespace Bugsnag
           {
             foreach (var stackTraceLine in exception.StackTrace)
             {
-              foreach (var filePrefix in configuration.FilePrefixes)
+              foreach (var filePrefix in configuration.ProjectRoots)
               {
                 if (!string.IsNullOrEmpty(stackTraceLine.FileName)
                   && stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
