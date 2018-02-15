@@ -39,6 +39,8 @@ namespace Bugsnag
       _breadcrumbs = breadcrumbs;
       _sessionTracking = sessionTracking;
       _middleware = new List<Middleware>();
+
+      UnhandledException.Instance.ConfigureClient(this);
     }
 
     public IConfiguration Configuration => _configuration;
