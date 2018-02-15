@@ -83,7 +83,14 @@ namespace Bugsnag
     {
       foreach (var middleware in InternalMiddleware)
       {
-        middleware(Configuration, report);
+        try
+        {
+          middleware(Configuration, report);
+        }
+        catch (System.Exception exception)
+        {
+          Trace.WriteLine(exception);
+        }
       }
 
       lock (_middlewareLock)
@@ -97,7 +104,6 @@ namespace Bugsnag
           catch (System.Exception exception)
           {
             Trace.WriteLine(exception);
-            // we could add the exception calling the middleware to the report? Or to the metadata in the report
           }
         }
       }

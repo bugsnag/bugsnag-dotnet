@@ -1,6 +1,7 @@
 using Bugsnag.Payload;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Bugsnag
@@ -49,10 +50,18 @@ namespace Bugsnag
       {
         var payload = _queue.Dequeue();
         _worker.IsBackground = false;
-        var serializedPayload = payload.Serialize();
-        if (serializedPayload != null)
+        try
         {
-          _transport.BeginSend(payload.Endpoint, payload.Headers, serializedPayload, ReportCallback, payload);
+          var serializedPayload = payload.Serialize();
+          if (serializedPayload != null)
+          {
+            _transport.BeginSend(payload.Endpoint, payload.Headers, serializedPayload, ReportCallback, payload);
+          }
+        }
+        catch (System.Exception exception)
+        {
+          Trace.WriteLine(exception);
+          _worker.IsBackground = true;
         }
       }
     }

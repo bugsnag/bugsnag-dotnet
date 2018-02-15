@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
@@ -13,6 +13,9 @@ namespace Bugsnag.AspNet.Core
 
     private readonly object _clientLock = new object();
     private IClient _currentClient;
+
+    private const string ExceptionHandlerMiddlewareKey = "Microsoft.AspNetCore.Diagnostics.HandledException";
+    private const string DeveloperExceptionPageMiddleware = "Microsoft.AspNetCore.Diagnostics.UnhandledException";
 
     private DiagnosticExceptionListener()
     {
@@ -61,7 +64,8 @@ namespace Bugsnag.AspNet.Core
 
     void IObserver<KeyValuePair<string, object>>.OnNext(KeyValuePair<string, object> value)
     {
-      if (value.Key == "Microsoft.AspNetCore.Diagnostics.UnhandledException")
+      if (value.Key == ExceptionHandlerMiddlewareKey
+        || value.Key == DeveloperExceptionPageMiddleware)
       {
         lock (_clientLock)
         {

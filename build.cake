@@ -9,7 +9,6 @@ var configuration = Argument("configuration", "Release");
 
 var tests = new[] {"Bugsnag.Tests", "Bugsnag.AspNet.Tests"};
 var projects = new[] {"Bugsnag", "Bugsnag.AspNet", "Bugsnag.AspNet.Core", "Bugsnag.AspNet.Mvc", "Bugsnag.ConfigurationSection"};
-
 var examples = GetSubDirectories("./examples");
 
 Task("Clean")
@@ -64,10 +63,9 @@ Task("PopulateExamplePackages")
   .IsDependentOn("Pack")
   .Does(() =>
 {
-      var packages = new DirectoryPath("./packages");
-      foreach (var directory in GetSubDirectories("./examples"))
+      foreach (var directory in examples)
       {
-          CopyDirectory(packages, directory.Combine(new DirectoryPath("packages")));
+          CopyDirectory(nugetPackageOutput, directory.Combine(new DirectoryPath("packages")));
       }
 });
 

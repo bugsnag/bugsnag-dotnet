@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ namespace Bugsnag.AspNet.Core
       _next = requestDelegate;
     }
 
-    public async Task Invoke(HttpContext context, IClient client, Microsoft.Extensions.Configuration.IConfiguration root)
+    public async Task Invoke(HttpContext context, IClient client)
     {
       try
       {
