@@ -14,28 +14,56 @@ namespace Bugsnag.ConfigurationSection
       get { return _configuration; }
     }
 
-    [ConfigurationProperty("apiKey", IsRequired = true)]
+    private const string apiKey = "apiKey";
+
+    [ConfigurationProperty(apiKey, IsRequired = true)]
     public string ApiKey
     {
-      get { return this["apiKey"] as string; }
+      get { return this[apiKey] as string; }
     }
 
-    [ConfigurationProperty("appType", IsRequired = false)]
+    private const string appType = "appType";
+
+    [ConfigurationProperty(appType, IsRequired = false)]
     public string AppType
     {
-      get { return this["appType"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[appType].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[appType] as string;
+          default:
+            return null;
+        }
+      }
     }
 
-    [ConfigurationProperty("appVersion", IsRequired = false)]
+    private const string appVersion = "appVersion";
+
+    [ConfigurationProperty(appVersion, IsRequired = false)]
     public string AppVersion
     {
-      get { return this["appVersion"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[appVersion].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[appVersion] as string;
+          default:
+            return null;
+        }
+      }
     }
 
-    [ConfigurationProperty("endpoint", IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultEndpoint)]
+    private const string endpoint = "endpoint";
+
+    [ConfigurationProperty(endpoint, IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultEndpoint)]
     private string InternalEndpoint
     {
-      get { return this["endpoint"] as string; }
+      get { return this[endpoint] as string; }
     }
 
     public Uri Endpoint
@@ -43,10 +71,22 @@ namespace Bugsnag.ConfigurationSection
       get { return new Uri(InternalEndpoint); }
     }
 
-    [ConfigurationProperty("notifyReleaseStages", IsRequired = false)]
+    private const string notifyReleaseStages = "notifyReleaseStages";
+
+    [ConfigurationProperty(notifyReleaseStages, IsRequired = false)]
     private string InternalNotifyReleaseStages
     {
-      get { return this["notifyReleaseStages"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[notifyReleaseStages].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[notifyReleaseStages] as string;
+          default:
+            return null;
+        }
+      }
     }
 
     public string[] NotifyReleaseStages
@@ -62,16 +102,40 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    [ConfigurationProperty("releaseStage", IsRequired = false)]
+    private const string releaseStage = "releaseStage";
+
+    [ConfigurationProperty(releaseStage, IsRequired = false)]
     public string ReleaseStage
     {
-      get { return this["releaseStage"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[releaseStage].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[releaseStage] as string;
+          default:
+            return null;
+        }
+      }
     }
 
-    [ConfigurationProperty("projectRoots", IsRequired = false)]
+    private const string projectRoots = "projectRoots";
+
+    [ConfigurationProperty(projectRoots, IsRequired = false)]
     private string InternalProjectRoots
     {
-      get { return this["projectRoots"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[projectRoots].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[projectRoots] as string;
+          default:
+            return null;
+        }
+      }
     }
 
     public string[] ProjectRoots
@@ -87,10 +151,22 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    [ConfigurationProperty("projectNamespaces", IsRequired = false)]
+    private const string projectNamespaces = "projectNamespaces";
+
+    [ConfigurationProperty(projectNamespaces, IsRequired = false)]
     private string InternalProjectNamespaces
     {
-      get { return this["projectNamespaces"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[projectNamespaces].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[projectNamespaces] as string;
+          default:
+            return null;
+        }
+      }
     }
 
     public string[] ProjectNamespaces
@@ -106,10 +182,22 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
+    private const string ignoreClasses = "ignoreClasses";
+
     [ConfigurationProperty("ignoreClasses", IsRequired = false)]
     private string InternalIgnoreClasses
     {
-      get { return this["ignoreClasses"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[ignoreClasses].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[ignoreClasses] as string;
+          default:
+            return null;
+        }
+      }
     }
 
     public string[] IgnoreClasses
@@ -125,10 +213,22 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    [ConfigurationProperty("metadataFilters", IsRequired = false)]
+    private const string metadataFilters = "metadataFilters";
+
+    [ConfigurationProperty(metadataFilters, IsRequired = false)]
     private string InternalMetadataFilters
     {
-      get { return this["metadataFilters"] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[metadataFilters].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[metadataFilters] as string;
+          default:
+            return null;
+        }
+      }
     }
 
     public string[] MetadataFilters
@@ -144,17 +244,24 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    [ConfigurationProperty("metadata", IsRequired = false)]
+    private const string metadata = "metadata";
+
+    [ConfigurationProperty(metadata, IsRequired = false)]
     private GlobalMetadataCollection InternalGlobalMetadata
     {
-      get { return (GlobalMetadataCollection)this["metadata"]; }
+      get { return (GlobalMetadataCollection)this[metadata]; }
     }
 
     public KeyValuePair<string, string>[] GlobalMetadata
     {
       get
       {
-        return InternalGlobalMetadata.Cast<GlobalMetadataItem>().Select(i => new KeyValuePair<string, string>(i.Key, i.Value)).ToArray();
+        if (InternalGlobalMetadata.Count > 0)
+        {
+          return InternalGlobalMetadata.Cast<GlobalMetadataItem>().Select(i => new KeyValuePair<string, string>(i.Key, i.Value)).ToArray();
+        }
+
+        return null;
       }
     }
 
@@ -181,19 +288,23 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    [ConfigurationProperty("trackSessions", IsRequired = false, DefaultValue = true)]
+    private const string trackSessions = "trackSessions";
+
+    [ConfigurationProperty(trackSessions, IsRequired = false, DefaultValue = true)]
     public bool TrackSessions
     {
       get
       {
-        return (bool)this["trackSessions"];
+        return (bool)this[trackSessions];
       }
     }
 
-    [ConfigurationProperty("sessionsEndpoint", IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultSessionEndpoint)]
+    private const string sessionsEndpoint = "sessionsEndpoint";
+
+    [ConfigurationProperty(sessionsEndpoint, IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultSessionEndpoint)]
     private string InternalSessionEndpoint
     {
-      get { return this["sessionsEndpoint"] as string; }
+      get { return this[sessionsEndpoint] as string; }
     }
 
     public Uri SessionEndpoint

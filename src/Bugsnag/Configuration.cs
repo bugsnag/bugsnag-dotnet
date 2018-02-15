@@ -20,6 +20,7 @@ namespace Bugsnag
       Endpoint = new Uri(DefaultEndpoint);
       SessionEndpoint = new Uri(DefaultSessionEndpoint);
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
+      MetadataFilters = new[] { "password", "Authorization" };
     }
 
     public string ApiKey { get; set; }

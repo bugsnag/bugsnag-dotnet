@@ -114,7 +114,12 @@ namespace Bugsnag
       {
         // should this be applied to the whole report? We should probably focus it to specific sections
         // of the payload
-        report.FilterPayload(configuration.MetadataFilters);
+        foreach (var @event in report.Events)
+        {
+          @event.App.FilterPayload(configuration.MetadataFilters);
+          @event.Device.FilterPayload(configuration.MetadataFilters);
+          @event.Metadata.FilterPayload(configuration.MetadataFilters);
+        }
       }
     };
   }

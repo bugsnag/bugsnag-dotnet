@@ -42,6 +42,16 @@ namespace Bugsnag.Payload
       set { this.AddToPayload("groupingHash", value); }
     }
 
+    public App App
+    {
+      get { return this.Get("app") as App; }
+    }
+
+    public Device Device
+    {
+      get { return this.Get("device") as Device; }
+    }
+
     public Metadata Metadata
     {
       get { return this.Get("metaData") as Metadata; }
