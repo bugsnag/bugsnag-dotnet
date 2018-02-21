@@ -1,14 +1,14 @@
-﻿#if NET45
-using System.Web;
-
 namespace Bugsnag.AspNet
 {
   public static class HttpModuleAutoLoad
   {
     public static void Attach()
     {
-      HttpApplication.RegisterModule(typeof(HttpModule));
+#if NET45
+      System.Web.HttpApplication.RegisterModule(typeof(HttpModule));
+#elif NET40
+      Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility.RegisterModule(typeof(HttpModule));
+#endif
     }
   }
 }
-#endif

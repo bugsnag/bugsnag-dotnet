@@ -1,11 +1,10 @@
 using System;
-#if NET45
-using System.Security;
+#if NET45 || NET40
 using System.Web;
 #endif
 
-[assembly: CLSCompliant(false)]
+[assembly: CLSCompliant(true)]
 
-#if NET45
+#if NET45 || NET40
 [assembly: PreApplicationStartMethod(typeof(Bugsnag.AspNet.HttpModuleAutoLoad), "Attach")]
 #endif

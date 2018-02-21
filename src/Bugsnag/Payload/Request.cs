@@ -1,37 +1,20 @@
-using System;
 using System.Collections.Generic;
 
 namespace Bugsnag.Payload
 {
   /// <summary>
-  /// Allows capturing the various keys that the Bugsnag error reporting API
-  /// supports between various web frameworks.
-  /// </summary>
-  public interface IHttpRequest
-  {
-    string ClientIp { get; }
-
-    IDictionary<string, string> Headers { get; }
-
-    string HttpMethod { get; }
-
-    string Url { get; }
-
-    string Referer { get; }
-  }
-
-  /// <summary>
   /// Represents the "request" key in the error report payload.
   /// </summary>
   public class Request : Dictionary<string, object>
   {
-    public Request(IHttpRequest request)
-    {
-      this.AddToPayload("clientIp", request.ClientIp);
-      this.AddToPayload("headers", request.Headers);
-      this.AddToPayload("httpMethod", request.HttpMethod);
-      this.AddToPayload("url", request.Url);
-      this.AddToPayload("referer", request.Referer);
-    }
+    public string ClientIp { get { return this.Get("clientIp") as string; } set { this.AddToPayload("clientIp", value); } }
+
+    public IDictionary<string, string> Headers { get { return this.Get("headers") as IDictionary<string, string>; } set { this.AddToPayload("headers", value); } }
+
+    public string HttpMethod { get { return this.Get("httpMethod") as string; } set { this.AddToPayload("httpMethod", value); } }
+
+    public string Url { get { return this.Get("url") as string; } set { this.AddToPayload("url", value); } }
+
+    public string Referer { get { return this.Get("referer") as string; } set { this.AddToPayload("referer", value); } }
   }
 }

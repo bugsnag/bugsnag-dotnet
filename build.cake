@@ -1,14 +1,9 @@
 #tool "nuget:?package=xunit.runner.console"
 
 var target = Argument("target", "Default");
-
 // this can be changed once we are pushing the nuget packages up
 var nugetPackageOutput = MakeAbsolute(Directory("./packages"));
-
 var configuration = Argument("configuration", "Release");
-
-var tests = new[] {"Bugsnag.Tests", "Bugsnag.AspNet.Tests"};
-var projects = new[] {"Bugsnag", "Bugsnag.AspNet", "Bugsnag.AspNet.Core", "Bugsnag.AspNet.Mvc", "Bugsnag.ConfigurationSection"};
 var examples = GetSubDirectories("./examples");
 
 Task("Clean")
@@ -37,26 +32,20 @@ Task("Build")
 Task("Test")
   .IsDependentOn("Build")
   .Does(() => {
-    foreach (var test in tests)
-    {
-      XUnit2($"./tests/{test}/bin/{configuration}/net461/win10-x64/{test}.dll");
-    }
-    });
+    XUnit2(GetFiles($"./tests/**/bin/{configuration}/**/*.Tests.dll"));
+  });
 
 Task("Pack")
   .IsDependentOn("Test")
   .Does(() =>
 {
-    foreach(var project in projects)
-    {
-      MSBuild($"./src/{project}/{project}.csproj", settings =>
-        settings
-          .SetVerbosity(Verbosity.Minimal)
-          .WithTarget("pack")
-          .SetConfiguration("Release")
-          .WithProperty("IncludeSymbols", "true")
-          .WithProperty("PackageOutputPath", nugetPackageOutput.FullPath));
-    }
+  MSBuild("./Bugsnag.sln", settings =>
+    settings
+      .SetVerbosity(Verbosity.Minimal)
+      .WithTarget("pack")
+      .SetConfiguration("Release")
+      .WithProperty("IncludeSymbols", "true")
+      .WithProperty("PackageOutputPath", nugetPackageOutput.FullPath));
 });
 
 Task("PopulateExamplePackages")
@@ -73,13 +62,31 @@ Task("BuildExamples")
   .IsDependentOn("PopulateExamplePackages")
   .Does(() =>
 {
-      foreach (var example in examples)
+      var failures = examples.AsParallel().Select(e => {
+        IEnumerable<string> stdOut;
+        IEnumerable<string> errOut;
+        var settings = new ProcessSettings { Arguments = "build", WorkingDirectory = e, RedirectStandardOutput = true, RedirectStandardError = true };
+        var exitCode = StartProcess("docker-compose", settings, out stdOut, out errOut);
+        Information("docker-compose build {0}", e);
+        return new { ExitCode = exitCode, StdOutput = stdOut, ErrOutput = errOut, Example = e };
+      }).Where(o => o.ExitCode != 0).ToArray();
+
+      foreach (var failure in failures)
       {
-        var docker = StartProcess("docker-compose", new ProcessSettings { Arguments = "build", WorkingDirectory = example });
-        if (docker != 0)
+        Error(failure.Example);
+        foreach (var output in failure.StdOutput)
         {
-          throw new Exception("docker build failed");
+          Error(output);
         }
+        foreach (var output in failure.ErrOutput)
+        {
+          Error(output);
+        }
+      }
+
+      if (failures.Any())
+      {
+        throw new Exception("Failed to build examples");
       }
 });
 

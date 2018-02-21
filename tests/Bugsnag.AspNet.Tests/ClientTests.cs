@@ -23,7 +23,7 @@ namespace Bugsnag.AspNet.Tests
 
       server.Start();
 
-      var client = new Client(new Bugsnag.Configuration("123456") { Endpoint = server.Endpoint });
+      var client = new Bugsnag.Client(new Bugsnag.Configuration("123456") { Endpoint = server.Endpoint });
 
       try
       {
@@ -72,7 +72,7 @@ namespace Bugsnag.AspNet.Tests
     [Fact]
     public void ContextIsSet()
     {
-      Assert.Contains("\"context\":\"https://www.bugsnag.com\"", _request);
+      Assert.Contains("\"context\":\"https://www.bugsnag.com/\"", _request);
     }
 
     class BugsnagHttpContext : HttpContextBase

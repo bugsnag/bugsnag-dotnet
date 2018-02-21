@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Bugsnag.AspNet.Core;
+using Bugsnag;
 
 namespace aspnetcore11_mvc.Controllers
 {

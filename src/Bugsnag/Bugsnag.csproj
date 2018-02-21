@@ -2,17 +2,7 @@
   <PropertyGroup>
     <PackageId>Bugsnag</PackageId>
     <Title>Bugsnag .NET Notifier</Title>
-    <Authors>snmaynard kattrali martin308</Authors>
-    <Version>2.0.0-alpha</Version>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/bugsnag/bugsnag-dotnet</PackageProjectUrl>
-    <PackageIconUrl>https://dbd6j53uzcole.cloudfront.net/assets/images/website/logo-mark.0b14965b.png</PackageIconUrl>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TargetFrameworks>net35;net40;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
-    <DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' != 'netstandard1.3' AND '$(TargetFramework)' != 'netstandard2.0'">true</DisableImplicitFrameworkReferences>
-    <LangVersion>7.1</LangVersion>
-    <WarningsAsErrors />
-    <NoWarn />
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
     <Reference Include="System" />

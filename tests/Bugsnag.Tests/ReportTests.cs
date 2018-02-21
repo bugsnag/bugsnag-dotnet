@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Bugsnag.Payload;
 using Xunit;
 
@@ -21,7 +20,7 @@ namespace Bugsnag.Tests
         exception = caughtException;
       }
 
-      var report = new Report(configuration, exception, Bugsnag.Payload.Severity.ForHandledException(), new List<Breadcrumb> { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session());
+      var report = new Report(configuration, exception, Bugsnag.Payload.Severity.ForHandledException(), new Breadcrumb[] { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session(), new Request());
       Assert.NotNull(report);
     }
   }

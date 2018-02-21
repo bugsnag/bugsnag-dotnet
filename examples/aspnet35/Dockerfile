@@ -11,12 +11,13 @@ ENV ROSLYN_COMPILER_LOCATION "C:\Program Files (x86)\Microsoft Visual Studio\201
 
 WORKDIR /app
 
-COPY packages ./package-source
-COPY Bugsnag.Sample.AspNet35/ /app
-
+WORKDIR /app
+COPY packages.config nuget.config ./
+COPY packages ./packages
 RUN ["nuget.exe", "restore", "packages.config", "-PackagesDirectory", "packages"]
 
-RUN ["msbuild.exe", "Bugsnag.Sample.AspNet35.sln", "/p:DeployOnBuild=true", "/p:PublishProfile=FolderProfile.pubxml"]
+COPY . .
+RUN msbuild.exe /t:Build /p:DeployOnBuild=true /p:PublishProfile=FolderProfile.pubxml
 
 FROM microsoft/aspnet:3.5
 

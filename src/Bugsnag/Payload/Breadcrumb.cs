@@ -16,18 +16,18 @@ namespace Bugsnag.Payload
     /// <returns></returns>
     public static Breadcrumb FromReport(Report report)
     {
-      if (report.Context.OriginalException != null)
+      if (report.OriginalException != null)
       {
-        var name = report.Context.OriginalException.GetType().ToString();
+        var name = report.OriginalException.GetType().ToString();
         var type = BreadcrumbType.Error;
         var metadata = new Dictionary<string, string>
           {
-            { "message", report.Context.OriginalException.Message },
+            { "message", report.OriginalException.Message },
           };
 
-        if (report.Context.OriginalSeverity != null)
+        if (report.OriginalSeverity != null)
         {
-          metadata["severity"] = report.Context.OriginalSeverity.ToString();
+          metadata["severity"] = report.OriginalSeverity.ToString();
         }
 
         return new Breadcrumb(name, type, metadata);

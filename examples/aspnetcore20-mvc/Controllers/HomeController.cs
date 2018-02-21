@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using aspnetcore20_mvc.Models;
-using Bugsnag.AspNet.Core;
+using Bugsnag;
 
 namespace aspnetcore20_mvc.Controllers
 {

@@ -122,5 +122,16 @@ namespace Bugsnag
         }
       }
     };
+
+    public static Middleware DetermineDefaultContext = (configuration, report) =>
+    {
+      foreach (var @event in report.Events)
+      {
+        if (@event.Request != null)
+        {
+          @event.Context = @event.Request.Url;
+        }
+      }
+    };
   }
 }

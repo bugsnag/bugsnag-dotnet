@@ -1,4 +1,3 @@
-using System.Linq;
 using Bugsnag.Payload;
 using Xunit;
 
@@ -12,10 +11,11 @@ namespace Bugsnag.Tests.Payload
       var configuration = new Configuration("123456");
       var exception = new System.DllNotFoundException();
       var severity = Bugsnag.Payload.Severity.ForUnhandledException();
-      var breadcrumbs = Enumerable.Empty<Breadcrumb>();
+      var breadcrumbs = new Breadcrumb[0];
       var session = new Session();
+      var request = new Request();
 
-      var @event = new Report(configuration, exception, severity, breadcrumbs, session);
+      var @event = new Report(configuration, exception, severity, breadcrumbs, session, request);
 
       Assert.Equal(configuration.ApiKey, @event["apiKey"]);
       Assert.NotNull(@event["notifier"]);

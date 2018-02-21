@@ -1,25 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <PackageId>Bugsnag.ConfigurationSection</PackageId>
     <Title>Bugsnag .NET ASP.NET Notifier</Title>
-    <Authors>snmaynard kattrali martin308</Authors>
-    <Version>2.0.0-alpha</Version>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/bugsnag/bugsnag-dotnet</PackageProjectUrl>
-    <PackageIconUrl>https://dbd6j53uzcole.cloudfront.net/assets/images/website/logo-mark.0b14965b.png</PackageIconUrl>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TargetFrameworks>net35;net45</TargetFrameworks>
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-    <LangVersion>7.1</LangVersion>
-    <WarningsAsErrors />
-    <NoWarn />
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />

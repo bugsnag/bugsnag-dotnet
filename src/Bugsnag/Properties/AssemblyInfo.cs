@@ -3,4 +3,4 @@ using System;
 using System.Security;
 #endif
 
-[assembly: CLSCompliant(false)]
+[assembly: CLSCompliant(true)]

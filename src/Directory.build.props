@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <Authors>snmaynard kattrali martin308</Authors>
+    <Version>2.0.0-alpha</Version>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/bugsnag/bugsnag-dotnet</PackageProjectUrl>
+    <PackageIconUrl>https://dbd6j53uzcole.cloudfront.net/assets/images/website/logo-mark.0b14965b.png</PackageIconUrl>
+    <DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' != 'netstandard1.3' AND '$(TargetFramework)' != 'netstandard2.0'">true</DisableImplicitFrameworkReferences>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>7.1</LangVersion>
+    <WarningsAsErrors />
+    <NoWarn />
+  </PropertyGroup>
+</Project>

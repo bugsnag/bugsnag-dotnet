@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Bugsnag.Payload
 {
@@ -11,13 +9,9 @@ namespace Bugsnag.Payload
 
     private readonly KeyValuePair<string, string>[] _headers;
 
-    private readonly ReportContext _reportContext;
+    private readonly System.Exception _originalException;
 
-    public Report(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs, Session session)
-      : this(configuration, exception, severity, breadcrumbs, session, new ReportContext(exception, severity))
-    {
-
-    }
+    private readonly Severity _originalSeverity;
 
     /// <summary>
     /// Represents an error report that can be sent to the Bugsnag error notification endpoint.
@@ -26,9 +20,8 @@ namespace Bugsnag.Payload
     /// <param name="exception"></param>
     /// <param name="severity"></param>
     /// <param name="breadcrumbs"></param>
-    public Report(IConfiguration configuration, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs, Session session, ReportContext context)
+    public Report(IConfiguration configuration, System.Exception exception, Severity severity, Breadcrumb[] breadcrumbs, Session session, Request request)
     {
-      _reportContext = context;
       Deliver = true;
       Endpoint = configuration.Endpoint;
       _headers = new KeyValuePair<string, string>[] {
@@ -36,13 +29,16 @@ namespace Bugsnag.Payload
         new KeyValuePair<string, string>(Payload.Headers.PayloadVersionHeader, _payloadVersion),
       };
 
+      _originalException = exception;
+      _originalSeverity = severity;
+
       this.AddToPayload("apiKey", configuration.ApiKey);
       this.AddToPayload("notifier", NotifierInfo.Instance);
 
       var app = new App(configuration);
       var device = new Device();
 
-      this.AddToPayload("events", new[] { new Event(_payloadVersion, app, device, exception, severity, breadcrumbs, session) });
+      this.AddToPayload("events", new[] { new Event(_payloadVersion, app, device, exception, severity, breadcrumbs, session, request) });
     }
 
     /// <summary>
@@ -58,11 +54,9 @@ namespace Bugsnag.Payload
     /// </summary>
     public IEnumerable<Event> Events { get { return this.Get("events") as IEnumerable<Event>; } }
 
-    /// <summary>
-    /// Additional context for the report that can be used to perform
-    /// additional processing on the report.
-    /// </summary>
-    public ReportContext Context { get { return _reportContext; } }
+    public System.Exception OriginalException => _originalException;
+
+    public Severity OriginalSeverity => _originalSeverity;
 
     /// <summary>
     /// Convenience method for setting the User on 'all' of the events in the

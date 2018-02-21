@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Bugsnag.Payload;
 using Bugsnag.SessionTracking;
 
 namespace Bugsnag
 {
-  public class Client
+  public class Client : IClient
   {
     private readonly IConfiguration _configuration;
 
@@ -25,6 +26,7 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.RemoveProjectRoots,
       Bugsnag.InternalMiddleware.DetectInProjectNamespaces,
       Bugsnag.InternalMiddleware.AttachGlobalMetadata,
+      Bugsnag.InternalMiddleware.DetermineDefaultContext,
     };
 
     public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new InMemoryBreadcrumbs(), new InMemorySessionTracker(configuration)) // wrong!
@@ -57,26 +59,46 @@ namespace Bugsnag
       }
     }
 
-    protected virtual List<Middleware> InternalMiddleware { get; } = new List<Middleware>(DefaultInternalMiddleware);
+    protected Middleware[] InternalMiddleware => DefaultInternalMiddleware;
 
     public void Notify(System.Exception exception)
     {
-      Notify(exception, Payload.Severity.ForHandledException());
+      Notify(exception, (Request)null);
+    }
+
+    public void Notify(System.Exception exception, Request request)
+    {
+      Notify(exception, Payload.Severity.ForHandledException(), request);
     }
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      Notify(exception, Payload.Severity.ForUserSpecifiedSeverity(severity));
+      Notify(exception, severity, null);
+    }
+
+    public void Notify(System.Exception exception, Severity severity, Request request)
+    {
+      Notify(exception, Payload.Severity.ForUserSpecifiedSeverity(severity), request);
     }
 
     public void AutoNotify(System.Exception exception)
     {
-      Notify(exception, Payload.Severity.ForUnhandledException());
+      AutoNotify(exception, (Request)null);
+    }
+
+    public void AutoNotify(System.Exception exception, Request request)
+    {
+      Notify(exception, Payload.Severity.ForUnhandledException(), request);
     }
 
     public void Notify(System.Exception exception, Payload.Severity severity)
     {
-      var report = new Report(_configuration, exception, severity, Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+      Notify(exception, severity, null);
+    }
+
+    public void Notify(System.Exception exception, Payload.Severity severity, Request request)
+    {
+      var report = new Report(_configuration, exception, severity, Breadcrumbs.Retrieve().ToArray(), SessionTracking.CurrentSession, request);
 
       Notify(report);
     }

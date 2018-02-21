@@ -6,26 +6,6 @@ namespace Bugsnag.AspNet
 {
   public class HttpModule : IHttpModule
   {
-    private static Client _client;
-
-    private static readonly object _lock = new object();
-
-    private Client Client
-    {
-      get
-      {
-        lock (_lock)
-        {
-          if (_client == null)
-          {
-            _client = new Client();
-          }
-        }
-
-        return _client;
-      }
-    }
-
     public void Dispose()
     {
     }
@@ -46,7 +26,7 @@ namespace Bugsnag.AspNet
     {
       try
       {
-        Client.AutoNotify(exception, httpContext);
+        Bugsnag.Singleton.Client.AutoNotify(exception, httpContext);
       }
       catch (Exception internalException)
       {

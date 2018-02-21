@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
