@@ -3,6 +3,8 @@
 
 The Bugsnag Notifier for .NET gives you instant notification of exceptions thrown from your ASP.NET MVC, WPF, Web API or other .NET applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.
 
+Learn more about [exception monitoring and reporting](https://www.bugsnag.com/) with Bugsnag.
+
 ## Features
 
 * Automatically report unhandled exceptions and crashes
@@ -13,22 +15,22 @@ The Bugsnag Notifier for .NET gives you instant notification of exceptions throw
 
 ## Getting started
 
-1. [Create a Bugsnag account](https://bugsnag.com)
+1. [Create a Bugsnag account](https://www.bugsnag.com)
 2. Complete the instructions in the integration guide for your framework:
-    * [ASP.NET](http://docs.bugsnag.com/platforms/dotnet/asp-net)
-    * [Web API](http://docs.bugsnag.com/platforms/dotnet/web-api)
-    * [WPF](http://docs.bugsnag.com/platforms/dotnet/wpf)
-    * [Other .NET apps](http://docs.bugsnag.com/platforms/dotnet/other)
+    * [ASP.NET](https://docs.bugsnag.com/platforms/dotnet/asp-net)
+    * [Web API](https://docs.bugsnag.com/platforms/dotnet/web-api)
+    * [WPF](https://docs.bugsnag.com/platforms/dotnet/wpf)
+    * [Other .NET apps](https://docs.bugsnag.com/platforms/dotnet/other)
 3. Relax!
 
 
 ## Support
 
 * Read the configuration reference:
-    * [ASP.NET](http://docs.bugsnag.com/platforms/dotnet/asp-net/configuration-options/)
-    * [Web API](http://docs.bugsnag.com/platforms/dotnet/web-api/configuration-options/)
-    * [WPF](http://docs.bugsnag.com/platforms/dotnet/wpf/configuration-options/)
-    * [Other .NET apps](http://docs.bugsnag.com/platforms/dotnet/other/configuration-options/)
+    * [ASP.NET](https://docs.bugsnag.com/platforms/dotnet/asp-net/configuration-options/)
+    * [Web API](https://docs.bugsnag.com/platforms/dotnet/web-api/configuration-options/)
+    * [WPF](https://docs.bugsnag.com/platforms/dotnet/wpf/configuration-options/)
+    * [Other .NET apps](https://docs.bugsnag.com/platforms/dotnet/other/configuration-options/)
 * [Search open and closed issues](https://github.com/bugsnag/bugsnag-dotnet/issues?utf8=✓&q=is%3Aissue) for similar problems
 * [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-dotnet/issues/new)
 
