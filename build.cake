@@ -9,6 +9,9 @@ var examples = GetSubDirectories("./examples");
 Task("Clean")
     .Does(() =>
 {
+    CleanDirectories("./**/bin");
+    CleanDirectories("./**/obj");
+    CleanDirectories("./**/packages");
     CleanDirectory(nugetPackageOutput);
 });
 
@@ -43,7 +46,7 @@ Task("Pack")
     settings
       .SetVerbosity(Verbosity.Minimal)
       .WithTarget("pack")
-      .SetConfiguration("Release")
+      .SetConfiguration(configuration)
       .WithProperty("IncludeSymbols", "true")
       .WithProperty("PackageOutputPath", nugetPackageOutput.FullPath));
 });
