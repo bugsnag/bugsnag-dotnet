@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Bugsnag
 {
@@ -9,12 +10,14 @@ namespace Bugsnag
   /// </summary>
   public interface ITransport
   {
-    void Send(ITransportablePayload payload);
+    void Send(IPayload payload);
   }
 
-  public interface ITransportablePayload : IDictionary
+  public interface IPayload : IDictionary
   {
     Uri Endpoint { get; }
+
+    IWebProxy Proxy { get; }
 
     KeyValuePair<string, string>[] Headers { get; }
   }

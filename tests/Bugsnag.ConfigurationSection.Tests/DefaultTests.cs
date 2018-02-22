@@ -81,5 +81,11 @@ namespace Bugsnag.ConfigurationSection.Tests
     {
       Assert.NotNull(Configuration.Settings.SessionEndpoint);
     }
+
+    [Fact]
+    public void ProxyIsNull()
+    {
+      Assert.Null(Configuration.Settings.Proxy);
+    }
   }
 }

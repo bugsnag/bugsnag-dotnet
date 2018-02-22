@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
 
 namespace Bugsnag.ConfigurationSection
 {
@@ -315,6 +316,30 @@ namespace Bugsnag.ConfigurationSection
     public TimeSpan SessionTrackingInterval
     {
       get { return TimeSpan.FromSeconds(60); }
+    }
+
+    private const string proxyAddress = "proxyAddress";
+
+    [ConfigurationProperty(proxyAddress, IsRequired = false)]
+    private string ProxyAddress
+    {
+      get { return this[proxyAddress] as string; }
+    }
+
+    public IWebProxy Proxy
+    {
+      get
+      {
+        try
+        {
+          // we should probably store this so we don't try to create a new one each time this is accessed
+          return new WebProxy(ProxyAddress);
+        }
+        catch (UriFormatException)
+        {
+          return null;
+        }
+      }
     }
   }
 }

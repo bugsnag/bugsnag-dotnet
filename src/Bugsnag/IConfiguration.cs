@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Bugsnag
 {
@@ -79,5 +80,7 @@ namespace Bugsnag
     /// Used to determine how often to flush session data to Bugsnag.
     /// </summary>
     TimeSpan SessionTrackingInterval { get; }
+
+    IWebProxy Proxy { get; }
   }
 }

@@ -6,26 +6,26 @@ using System.Threading;
 
 namespace Bugsnag
 {
-  public class Transport
+  public class WebRequest
   {
     private class TransportState
     {
       public AsyncCallback Callback { get; private set; }
 
-      public object State { get; private set; }
+      public object OriginalState { get; private set; }
 
       public Uri Endpoint { get; private set; }
 
       public byte[] Report { get; private set; }
 
-      public WebRequest Request { get; private set; }
+      public System.Net.WebRequest Request { get; private set; }
 
       public HttpWebResponse Response { get; set; }
 
-      public TransportState(AsyncCallback callback, object state, Uri endpoint, byte[] report, WebRequest request)
+      public TransportState(AsyncCallback callback, object state, Uri endpoint, byte[] report, System.Net.WebRequest request)
       {
         Callback = callback;
-        State = state;
+        OriginalState = state;
         Endpoint = endpoint;
         Report = report;
         Request = request;
@@ -38,25 +38,31 @@ namespace Bugsnag
 
       public WaitHandle AsyncWaitHandle { get { return _innerAsyncResult.AsyncWaitHandle; } }
 
-      public object AsyncState { get { return _state; } }
+      public object AsyncState => TransportState.OriginalState;
 
       public bool CompletedSynchronously { get { return _innerAsyncResult.CompletedSynchronously; } }
 
-      private readonly IAsyncResult _innerAsyncResult;
-      private readonly object _state;
+      public TransportState TransportState => _transportState;
 
-      public TransportAsyncResult(IAsyncResult innerAsyncResult, object state)
+      private readonly IAsyncResult _innerAsyncResult;
+      private readonly TransportState _transportState;
+
+      public TransportAsyncResult(IAsyncResult innerAsyncResult, TransportState transportState)
       {
         _innerAsyncResult = innerAsyncResult;
-        _state = state;
+        _transportState = transportState;
       }
     }
 
-    public IAsyncResult BeginSend(Uri endpoint, KeyValuePair<string, string>[] headers, byte[] report, AsyncCallback callback, object state)
+    public IAsyncResult BeginSend(Uri endpoint, IWebProxy proxy, KeyValuePair<string, string>[] headers, byte[] report, AsyncCallback callback, object state)
     {
-      var request = WebRequest.Create(endpoint);
+      var request = System.Net.WebRequest.Create(endpoint);
       request.Method = "POST";
       request.ContentType = "application/json";
+      if (proxy != null)
+      {
+        request.Proxy = proxy;
+      }
       if (headers != null)
       {
         foreach (var header in headers)
@@ -67,21 +73,18 @@ namespace Bugsnag
       request.Headers["Bugsnag-Sent-At"] = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
       var internalState = new TransportState(callback, state, endpoint, report, request);
       var asyncResult = request.BeginGetRequestStream(new AsyncCallback(WriteCallback), internalState);
-      return new TransportAsyncResult(asyncResult, state);
+      return new TransportAsyncResult(asyncResult, internalState);
     }
 
-    public HttpStatusCode EndSend(IAsyncResult asyncResult)
+    public WebResponse EndSend(IAsyncResult asyncResult)
     {
-      var state = (TransportState)asyncResult.AsyncState;
+      if (asyncResult is TransportAsyncResult result)
+      {
+        var statusCode = result.TransportState.Response.StatusCode;
+        return new WebResponse(statusCode);
+      }
 
-      if (state.Response != null)
-      {
-        return state.Response.StatusCode;
-      }
-      else
-      {
-        return 0;
-      }
+      return null;
     }
 
     private void ReadCallback(IAsyncResult asynchronousResult)
@@ -121,5 +124,17 @@ namespace Bugsnag
 
       state.Request.BeginGetResponse(new AsyncCallback(ReadCallback), state);
     }
+  }
+
+  public class WebResponse
+  {
+    private readonly HttpStatusCode _httpStatusCode;
+
+    public WebResponse(HttpStatusCode httpStatusCode)
+    {
+      _httpStatusCode = httpStatusCode;
+    }
+
+    public HttpStatusCode HttpStatusCode => _httpStatusCode;
   }
 }

@@ -11,19 +11,16 @@ namespace Bugsnag
     private static ThreadQueueTransport instance = null;
     private static readonly object instanceLock = new object();
 
-    private readonly BlockingQueue<ITransportablePayload> _queue;
+    private readonly BlockingQueue<IPayload> _queue;
 
     private readonly Thread _worker;
-
-    private readonly Transport _transport;
 
     private long _activeRequestCounter;
 
     private ThreadQueueTransport()
     {
       _activeRequestCounter = 0;
-      _transport = new Transport();
-      _queue = new BlockingQueue<ITransportablePayload>();
+      _queue = new BlockingQueue<IPayload>();
       _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
       _worker.Start();
     }
@@ -55,7 +52,8 @@ namespace Bugsnag
           var serializedPayload = payload.Serialize();
           if (serializedPayload != null)
           {
-            _transport.BeginSend(payload.Endpoint, payload.Headers, serializedPayload, ReportCallback, payload);
+            var request = new WebRequest();
+            request.BeginSend(payload.Endpoint, payload.Proxy, payload.Headers, serializedPayload, ReportCallback, request);
           }
         }
         catch (System.Exception exception)
@@ -68,12 +66,18 @@ namespace Bugsnag
 
     private void ReportCallback(IAsyncResult asyncResult)
     {
-      _transport.EndSend(asyncResult);
-      var finishedProcessing = Interlocked.Decrement(ref _activeRequestCounter) == 0;
-      _worker.IsBackground = finishedProcessing;
+      if (asyncResult.AsyncState is WebRequest request)
+      {
+        var response = request.EndSend(asyncResult);
+        if (response != null)
+        {
+          var finishedProcessing = Interlocked.Decrement(ref _activeRequestCounter) == 0;
+          _worker.IsBackground = finishedProcessing;
+        }
+      }
     }
 
-    public void Send(ITransportablePayload payload)
+    public void Send(IPayload payload)
     {
       Interlocked.Increment(ref _activeRequestCounter);
       _queue.Enqueue(payload);

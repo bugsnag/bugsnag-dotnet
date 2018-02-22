@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Bugsnag
 {
@@ -50,5 +51,7 @@ namespace Bugsnag
     public Uri SessionEndpoint { get; set; }
 
     public TimeSpan SessionTrackingInterval { get; set; }
+
+    public IWebProxy Proxy { get; set; }
   }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -27,7 +28,7 @@ namespace Bugsnag.Tests
       Assert.Equal(numberOfRequests, requests.Count());
     }
 
-    private class SamplePayload : Dictionary<string, int>, ITransportablePayload
+    private class SamplePayload : Dictionary<string, int>, IPayload
     {
       public SamplePayload(int count, Uri endpoint)
       {
@@ -36,6 +37,8 @@ namespace Bugsnag.Tests
       }
 
       public Uri Endpoint { get; set; }
+
+      public IWebProxy Proxy { get; set; }
 
       public KeyValuePair<string, string>[] Headers => new KeyValuePair<string, string>[] { };
     }

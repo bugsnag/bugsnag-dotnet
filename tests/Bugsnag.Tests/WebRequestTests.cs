@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Bugsnag.Tests
 {
-  public class TransportTests
+  public class WebRequestTests
   {
     [Fact]
     public async void Test()
@@ -15,13 +15,13 @@ namespace Bugsnag.Tests
       var server = new TestServer(numerOfRequests);
       server.Start();
 
-      var transport = new Transport();
+      var transport = new WebRequest();
 
       var headers = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Test-Header", "wow!") };
 
       var rawPayload = System.Text.Encoding.UTF8.GetBytes($"{{ \"count\": {numerOfRequests} }}");
-      var responseCode = await Task.Factory.FromAsync((callback, state) => transport.BeginSend(server.Endpoint, headers, rawPayload, callback, state), transport.EndSend, null);
-      Assert.Equal(HttpStatusCode.OK, responseCode);
+      var response = await Task.Factory.FromAsync((callback, state) => transport.BeginSend(server.Endpoint, null, headers, rawPayload, callback, state), transport.EndSend, null);
+      Assert.Equal(HttpStatusCode.OK, response.HttpStatusCode);
 
       var requests = await server.Requests();
 
