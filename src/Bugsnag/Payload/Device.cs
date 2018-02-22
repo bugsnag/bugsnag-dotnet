@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Bugsnag.Payload
 {
@@ -15,6 +16,9 @@ namespace Bugsnag.Payload
     public Device(string hostname)
     {
       this.AddToPayload("hostname", hostname);
+      this.AddToPayload("locale", CultureInfo.CurrentCulture.ToString());
+      this.AddToPayload("timezone", TimeZoneInfo.Local.DisplayName);
+      this.AddToPayload("osName", OsName);
     }
 
     /// <summary>
@@ -25,6 +29,18 @@ namespace Bugsnag.Payload
       get
       {
         return Environment.GetEnvironmentVariable("COMPUTERNAME") ?? Environment.GetEnvironmentVariable("HOSTNAME");
+      }
+    }
+
+    private static string OsName
+    {
+      get
+      {
+#if NETSTANDARD1_3 || NETSTANDARD2_0
+        return System.Runtime.InteropServices.RuntimeInformation.OSDescription;
+#else
+        return Environment.OSVersion.VersionString;
+#endif
       }
     }
   }
