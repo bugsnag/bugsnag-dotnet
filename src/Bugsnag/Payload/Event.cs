@@ -25,6 +25,19 @@ namespace Bugsnag.Payload
       }
     }
 
+    public bool IsHandled
+    {
+      get
+      {
+        if (this.Get("unhandled") is bool unhandled)
+        {
+          return !unhandled;
+        }
+
+        return false;
+      }
+    }
+
     public Exception[] Exceptions
     {
       get { return this.Get("exceptions") as Exception[]; }

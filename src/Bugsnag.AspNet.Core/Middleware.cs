@@ -17,6 +17,8 @@ namespace Bugsnag.AspNet.Core
 
     public async Task Invoke(HttpContext context, IClient client)
     {
+      client.SessionTracking.CreateSession();
+
       try
       {
         await _next(context);

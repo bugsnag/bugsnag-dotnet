@@ -11,12 +11,24 @@ namespace Bugsnag.Sample.AspNet35
   {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+      Singleton.Client.Breadcrumbs.Leave("Looks like the page loaded, that's a good start");
     }
 
-    protected void Crash(object sender, EventArgs e)
+    protected void Unhandled(object sender, EventArgs e)
     {
       throw new NotImplementedException();
+    }
+
+    protected void Handled(object sender, EventArgs e)
+    {
+      try
+      {
+        throw new Exception("This could be bad");
+      }
+      catch (Exception exception)
+      {
+        Singleton.Client.Notify(exception);
+      }
     }
   }
 }

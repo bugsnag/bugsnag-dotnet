@@ -1,4 +1,4 @@
-﻿using Bugsnag.Payload;
+using Bugsnag.Payload;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -29,7 +29,7 @@ namespace Bugsnag.SessionTracking
       {
         foreach (var item in _store)
         {
-          sessionData[item.Key] = item.Value;
+          sessionData[item.Key] = new Dictionary<string, long>(item.Value);
           _store[item.Key].Clear();
         }
       }

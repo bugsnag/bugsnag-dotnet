@@ -13,6 +13,12 @@ namespace Bugsnag.AspNet
     public void Init(HttpApplication context)
     {
       context.Error += OnError;
+      context.BeginRequest += OnBeginRequest;
+    }
+
+    private void OnBeginRequest(object sender, EventArgs e)
+    {
+      Bugsnag.Singleton.Client.SessionTracking.CreateSession();
     }
 
     private void OnError(object sender, EventArgs e)

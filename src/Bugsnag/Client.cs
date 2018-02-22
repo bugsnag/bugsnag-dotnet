@@ -139,6 +139,11 @@ namespace Bugsnag
         _transport.Send(report);
 
         Breadcrumbs.Leave(Breadcrumb.FromReport(report));
+
+        if (SessionTracking.CurrentSession != null)
+        {
+          SessionTracking.CurrentSession.AddException(report);
+        }
       }
     }
   }

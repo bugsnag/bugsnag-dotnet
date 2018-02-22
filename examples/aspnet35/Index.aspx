@@ -10,7 +10,8 @@
     <form id="form1" runat="server">
         <div>
           <h1>Bugsnag ASP.NET Sample Application!</h1>
-          <asp:Button runat="server" ID="btn" onClick="Crash" Text="Crash" />
+          <asp:Button runat="server" ID="Button1" onClick="Unhandled" Text="Unhandled Exception" />
+          <asp:Button runat="server" ID="Button2" onClick="Handled" Text="Handled Exception" />
         </div>
     </form>
 </body>

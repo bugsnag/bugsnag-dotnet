@@ -16,7 +16,7 @@ namespace Bugsnag.AspNet.WebApi
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
       var client = new Client(_configuration);
-
+      client.SessionTracking.CreateSession();
       request.UseBugsnagClient(client);
 
       return base.SendAsync(request, cancellationToken);
