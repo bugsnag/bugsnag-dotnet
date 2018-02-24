@@ -1,5 +1,4 @@
 using Bugsnag.Payload;
-using Bugsnag.SessionTracking;
 
 namespace Bugsnag
 {

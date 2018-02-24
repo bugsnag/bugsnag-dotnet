@@ -6,6 +6,48 @@ using System.Threading;
 
 namespace Bugsnag
 {
+  public class Countdown
+  {
+    private readonly object _lock = new object();
+    private int _counter;
+    private readonly ManualResetEvent _resetEvent;
+
+    public Countdown(int initialCount)
+    {
+      _counter = initialCount;
+      _resetEvent = new ManualResetEvent(initialCount == 0);
+    }
+
+    internal void AddCount()
+    {
+      lock (_lock)
+      {
+        _counter++;
+        if (_counter > 0)
+        {
+          _resetEvent.Reset();
+        }
+      }
+    }
+
+    internal void Signal()
+    {
+      lock (_lock)
+      {
+        _counter--;
+        if (_counter <= 0)
+        {
+          _resetEvent.Set();
+        }
+      }
+    }
+
+    internal void Wait(TimeSpan timeout)
+    {
+      _resetEvent.WaitOne(timeout);
+    }
+  }
+
   public class ThreadQueueTransport : ITransport
   {
     private static ThreadQueueTransport instance = null;
@@ -15,14 +57,16 @@ namespace Bugsnag
 
     private readonly Thread _worker;
 
-    private long _activeRequestCounter;
-
     private ThreadQueueTransport()
     {
-      _activeRequestCounter = 0;
       _queue = new BlockingQueue<IPayload>();
-      _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
+      _worker = new Thread(new ThreadStart(ProcessQueue));
       _worker.Start();
+    }
+
+    internal void Stop()
+    {
+      _queue.Wait(TimeSpan.FromSeconds(5));
     }
 
     public static ThreadQueueTransport Instance
@@ -46,7 +90,6 @@ namespace Bugsnag
       while (true)
       {
         var payload = _queue.Dequeue();
-        _worker.IsBackground = false;
         try
         {
           var serializedPayload = payload.Serialize();
@@ -59,7 +102,6 @@ namespace Bugsnag
         catch (System.Exception exception)
         {
           Trace.WriteLine(exception);
-          _worker.IsBackground = true;
         }
       }
     }
@@ -69,27 +111,24 @@ namespace Bugsnag
       if (asyncResult.AsyncState is WebRequest request)
       {
         var response = request.EndSend(asyncResult);
-        if (response != null)
-        {
-          var finishedProcessing = Interlocked.Decrement(ref _activeRequestCounter) == 0;
-          _worker.IsBackground = finishedProcessing;
-        }
+        _queue.Signal();
       }
     }
 
     public void Send(IPayload payload)
     {
-      Interlocked.Increment(ref _activeRequestCounter);
       _queue.Enqueue(payload);
     }
 
     private class BlockingQueue<T>
     {
+      private readonly Countdown _countdown;
       private readonly Queue<T> _queue;
       private readonly object _queueLock;
 
       public BlockingQueue()
       {
+        _countdown = new Countdown(0);
         _queueLock = new object();
         _queue = new Queue<T>();
       }
@@ -98,6 +137,7 @@ namespace Bugsnag
       {
         lock (_queueLock)
         {
+          _countdown.AddCount();
           _queue.Enqueue(item);
           Monitor.Pulse(_queueLock);
         }
@@ -114,6 +154,16 @@ namespace Bugsnag
 
           return _queue.Dequeue();
         }
+      }
+
+      public void Signal()
+      {
+        _countdown.Signal();
+      }
+
+      public void Wait(TimeSpan timeout)
+      {
+        _countdown.Wait(timeout);
       }
     }
   }

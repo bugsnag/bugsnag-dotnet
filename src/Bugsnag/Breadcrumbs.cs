@@ -14,9 +14,17 @@ namespace Bugsnag
     IEnumerable<Breadcrumb> Retrieve();
   }
 
-  public abstract class Breadcrumbs : IBreadcrumbs
+  public class Breadcrumbs : IBreadcrumbs
   {
-    private readonly object _backingStoreLock = new object();
+    private readonly object _lock = new object();
+    private readonly List<Breadcrumb> _breadcrumbs;
+
+    public Breadcrumbs()
+    {
+      _breadcrumbs = new List<Breadcrumb>();
+    }
+
+    private List<Breadcrumb> InternalBreadcrumbs => _breadcrumbs;
 
     public void Leave(string message)
     {
@@ -30,23 +38,21 @@ namespace Bugsnag
 
     public void Leave(Breadcrumb breadcrumb)
     {
-      lock (_backingStoreLock)
+      lock (_lock)
       {
         if (breadcrumb != null)
         {
-          BreadcrumbCollection.Add(breadcrumb);
+          InternalBreadcrumbs.Add(breadcrumb);
         }
       }
     }
 
     public IEnumerable<Breadcrumb> Retrieve()
     {
-      lock (_backingStoreLock)
+      lock (_lock)
       {
-        return BreadcrumbCollection.ToArray();
+        return InternalBreadcrumbs.ToArray();
       }
     }
-
-    protected abstract List<Breadcrumb> BreadcrumbCollection { get; }
   }
 }

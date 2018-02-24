@@ -19,12 +19,17 @@ namespace Bugsnag.AspNet.WebApi
 
     public static void UseBugsnagClient(this HttpRequestMessage request, IClient client)
     {
-      request.Properties["Bugsnag.Client"] = client;
+      request.Properties[Client.HttpContextItemsKey] = client;
     }
 
-    public static IClient BugsnagClient(this HttpRequestMessage request)
+    public static IClient Bugsnag(this HttpRequestMessage request)
     {
-      return request.Properties["Bugsnag.Client"] as IClient;
+      if (request.Properties.ContainsKey(Client.HttpContextItemsKey))
+      {
+        return request.Properties[Client.HttpContextItemsKey] as IClient;
+      }
+
+      return null;
     }
   }
 }

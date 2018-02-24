@@ -1,7 +1,5 @@
 using System;
-#if NET45 || NET40
 using System.Web;
-#endif
 
 [assembly: CLSCompliant(true)]
 

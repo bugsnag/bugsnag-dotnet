@@ -1,4 +1,3 @@
-using Bugsnag.SessionTracking;
 using System;
 using Xunit;
 
@@ -9,7 +8,7 @@ namespace Bugsnag.Tests
     [Fact]
     public void CurrentSessionIsNullWithoutBeingSet()
     {
-      var sessionTracking = new InMemorySessionTracker(new Configuration("123456"));
+      var sessionTracking = new SessionTracker(new Configuration("123456"));
 
       Assert.Null(sessionTracking.CurrentSession);
     }
@@ -21,7 +20,7 @@ namespace Bugsnag.Tests
 
       server.Start();
 
-      var sessionTracking = new InMemorySessionTracker(new Configuration("123456") { SessionTrackingInterval = TimeSpan.FromSeconds(5), SessionEndpoint = server.Endpoint });
+      var sessionTracking = new SessionTracker(new Configuration("123456") { SessionTrackingInterval = TimeSpan.FromSeconds(5), SessionEndpoint = server.Endpoint });
 
       sessionTracking.CreateSession();
 

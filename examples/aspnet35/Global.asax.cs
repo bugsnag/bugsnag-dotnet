@@ -12,7 +12,7 @@ namespace Bugsnag.Sample.AspNet35
 
     protected void Application_Start(object sender, EventArgs e)
     {
-      Bugsnag.AspNet.Singleton.ConfigureClientWithWebConfig();
+
     }
 
     protected void Session_Start(object sender, EventArgs e)

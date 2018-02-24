@@ -15,21 +15,8 @@ namespace Bugsnag
     private UnhandledException()
     {
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+      AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
       TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-    }
-
-    private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-    {
-      lock (_currentClientLock)
-      {
-        if (_currentClient != null)
-        {
-          if (e.Exception is Exception ex)
-          {
-            _currentClient.AutoNotify(ex);
-          }
-        }
-      }
     }
 
     public static UnhandledException Instance
@@ -56,18 +43,39 @@ namespace Bugsnag
       }
     }
 
+    private void CurrentDomain_ProcessExit(object sender, EventArgs e)
+    {
+      HandleEvent(null, true);
+    }
+
+    private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+    {
+      HandleEvent(e.Exception as Exception, !e.Observed);
+    }
+
     [HandleProcessCorruptedStateExceptions]
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
-      lock (_currentClientLock)
+      HandleEvent(e.ExceptionObject as Exception, e.IsTerminating);
+    }
+
+    private void HandleEvent(Exception exception, bool runtimeEnding)
+    {
+      if (exception != null)
       {
-        if (_currentClient != null)
+        lock (_currentClientLock)
         {
-          if (e.ExceptionObject is Exception ex)
+          if (_currentClient != null)
           {
-            _currentClient.AutoNotify(ex);
+            _currentClient.AutoNotify(exception);
           }
         }
+      }
+
+      if (runtimeEnding)
+      {
+        SessionsStore.Instance.Stop();
+        ThreadQueueTransport.Instance.Stop();
       }
     }
   }
@@ -84,6 +92,8 @@ namespace System.Threading.Tasks
   public class UnobservedTaskExceptionEventArgs : EventArgs
   {
     public Exception Exception { get; set; }
+
+    public bool Observed { get; set; }
   }
 }
 #endif
@@ -112,12 +122,16 @@ namespace System
 
     public event UnhandledExceptionEventHandler UnhandledException { add {} remove {} }
 
+    public event EventHandler ProcessExit { add {} remove {} }
+
     public delegate void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args);
   }
 
   public class UnhandledExceptionEventArgs : EventArgs
   {
     public Exception ExceptionObject { get; set; }
+
+    public bool IsTerminating { get; set; }
   }
 }
 #endif

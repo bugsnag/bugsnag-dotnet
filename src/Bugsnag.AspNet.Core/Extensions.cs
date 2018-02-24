@@ -1,5 +1,4 @@
 using System;
-using Bugsnag.SessionTracking;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,11 +21,11 @@ namespace Bugsnag.AspNet.Core
       services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
       return services
-        .AddSingleton<ISessionTracker, HttpContextSessionTracking>()
-        .AddSingleton<IBreadcrumbs, HttpContextBreadcrumbs>()
+        .AddScoped<ISessionTracker, SessionTracker>()
+        .AddScoped<IBreadcrumbs, Breadcrumbs>()
         .AddSingleton<ITransport>(ThreadQueueTransport.Instance)
         .AddSingleton<IStartupFilter, BugsnagStartupFilter>()
-        .AddSingleton<IClient, Client>(context => {
+        .AddScoped<IClient, Client>(context => {
           var configuration = context.GetService<IOptions<Configuration>>();
           var client = new Client(configuration.Value, context.GetService<ITransport>(), context.GetService<IBreadcrumbs>(), context.GetService<ISessionTracker>());
           DiagnosticExceptionListener.Instance.ConfigureClient(client);

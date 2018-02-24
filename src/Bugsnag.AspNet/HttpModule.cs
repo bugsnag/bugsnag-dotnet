@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Web;
 
 namespace Bugsnag.AspNet
@@ -18,25 +17,26 @@ namespace Bugsnag.AspNet
 
     private void OnBeginRequest(object sender, EventArgs e)
     {
-      Bugsnag.Singleton.Client.SessionTracking.CreateSession();
+      var application = (HttpApplication)sender;
+
+      var client = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
+
+      application.Context.Items[Client.HttpContextItemsKey] = client;
+
+      client.SessionTracking.CreateSession();
     }
 
     private void OnError(object sender, EventArgs e)
     {
       var application = (HttpApplication)sender;
 
-      AutoNotify(application.Server.GetLastError(), new HttpContextWrapper(application.Context));
-    }
+      var exception = application.Server.GetLastError();
 
-    public void AutoNotify(Exception exception, HttpContextBase httpContext)
-    {
-      try
+      var httpContext = new HttpContextWrapper(application.Context);
+
+      if (application.Context.Items[Client.HttpContextItemsKey] is IClient client)
       {
-        Bugsnag.Singleton.Client.AutoNotify(exception, httpContext);
-      }
-      catch (Exception internalException)
-      {
-        Trace.WriteLine(internalException);
+        client.AutoNotify(exception, httpContext);
       }
     }
   }

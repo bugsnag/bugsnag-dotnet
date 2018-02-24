@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Bugsnag.Payload;
-using Bugsnag.SessionTracking;
 
 namespace Bugsnag
 {
@@ -29,7 +28,7 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.DetermineDefaultContext,
     };
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new InMemoryBreadcrumbs(), new InMemorySessionTracker(configuration)) // wrong!
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new Breadcrumbs(), new SessionTracker(configuration)) // wrong!
     {
 
     }

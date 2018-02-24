@@ -12,9 +12,12 @@ namespace aspnet45_mvc_webapi.Controllers
     {
       ViewBag.Title = "Home Page";
 
-      throw new NotImplementedException("oh noes");
-
       return View();
+    }
+
+    public ActionResult Crash()
+    {
+      throw new NotImplementedException("oh noes");
     }
   }
 }

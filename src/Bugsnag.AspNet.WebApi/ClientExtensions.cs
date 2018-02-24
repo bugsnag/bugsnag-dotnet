@@ -25,4 +25,9 @@ namespace Bugsnag.AspNet.WebApi
       client.Notify(exception, severity, httpRequestMessage.ToRequest());
     }
   }
+
+  public static class Client
+  {
+    public const string HttpContextItemsKey = "Bugsnag.Client";
+  }
 }

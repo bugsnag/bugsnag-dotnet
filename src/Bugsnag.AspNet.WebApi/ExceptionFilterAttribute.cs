@@ -13,10 +13,10 @@ namespace Bugsnag.AspNet.WebApi
       var exception = context.Exception;
       var request = context.Request;
 
-      if (request.BugsnagClient() != null)
+      if (request.Bugsnag() != null)
       {
         request
-          .BugsnagClient()
+          .Bugsnag()
           .AutoNotify(exception, request);
       }
     }

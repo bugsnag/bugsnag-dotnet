@@ -1,4 +1,4 @@
-﻿using System.Web;
+using System.Web;
 using System.Web.Mvc;
 
 namespace aspnet45_mvc_webapi
@@ -7,7 +7,7 @@ namespace aspnet45_mvc_webapi
   {
     public static void RegisterGlobalFilters(GlobalFilterCollection filters)
     {
-      filters.Add(new Bugsnag.AspNet.Mvc.HandleErrorAttribute());
+      filters.Add(new HandleErrorAttribute());
     }
   }
 }

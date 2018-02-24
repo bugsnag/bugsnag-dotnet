@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Bugsnag.SessionTracking
+namespace Bugsnag
 {
   public class SessionsStore
   {
@@ -39,6 +39,12 @@ namespace Bugsnag.SessionTracking
         var payload = new BatchedSessions(item.Key, item.Value);
         ThreadQueueTransport.Instance.Send(payload);
       }
+    }
+
+    internal void Stop()
+    {
+      _timer.Change(Timeout.Infinite, Timeout.Infinite);
+      SendSessions(null);
     }
 
     public static SessionsStore Instance

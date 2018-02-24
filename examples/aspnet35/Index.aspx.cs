@@ -11,7 +11,7 @@ namespace Bugsnag.Sample.AspNet35
   {
     protected void Page_Load(object sender, EventArgs e)
     {
-      Singleton.Client.Breadcrumbs.Leave("Looks like the page loaded, that's a good start");
+      AspNet.Client.Current.Breadcrumbs.Leave("Page_Load");
     }
 
     protected void Unhandled(object sender, EventArgs e)
@@ -27,7 +27,7 @@ namespace Bugsnag.Sample.AspNet35
       }
       catch (Exception exception)
       {
-        Singleton.Client.Notify(exception);
+        AspNet.Client.Current.Notify(exception);
       }
     }
   }

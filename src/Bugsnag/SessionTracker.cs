@@ -1,6 +1,6 @@
 using Bugsnag.Payload;
 
-namespace Bugsnag.SessionTracking
+namespace Bugsnag
 {
   public interface ISessionTracker
   {
@@ -9,20 +9,21 @@ namespace Bugsnag.SessionTracking
     Session CurrentSession { get; }
   }
 
-  public abstract class SessionTracker : ISessionTracker
+  public class SessionTracker : ISessionTracker
   {
     private readonly IConfiguration _configuration;
+    private Session _currentSession;
 
     public SessionTracker(IConfiguration configuration)
     {
       _configuration = configuration;
     }
 
+    public Session CurrentSession => _currentSession;
+
     public void CreateSession()
     {
-      CurrentSession = SessionsStore.Instance.CreateSession(_configuration);
+      _currentSession = SessionsStore.Instance.CreateSession(_configuration);
     }
-
-    public abstract Session CurrentSession { get; protected set; }
   }
 }

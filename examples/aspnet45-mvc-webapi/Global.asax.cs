@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,7 +13,6 @@ namespace aspnet45_mvc_webapi
   {
     protected void Application_Start()
     {
-      Bugsnag.AspNet.Singleton.ConfigureClientWithWebConfig();
       AreaRegistration.RegisterAllAreas();
       GlobalConfiguration.Configure(WebApiConfig.Register);
       FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
