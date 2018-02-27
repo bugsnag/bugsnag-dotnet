@@ -23,19 +23,22 @@ namespace Bugsnag.AspNet
 
       application.Context.Items[Client.HttpContextItemsKey] = client;
 
-      client.SessionTracking.CreateSession();
+      if (client.Configuration.AutoCaptureSessions)
+      {
+        client.SessionTracking.CreateSession();
+      }
     }
 
     private void OnError(object sender, EventArgs e)
     {
       var application = (HttpApplication)sender;
 
-      var exception = application.Server.GetLastError();
-
-      var httpContext = new HttpContextWrapper(application.Context);
-
       if (application.Context.Items[Client.HttpContextItemsKey] is IClient client)
       {
+        var exception = application.Server.GetLastError();
+
+        var httpContext = new HttpContextWrapper(application.Context);
+
         client.AutoNotify(exception, httpContext);
       }
     }

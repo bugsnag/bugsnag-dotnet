@@ -21,5 +21,7 @@ namespace Bugsnag
     IBreadcrumbs Breadcrumbs { get; }
 
     ISessionTracker SessionTracking { get; }
+
+    IConfiguration Configuration { get; }
   }
 }

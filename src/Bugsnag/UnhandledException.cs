@@ -10,7 +10,7 @@ namespace Bugsnag
     private static readonly object _instanceLock = new object();
 
     private readonly object _currentClientLock = new object();
-    private Client _currentClient;
+    private IClient _currentClient;
 
     private UnhandledException()
     {
@@ -35,11 +35,14 @@ namespace Bugsnag
       }
     }
 
-    public void ConfigureClient(Client client)
+    public void ConfigureClient(IClient client, IConfiguration configuration)
     {
-      lock (_currentClientLock)
+      if (configuration.AutoNotify)
       {
-        _currentClient = client;
+        lock (_currentClientLock)
+        {
+          _currentClient = client;
+        }
       }
     }
 

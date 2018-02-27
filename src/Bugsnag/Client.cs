@@ -28,7 +28,7 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.DetermineDefaultContext,
     };
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new Breadcrumbs(), new SessionTracker(configuration)) // wrong!
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new Breadcrumbs(), new SessionTracker(configuration))
     {
 
     }
@@ -41,7 +41,7 @@ namespace Bugsnag
       _sessionTracking = sessionTracking;
       _middleware = new List<Middleware>();
 
-      UnhandledException.Instance.ConfigureClient(this);
+      UnhandledException.Instance.ConfigureClient(this, configuration);
     }
 
     public IConfiguration Configuration => _configuration;
@@ -87,7 +87,10 @@ namespace Bugsnag
 
     public void AutoNotify(System.Exception exception, Request request)
     {
-      Notify(exception, Payload.Severity.ForUnhandledException(), request);
+      if (Configuration.AutoNotify)
+      {
+        Notify(exception, Payload.Severity.ForUnhandledException(), request);
+      }
     }
 
     public void Notify(System.Exception exception, Payload.Severity severity)

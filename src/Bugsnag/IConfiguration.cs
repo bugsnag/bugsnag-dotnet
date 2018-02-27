@@ -19,6 +19,11 @@ namespace Bugsnag
     Uri Endpoint { get; }
 
     /// <summary>
+    /// Determines if the client will automatically catch unhandled exceptions.
+    /// </summary>
+    bool AutoNotify { get; }
+
+    /// <summary>
     /// The release stage that the application is currently running in eg. development, staging, production etc.
     /// </summary>
     string ReleaseStage { get; }
@@ -69,7 +74,7 @@ namespace Bugsnag
     /// <summary>
     /// Should the client send session tracking information.
     /// </summary>
-    bool TrackSessions { get; }
+    bool AutoCaptureSessions { get; }
 
     /// <summary>
     /// The endpoint that the Bugsnag client will submit session data to.
@@ -81,6 +86,9 @@ namespace Bugsnag
     /// </summary>
     TimeSpan SessionTrackingInterval { get; }
 
+    /// <summary>
+    /// If provided will be used to send data to Bugsnag.
+    /// </summary>
     IWebProxy Proxy { get; }
   }
 }

@@ -8,7 +8,7 @@ namespace Bugsnag.ConfigurationSection
 {
   public class Configuration : System.Configuration.ConfigurationSection, IConfiguration
   {
-    private static Configuration _configuration = ConfigurationManager.GetSection("bugsnag") as Configuration;
+    private static Configuration _configuration = ConfigurationManager.GetSection("bugsnag") as Configuration ?? new Configuration();
 
     public static Configuration Settings
     {
@@ -20,7 +20,17 @@ namespace Bugsnag.ConfigurationSection
     [ConfigurationProperty(apiKey, IsRequired = true)]
     public string ApiKey
     {
-      get { return this[apiKey] as string; }
+      get
+      {
+        switch (ElementInformation.Properties[apiKey].ValueOrigin)
+        {
+          case PropertyValueOrigin.Inherited:
+          case PropertyValueOrigin.SetHere:
+            return this[apiKey] as string;
+          default:
+            return null;
+        }
+      }
     }
 
     private const string appType = "appType";
@@ -70,6 +80,17 @@ namespace Bugsnag.ConfigurationSection
     public Uri Endpoint
     {
       get { return new Uri(InternalEndpoint); }
+    }
+
+    private const string autoNotify = "autoNotify";
+
+    [ConfigurationProperty(autoNotify, IsRequired = false, DefaultValue = true)]
+    public bool AutoNotify
+    {
+      get
+      {
+        return (bool)this[autoNotify];
+      }
     }
 
     private const string notifyReleaseStages = "notifyReleaseStages";
@@ -289,14 +310,14 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    private const string trackSessions = "trackSessions";
+    private const string autoCaptureSessions = "autoCaptureSessions";
 
-    [ConfigurationProperty(trackSessions, IsRequired = false, DefaultValue = true)]
-    public bool TrackSessions
+    [ConfigurationProperty(autoCaptureSessions, IsRequired = false, DefaultValue = false)]
+    public bool AutoCaptureSessions
     {
       get
       {
-        return (bool)this[trackSessions];
+        return (bool)this[autoCaptureSessions];
       }
     }
 

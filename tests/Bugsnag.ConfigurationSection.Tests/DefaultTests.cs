@@ -4,88 +4,103 @@ namespace Bugsnag.ConfigurationSection.Tests
 {
   public class DefaultTests
   {
+    private readonly IConfiguration _testConfiguration;
+
+    public DefaultTests()
+    {
+      _testConfiguration = Configuration.Settings;
+    }
+
+    private IConfiguration TestConfiguration => _testConfiguration;
+
     [Fact]
     public void ConfigurationIsNotNull()
     {
-      Assert.NotNull(Configuration.Settings);
+      Assert.NotNull(TestConfiguration);
     }
 
     [Fact]
     public void AppTypeIsNull()
     {
-      Assert.Null(Configuration.Settings.AppType);
+      Assert.Null(TestConfiguration.AppType);
     }
 
     [Fact]
     public void AppVersionIsNull()
     {
-      Assert.Null(Configuration.Settings.AppVersion);
+      Assert.Null(TestConfiguration.AppVersion);
     }
 
     [Fact]
     public void EndpointIsNotNull()
     {
-      Assert.NotNull(Configuration.Settings.Endpoint);
+      Assert.NotNull(TestConfiguration.Endpoint);
     }
 
     [Fact]
     public void NotifyReleaseStagesIsNull()
     {
-      Assert.Null(Configuration.Settings.NotifyReleaseStages);
+      Assert.Null(TestConfiguration.NotifyReleaseStages);
     }
 
     [Fact]
     public void ReleaseStageIsNull()
     {
-      Assert.Null(Configuration.Settings.ReleaseStage);
+      Assert.Null(TestConfiguration.ReleaseStage);
     }
 
     [Fact]
     public void ProjectRootsIsNull()
     {
-      Assert.Null(Configuration.Settings.ProjectRoots);
+      Assert.Null(TestConfiguration.ProjectRoots);
     }
 
     [Fact]
     public void ProjectNamespacesIsNull()
     {
-      Assert.Null(Configuration.Settings.ProjectNamespaces);
+      Assert.Null(TestConfiguration.ProjectNamespaces);
     }
 
     [Fact]
     public void IgnoreClassesIsNull()
     {
-      Assert.Null(Configuration.Settings.IgnoreClasses);
+      Assert.Null(TestConfiguration.IgnoreClasses);
     }
 
     [Fact]
     public void MetadataFiltersIsNull()
     {
-      Assert.Null(Configuration.Settings.MetadataFilters);
+      Assert.Null(TestConfiguration.MetadataFilters);
     }
 
     [Fact]
     public void GlobalMetadataIsNull()
     {
-      Assert.Null(Configuration.Settings.GlobalMetadata);
+      Assert.Null(TestConfiguration.GlobalMetadata);
     }
 
     [Fact]
-    public void TrackSessionsIsTrue()
+    public void AutoCaptureSessionsIsFalse()
     {
-      Assert.True(Configuration.Settings.TrackSessions);
+      Assert.False(TestConfiguration.AutoCaptureSessions);
     }
 
     [Fact]
     public void SessionsEndpointIsNotNull()
     {
-      Assert.NotNull(Configuration.Settings.SessionEndpoint);
+      Assert.NotNull(TestConfiguration.SessionEndpoint);
     }
 
     [Fact]
     public void ProxyIsNull()
     {
-      Assert.Null(Configuration.Settings.Proxy);
+      Assert.Null(TestConfiguration.Proxy);
+    }
+
+    [Fact]
+    public void AutoNotifyIsTrue()
+    {
+      Assert.True(TestConfiguration.AutoNotify);
     }
   }
 }

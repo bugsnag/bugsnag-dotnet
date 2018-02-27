@@ -56,7 +56,11 @@ namespace Bugsnag.AspNet.WebApi
         client = new Bugsnag.Client(_configuration);
       }
 
-      client.SessionTracking.CreateSession();
+      if (client.Configuration.AutoCaptureSessions)
+      {
+        client.SessionTracking.CreateSession();
+      }
+
       request.UseBugsnagClient(client);
 
       return base.SendAsync(request, cancellationToken);

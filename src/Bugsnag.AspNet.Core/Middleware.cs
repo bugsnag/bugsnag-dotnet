@@ -17,7 +17,10 @@ namespace Bugsnag.AspNet.Core
 
     public async Task Invoke(HttpContext context, IClient client)
     {
-      client.SessionTracking.CreateSession();
+      if (client.Configuration.AutoCaptureSessions)
+      {
+        client.SessionTracking.CreateSession();
+      }
 
       try
       {

@@ -2,98 +2,111 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Bugsnag.ConfigurationSection.Tests
 {
   public class CompleteTests
   {
-    private readonly Configuration _completeConfiguration;
+    private readonly IConfiguration _testConfiguration;
 
     public CompleteTests()
     {
       ConfigurationFileMap fileMap = new ConfigurationFileMap(".\\Complete.config");
-      _completeConfiguration = ConfigurationManager.OpenMappedMachineConfiguration(fileMap).GetSection("bugsnag") as Configuration;
+      _testConfiguration = ConfigurationManager.OpenMappedMachineConfiguration(fileMap).GetSection("bugsnag") as Configuration;
     }
 
-    private Configuration CompleteConfiguration => _completeConfiguration;
+    private IConfiguration TestConfiguration => _testConfiguration;
 
     [Fact]
     public void ConfigurationIsNotNull()
     {
-      Assert.NotNull(CompleteConfiguration);
+      Assert.NotNull(TestConfiguration);
     }
 
     [Fact]
     public void AppTypeIsSet()
     {
-      Assert.Equal("test", CompleteConfiguration.AppType);
+      Assert.Equal("test", TestConfiguration.AppType);
     }
 
     [Fact]
     public void AppVersionIsSet()
     {
-      Assert.Equal("1.0", CompleteConfiguration.AppVersion);
+      Assert.Equal("1.0", TestConfiguration.AppVersion);
     }
 
     [Fact]
     public void EndpointIsSet()
     {
-      Assert.Equal(new Uri("https://www.bugsnag.com"), CompleteConfiguration.Endpoint);
+      Assert.Equal(new Uri("https://www.bugsnag.com"), TestConfiguration.Endpoint);
     }
 
     [Fact]
     public void NotifyReleaseStagesIsSet()
     {
-      Assert.Equal(new[] { "development", "test", "production" }, CompleteConfiguration.NotifyReleaseStages);
+      Assert.Equal(new[] { "development", "test", "production" }, TestConfiguration.NotifyReleaseStages);
     }
 
     [Fact]
     public void ReleaseStageIsSet()
     {
-      Assert.Equal("test", CompleteConfiguration.ReleaseStage);
+      Assert.Equal("test", TestConfiguration.ReleaseStage);
     }
 
     [Fact]
     public void ProjectRootsIsSet()
     {
-      Assert.Equal(new[] { @"C:\app", @"D:\src" }, CompleteConfiguration.ProjectRoots);
+      Assert.Equal(new[] { @"C:\app", @"D:\src" }, TestConfiguration.ProjectRoots);
     }
 
     [Fact]
     public void ProjectNamespacesIsSet()
     {
-      Assert.Equal(new[] { "App.Code", "Bugsnag.Tests" }, CompleteConfiguration.ProjectNamespaces);
+      Assert.Equal(new[] { "App.Code", "Bugsnag.Tests" }, TestConfiguration.ProjectNamespaces);
     }
 
     [Fact]
     public void IgnoreClassesIsSet()
     {
-      Assert.Equal(new[] { "NotAGoodClass", "NotThatBadException" }, CompleteConfiguration.IgnoreClasses);
+      Assert.Equal(new[] { "NotAGoodClass", "NotThatBadException" }, TestConfiguration.IgnoreClasses);
     }
 
     [Fact]
     public void MetadataFiltersIsSet()
     {
-      Assert.Equal(new[] { "password", "creditcard" }, CompleteConfiguration.MetadataFilters);
+      Assert.Equal(new[] { "password", "creditcard" }, TestConfiguration.MetadataFilters);
     }
 
     [Fact]
     public void GlobalMetadataIsSet()
     {
-      Assert.Equal(new[] { new KeyValuePair<string, string>("test", "wow") }, CompleteConfiguration.GlobalMetadata);
+      Assert.Equal(new[] { new KeyValuePair<string, string>("test", "wow") }, TestConfiguration.GlobalMetadata);
     }
 
     [Fact]
-    public void TrackSessionsIsFalse()
+    public void AutoCaptureSessionsIsTrue()
     {
-      Assert.False(CompleteConfiguration.TrackSessions);
+      Assert.True(TestConfiguration.AutoCaptureSessions);
     }
 
     [Fact]
     public void SessionsEndpointIsSet()
     {
-      Assert.Equal(new Uri("https://www.bugsnag.com"), CompleteConfiguration.SessionEndpoint);
+      Assert.Equal(new Uri("https://www.bugsnag.com"), TestConfiguration.SessionEndpoint);
+    }
+
+    [Fact]
+    public void AutoNotifyIsFalse()
+    {
+      Assert.False(TestConfiguration.AutoNotify);
+    }
+
+    [Fact]
+    public void ProxyIsNotNull()
+    {
+      Assert.NotNull(TestConfiguration.Proxy);
     }
   }
 }

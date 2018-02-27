@@ -19,6 +19,7 @@ namespace Bugsnag
     {
       ApiKey = apiKey;
       Endpoint = new Uri(DefaultEndpoint);
+      AutoNotify = true;
       SessionEndpoint = new Uri(DefaultSessionEndpoint);
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
       MetadataFilters = new[] { "password", "Authorization" };
@@ -27,6 +28,8 @@ namespace Bugsnag
     public string ApiKey { get; set; }
 
     public Uri Endpoint { get; set; }
+
+    public bool AutoNotify { get; set; }
 
     public string ReleaseStage { get; set; }
 
@@ -46,7 +49,7 @@ namespace Bugsnag
 
     public string[] MetadataFilters { get; set; }
 
-    public bool TrackSessions { get; set; }
+    public bool AutoCaptureSessions { get; set; }
 
     public Uri SessionEndpoint { get; set; }
 
