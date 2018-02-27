@@ -21,7 +21,6 @@ namespace netcore11_console
           catch (Exception ex)
           {
               client.Notify(ex);
-              throw;
           }
         }
     }
