@@ -43,32 +43,82 @@ Getting Started
 
 ### Sending a Test Notification
 
+```
+var configuration = new Bugsnag.Configuration("{API_KEY}");
+var client = new Bugsnag.Client(configuration);
+
+client.Notify(new System.Exception("Error!"));
+```
 
 Usage
 -----
 
 ### Catching and Reporting Exceptions
 
+```
+var configuration = new Bugsnag.Configuration("{API_KEY}");
+var client = new Bugsnag.Client(configuration);
+
+throw new System.Exception("Error!");
+```
+
 ### Sending Handled Exceptions
+
+```
+var configuration = new Bugsnag.Configuration("{API_KEY}");
+var client = new Bugsnag.Client(configuration);
+
+try
+{
+	throw new System.Exception("Error!");
+}
+catch (System.Exception ex)
+{
+	client.Notify(ex);
+}
+```
 
 ### Callbacks
 
+```
+var configuration = new Bugsnag.Configuration("{API_KEY}");
+var client = new Bugsnag.Client(configuration);
+client.BeforeNotify((configuration, report) => {
+	report.User = new Bugsnag.Payload.User() { Name = "Testy McTest" };
+});
+```
+
 ### Disabling Bugsnag in Debug Mode
+
+```
+var configuration = new Bugsnag.Configuration("{API_KEY}")
+{
+	ReleaseStage = "development",
+	NotifyReleaseStages = new[] { "production" },
+};
+var client = new Bugsnag.Client(configuration);
+
+try
+{
+	throw new System.Exception("Error!");
+}
+catch (System.Exception ex)
+{
+	client.Notify(ex);
+}
+```
 
 Demo Applications
 -----------------
 
 [Demo applications which use the Bugsnag .NET library](https://github.com/bugsnag/bugsnag-dotnet/tree/master/example)
 
-
 Support
 -------
-
 
 * [Additional Documentation](https://docs.bugsnag.com/platforms/dotnet/)
 * [Search open and closed issues](https://github.com/bugsnag/bugsnag-dotnet/issues?utf8=✓&q=is%3Aissue) for similar problems
 * [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-dotnet/issues/new)
-
 
 Contributing
 ------------
