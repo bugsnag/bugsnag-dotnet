@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
+using System.Security;
 
 namespace Bugsnag.ConfigurationSection
 {
@@ -347,6 +348,22 @@ namespace Bugsnag.ConfigurationSection
       get { return this[proxyAddress] as string; }
     }
 
+    private const string proxyUsername = "proxyUsername";
+
+    [ConfigurationProperty(proxyUsername, IsRequired = false)]
+    private string ProxyUsername
+    {
+      get { return this[proxyUsername] as string; }
+    }
+
+    private const string proxyPassword = "proxyPassword";
+
+    [ConfigurationProperty(proxyPassword, IsRequired = false)]
+    private string ProxyPassword
+    {
+      get { return this[proxyPassword] as string; }
+    }
+
     public IWebProxy Proxy
     {
       get
@@ -354,6 +371,11 @@ namespace Bugsnag.ConfigurationSection
         try
         {
           // we should probably store this so we don't try to create a new one each time this is accessed
+          if (!string.IsNullOrEmpty(ProxyUsername) && !string.IsNullOrEmpty(ProxyPassword))
+          {
+            var credential = new NetworkCredential(ProxyUsername, ProxyPassword);
+            return new WebProxy(ProxyAddress, false, null, credential);
+          }
           return new WebProxy(ProxyAddress);
         }
         catch (UriFormatException)
