@@ -2,11 +2,22 @@
 
 ## Development Dependencies
 
+- Windows 10 pro
+- Docker for Windows
+- Visual Studio 2017
+- [.NET framework 3.5](https://docs.microsoft.com/en-us/dotnet/framework/install/dotnet-35-windows-10)
+
 ## Building the Project
+
+`.\build.ps1 -Target Build`
 
 ## Running the Tests
 
+`.\build.ps1 -Target Test`
+
 ## Building/Running Example Apps
+
+See the [README](examples)
 
 ## Submitting a Change
 
