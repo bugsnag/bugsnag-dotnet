@@ -37,9 +37,7 @@ namespace Bugsnag.AspNet
       {
         var exception = application.Server.GetLastError();
 
-        var httpContext = new HttpContextWrapper(application.Context);
-
-        client.AutoNotify(exception, httpContext);
+        client.AutoNotify(exception, application.Context);
       }
     }
   }
