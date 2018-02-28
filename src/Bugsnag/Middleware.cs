@@ -16,13 +16,14 @@ namespace Bugsnag
   public static class InternalMiddleware
   {
     /// <summary>
-    /// Sets the Delivery flag to false if the configuration is setup so that
+    /// Sets the Ignore flag to true if the configuration is setup so that
     /// the report should not be sent based on the release stage information.
     /// </summary>
     public static Middleware ReleaseStageFilter = report => {
-      report.Deliver = report.Deliver && report.Configuration.ReleaseStage == null ||
-        report.Configuration.NotifyReleaseStages == null ||
-        report.Configuration.NotifyReleaseStages.Any(stage => stage == report.Configuration.ReleaseStage);
+      report.Ignore = !report.Ignore
+        && report.Configuration.ReleaseStage != null
+        && report.Configuration.NotifyReleaseStages != null
+        && !report.Configuration.NotifyReleaseStages.Contains(report.Configuration.ReleaseStage);
     };
 
     /// <summary>

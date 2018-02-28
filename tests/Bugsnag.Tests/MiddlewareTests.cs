@@ -1,7 +1,5 @@
 using Bugsnag.Payload;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -18,18 +16,18 @@ namespace Bugsnag.Tests
 
       InternalMiddleware.ReleaseStageFilter(report);
 
-      Assert.Equal(validReleaseStage, report.Deliver);
+      Assert.Equal(validReleaseStage, report.Ignore);
     }
 
     public static IEnumerable<object[]> TestData()
     {
-      yield return new object[] { "production", new string[] { "production" }, true };
-      yield return new object[] { "production", new string[] { "production", "test", "development" }, true };
-      yield return new object[] { "test", new string[] { "production" }, false };
-      yield return new object[] { "development", new string[] { "production", "test" }, false };
-      yield return new object[] { null, new string[] { "production" }, true };
-      yield return new object[] { null, null, true };
-      yield return new object[] { "production", null, true };
+      yield return new object[] { "production", new string[] { "production" }, false };
+      yield return new object[] { "production", new string[] { "production", "test", "development" }, false };
+      yield return new object[] { "test", new string[] { "production" }, true };
+      yield return new object[] { "development", new string[] { "production", "test" }, true };
+      yield return new object[] { null, new string[] { "production" }, false };
+      yield return new object[] { null, null, false };
+      yield return new object[] { "production", null, false };
     }
   }
 }

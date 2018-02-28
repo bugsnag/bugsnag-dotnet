@@ -25,7 +25,7 @@ namespace Bugsnag.Payload
     /// <param name="breadcrumbs"></param>
     public Report(IConfiguration configuration, System.Exception exception, Severity severity, Breadcrumb[] breadcrumbs, Session session, Request request)
     {
-      Deliver = true;
+      Ignore = false;
       Endpoint = configuration.Endpoint;
       Proxy = configuration.Proxy;
       _headers = new KeyValuePair<string, string>[] {
@@ -51,7 +51,7 @@ namespace Bugsnag.Payload
     /// This can be modified during the middleware processing based on built in and custom
     /// rules.
     /// </summary>
-    public bool Deliver { get; set; }
+    public bool Ignore { get; set; }
 
     /// <summary>
     /// The list of Bugsnag payload events contained in this report. There is usually only a single
