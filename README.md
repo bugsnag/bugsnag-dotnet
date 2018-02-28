@@ -111,7 +111,7 @@ catch (System.Exception ex)
 Demo Applications
 -----------------
 
-[Demo applications which use the Bugsnag .NET library](https://github.com/bugsnag/bugsnag-dotnet/tree/master/example)
+[Demo applications which use the Bugsnag .NET library](examples/)
 
 Support
 -------
