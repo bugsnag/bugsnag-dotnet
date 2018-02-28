@@ -24,7 +24,7 @@ See the [README](examples)
 * [Fork](https://help.github.com/articles/fork-a-repo) the
   [notifier on github](https://github.com/bugsnag/bugsnag-dotnet)
 * Commit and push until you are happy with your contribution
-* Run the tests with and ensure all pass
+* Run the tests and ensure they all pass
 * [Submit a pull request](https://help.github.com/articles/using-pull-requests)
 * Thank you!
 
