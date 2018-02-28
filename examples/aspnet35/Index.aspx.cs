@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Bugsnag.AspNet;
 
 namespace Bugsnag.Sample.AspNet35
 {
@@ -27,7 +28,7 @@ namespace Bugsnag.Sample.AspNet35
       }
       catch (Exception exception)
       {
-        AspNet.Client.Current.Notify(exception);
+        AspNet.Client.Current.NotifyWithHttpContext(exception);
       }
     }
   }
