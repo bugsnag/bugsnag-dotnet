@@ -21,7 +21,7 @@ namespace Bugsnag.Tests
 
       var client = new Client(new Configuration("123456") { Endpoint = server.Endpoint, MetadataFilters = filters });
 
-      client.BeforeNotify((c, r) => {
+      client.BeforeNotify(r => {
         foreach (var @event in r.Events)
         {
           @event.Metadata["bugsnag"] = metadata;

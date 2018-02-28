@@ -111,7 +111,7 @@ namespace Bugsnag
       {
         try
         {
-          middleware(Configuration, report);
+          middleware(report);
         }
         catch (System.Exception exception)
         {
@@ -125,7 +125,7 @@ namespace Bugsnag
         {
           try
           {
-            middleware(Configuration, report);
+            middleware(report);
           }
           catch (System.Exception exception)
           {
@@ -136,7 +136,7 @@ namespace Bugsnag
 
       if (report.Deliver)
       {
-        Bugsnag.InternalMiddleware.ApplyMetadataFilters(Configuration, report);
+        Bugsnag.InternalMiddleware.ApplyMetadataFilters(report);
 
         _transport.Send(report);
 

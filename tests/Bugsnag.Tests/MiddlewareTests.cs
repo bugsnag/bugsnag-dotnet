@@ -16,7 +16,7 @@ namespace Bugsnag.Tests
 
       var report = new Report(configuration, new System.Exception(), Bugsnag.Payload.Severity.ForHandledException(), new Breadcrumb[0], new Session(), new Request());
 
-      InternalMiddleware.ReleaseStageFilter(configuration, report);
+      InternalMiddleware.ReleaseStageFilter(report);
 
       Assert.Equal(validReleaseStage, report.Deliver);
     }

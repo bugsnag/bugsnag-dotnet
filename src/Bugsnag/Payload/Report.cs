@@ -14,6 +14,8 @@ namespace Bugsnag.Payload
 
     private readonly Severity _originalSeverity;
 
+    private readonly IConfiguration _configuration;
+
     /// <summary>
     /// Represents an error report that can be sent to the Bugsnag error notification endpoint.
     /// </summary>
@@ -31,6 +33,7 @@ namespace Bugsnag.Payload
         new KeyValuePair<string, string>(Payload.Headers.PayloadVersionHeader, _payloadVersion),
       };
 
+      _configuration = configuration;
       _originalException = exception;
       _originalSeverity = severity;
 
@@ -59,6 +62,8 @@ namespace Bugsnag.Payload
     public System.Exception OriginalException => _originalException;
 
     public Severity OriginalSeverity => _originalSeverity;
+
+    public IConfiguration Configuration => _configuration;
 
     /// <summary>
     /// Convenience method for setting the User on 'all' of the events in the

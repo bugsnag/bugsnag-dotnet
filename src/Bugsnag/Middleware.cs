@@ -7,9 +7,8 @@ namespace Bugsnag
   /// Signature for Bugsnag client middleware that can be used to manipulate the
   /// error report before it is sent.
   /// </summary>
-  /// <param name="configuration"></param>
   /// <param name="report"></param>
-  public delegate void Middleware(IConfiguration configuration, Report report);
+  public delegate void Middleware(Report report);
 
   /// <summary>
   /// The middleware that is applied by default by the Bugsnag client.
@@ -20,18 +19,18 @@ namespace Bugsnag
     /// Sets the Delivery flag to false if the configuration is setup so that
     /// the report should not be sent based on the release stage information.
     /// </summary>
-    public static Middleware ReleaseStageFilter = (configuration, report) => {
-      report.Deliver = report.Deliver && configuration.ReleaseStage == null ||
-        configuration.NotifyReleaseStages == null ||
-        configuration.NotifyReleaseStages.Any(stage => stage == configuration.ReleaseStage);
+    public static Middleware ReleaseStageFilter = report => {
+      report.Deliver = report.Deliver && report.Configuration.ReleaseStage == null ||
+        report.Configuration.NotifyReleaseStages == null ||
+        report.Configuration.NotifyReleaseStages.Any(stage => stage == report.Configuration.ReleaseStage);
     };
 
     /// <summary>
     /// Strips any provided project roots from stack trace lines included in the report.
     /// </summary>
-    public static Middleware RemoveProjectRoots = (configuration, report) =>
+    public static Middleware RemoveProjectRoots = report =>
     {
-      if (configuration.ProjectRoots != null && configuration.ProjectRoots.Any())
+      if (report.Configuration.ProjectRoots != null && report.Configuration.ProjectRoots.Any())
       {
         foreach (var @event in report.Events)
         {
@@ -39,7 +38,7 @@ namespace Bugsnag
           {
             foreach (var stackTraceLine in exception.StackTrace)
             {
-              foreach (var filePrefix in configuration.ProjectRoots)
+              foreach (var filePrefix in report.Configuration.ProjectRoots)
               {
                 if (!string.IsNullOrEmpty(stackTraceLine.FileName)
                   && stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
@@ -56,9 +55,9 @@ namespace Bugsnag
     /// <summary>
     /// Marks stack trace lines as being 'in project' if they are from a provided namespace.
     /// </summary>
-    public static Middleware DetectInProjectNamespaces = (configuration, report) =>
+    public static Middleware DetectInProjectNamespaces = report =>
     {
-      if (configuration.ProjectNamespaces != null && configuration.ProjectNamespaces.Any())
+      if (report.Configuration.ProjectNamespaces != null && report.Configuration.ProjectNamespaces.Any())
       {
         foreach (var @event in report.Events)
         {
@@ -66,7 +65,7 @@ namespace Bugsnag
           {
             foreach (var stackTraceLine in exception.StackTrace)
             {
-              foreach (var @namespace in configuration.ProjectNamespaces)
+              foreach (var @namespace in report.Configuration.ProjectNamespaces)
               {
                 stackTraceLine.InProject = stackTraceLine.MethodName.StartsWith(@namespace);
               }
@@ -79,13 +78,15 @@ namespace Bugsnag
     /// <summary>
     /// Strips exceptions from the report if they include any 'ignored classes'
     /// </summary>
-    public static Middleware RemoveIgnoredExceptions = (configuration, report) =>
+    public static Middleware RemoveIgnoredExceptions = report =>
     {
-      if (configuration.IgnoreClasses != null && configuration.IgnoreClasses.Any())
+      if (report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
       {
         foreach (var @event in report.Events)
         {
-          @event.Exceptions = @event.Exceptions.Where(e => !configuration.IgnoreClasses.Any(@class => @class == e.ErrorClass)).ToArray();
+          @event.Exceptions = @event.Exceptions
+            .Where(e => !report.Configuration.IgnoreClasses.Any(@class => @class == e.ErrorClass))
+            .ToArray();
           // TODO: if we filter out all of the exceptions should we still send the report?
         }
       }
@@ -94,13 +95,13 @@ namespace Bugsnag
     /// <summary>
     /// Attaches global metadata if provided by the configuration to each error report.
     /// </summary>
-    public static Middleware AttachGlobalMetadata = (configuration, report) =>
+    public static Middleware AttachGlobalMetadata = report =>
     {
-      if (configuration.GlobalMetadata != null)
+      if (report.Configuration.GlobalMetadata != null)
       {
         foreach (var @event in report.Events)
         {
-          foreach (var item in configuration.GlobalMetadata)
+          foreach (var item in report.Configuration.GlobalMetadata)
           {
             @event.Metadata.Add(item.Key, item.Value);
           }
@@ -108,22 +109,22 @@ namespace Bugsnag
       }
     };
 
-    public static Middleware ApplyMetadataFilters = (configuration, report) =>
+    public static Middleware ApplyMetadataFilters = report =>
     {
-      if (configuration.MetadataFilters != null)
+      if (report.Configuration.MetadataFilters != null)
       {
         // should this be applied to the whole report? We should probably focus it to specific sections
         // of the payload
         foreach (var @event in report.Events)
         {
-          @event.App.FilterPayload(configuration.MetadataFilters);
-          @event.Device.FilterPayload(configuration.MetadataFilters);
-          @event.Metadata.FilterPayload(configuration.MetadataFilters);
+          @event.App.FilterPayload(report.Configuration.MetadataFilters);
+          @event.Device.FilterPayload(report.Configuration.MetadataFilters);
+          @event.Metadata.FilterPayload(report.Configuration.MetadataFilters);
         }
       }
     };
 
-    public static Middleware DetermineDefaultContext = (configuration, report) =>
+    public static Middleware DetermineDefaultContext = report =>
     {
       foreach (var @event in report.Events)
       {
