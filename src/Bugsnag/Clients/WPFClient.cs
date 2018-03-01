@@ -18,6 +18,7 @@ namespace Bugsnag.Clients
         {
             Client = new BaseClient(ConfigurationStorage.ConfigSection.Settings);
             Config = Client.Config;
+#if !MONO
             Client.Config.BeforeNotify(error =>
             {
                 var currWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
@@ -26,6 +27,7 @@ namespace Bugsnag.Clients
                     error.Context = currWindow.Title;
                 }
             });
+#endif
         }
 
         public static void Start()
