@@ -15,12 +15,12 @@ namespace Bugsnag.Tests
       var server = new TestServer(numerOfRequests);
       server.Start();
 
-      var transport = new WebRequest();
+      var webRequest = new WebRequest();
 
       var headers = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Test-Header", "wow!") };
 
       var rawPayload = System.Text.Encoding.UTF8.GetBytes($"{{ \"count\": {numerOfRequests} }}");
-      var response = await Task.Factory.FromAsync((callback, state) => transport.BeginSend(server.Endpoint, null, headers, rawPayload, callback, state), transport.EndSend, null);
+      var response = await Task.Factory.FromAsync((callback, state) => webRequest.BeginSend(server.Endpoint, null, headers, rawPayload, callback, state), webRequest.EndSend, null);
       Assert.Equal(HttpStatusCode.OK, response.HttpStatusCode);
 
       var requests = await server.Requests();

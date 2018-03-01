@@ -8,7 +8,7 @@ namespace Bugsnag
   /// <summary>
   /// Used by Bugsnag clients to send serialized error reports to an endpoint.
   /// </summary>
-  public interface ITransport
+  public interface IDelivery
   {
     void Send(IPayload payload);
   }

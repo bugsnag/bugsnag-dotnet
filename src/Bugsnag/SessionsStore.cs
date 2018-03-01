@@ -37,7 +37,7 @@ namespace Bugsnag
       foreach (var item in sessionData)
       {
         var payload = new BatchedSessions(item.Key, item.Value);
-        ThreadQueueTransport.Instance.Send(payload);
+        ThreadQueueDelivery.Instance.Send(payload);
       }
     }
 

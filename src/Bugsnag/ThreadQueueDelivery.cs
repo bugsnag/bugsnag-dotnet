@@ -48,16 +48,16 @@ namespace Bugsnag
     }
   }
 
-  public class ThreadQueueTransport : ITransport
+  public class ThreadQueueDelivery : IDelivery
   {
-    private static ThreadQueueTransport instance = null;
+    private static ThreadQueueDelivery instance = null;
     private static readonly object instanceLock = new object();
 
     private readonly BlockingQueue<IPayload> _queue;
 
     private readonly Thread _worker;
 
-    private ThreadQueueTransport()
+    private ThreadQueueDelivery()
     {
       _queue = new BlockingQueue<IPayload>();
       _worker = new Thread(new ThreadStart(ProcessQueue));
@@ -69,7 +69,7 @@ namespace Bugsnag
       _queue.Wait(TimeSpan.FromSeconds(5));
     }
 
-    public static ThreadQueueTransport Instance
+    public static ThreadQueueDelivery Instance
     {
       get
       {
@@ -77,7 +77,7 @@ namespace Bugsnag
         {
           if (instance == null)
           {
-            instance = new ThreadQueueTransport();
+            instance = new ThreadQueueDelivery();
           }
 
           return instance;

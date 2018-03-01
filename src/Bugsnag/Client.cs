@@ -9,7 +9,7 @@ namespace Bugsnag
   {
     private readonly IConfiguration _configuration;
 
-    private readonly ITransport _transport;
+    private readonly IDelivery _delivery;
 
     private readonly IBreadcrumbs _breadcrumbs;
 
@@ -28,15 +28,15 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.DetermineDefaultContext,
     };
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueTransport.Instance, new Breadcrumbs(), new SessionTracker(configuration))
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueDelivery.Instance, new Breadcrumbs(), new SessionTracker(configuration))
     {
 
     }
 
-    public Client(IConfiguration configuration, ITransport transport, IBreadcrumbs breadcrumbs, ISessionTracker sessionTracking)
+    public Client(IConfiguration configuration, IDelivery delivery, IBreadcrumbs breadcrumbs, ISessionTracker sessionTracking)
     {
       _configuration = configuration;
-      _transport = transport;
+      _delivery = delivery;
       _breadcrumbs = breadcrumbs;
       _sessionTracking = sessionTracking;
       _middleware = new List<Middleware>();
@@ -138,7 +138,7 @@ namespace Bugsnag
       {
         Bugsnag.InternalMiddleware.ApplyMetadataFilters(report);
 
-        _transport.Send(report);
+        _delivery.Send(report);
 
         Breadcrumbs.Leave(Breadcrumb.FromReport(report));
 

@@ -8,7 +8,7 @@ namespace Bugsnag
 {
   public class WebRequest
   {
-    private class TransportState
+    private class WebRequestState
     {
       public AsyncCallback Callback { get; private set; }
 
@@ -22,7 +22,7 @@ namespace Bugsnag
 
       public HttpWebResponse Response { get; set; }
 
-      public TransportState(AsyncCallback callback, object state, Uri endpoint, byte[] report, System.Net.WebRequest request)
+      public WebRequestState(AsyncCallback callback, object state, Uri endpoint, byte[] report, System.Net.WebRequest request)
       {
         Callback = callback;
         OriginalState = state;
@@ -32,25 +32,25 @@ namespace Bugsnag
       }
     }
 
-    private class TransportAsyncResult : IAsyncResult
+    private class WebRequestAsyncResult : IAsyncResult
     {
       public bool IsCompleted { get { return _innerAsyncResult.IsCompleted; } }
 
       public WaitHandle AsyncWaitHandle { get { return _innerAsyncResult.AsyncWaitHandle; } }
 
-      public object AsyncState => TransportState.OriginalState;
+      public object AsyncState => WebRequestState.OriginalState;
 
       public bool CompletedSynchronously { get { return _innerAsyncResult.CompletedSynchronously; } }
 
-      public TransportState TransportState => _transportState;
+      public WebRequestState WebRequestState => _webRequestState;
 
       private readonly IAsyncResult _innerAsyncResult;
-      private readonly TransportState _transportState;
+      private readonly WebRequestState _webRequestState;
 
-      public TransportAsyncResult(IAsyncResult innerAsyncResult, TransportState transportState)
+      public WebRequestAsyncResult(IAsyncResult innerAsyncResult, WebRequestState webRequestState)
       {
         _innerAsyncResult = innerAsyncResult;
-        _transportState = transportState;
+        _webRequestState = webRequestState;
       }
     }
 
@@ -71,16 +71,16 @@ namespace Bugsnag
         }
       }
       request.Headers["Bugsnag-Sent-At"] = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
-      var internalState = new TransportState(callback, state, endpoint, report, request);
+      var internalState = new WebRequestState(callback, state, endpoint, report, request);
       var asyncResult = request.BeginGetRequestStream(new AsyncCallback(WriteCallback), internalState);
-      return new TransportAsyncResult(asyncResult, internalState);
+      return new WebRequestAsyncResult(asyncResult, internalState);
     }
 
     public WebResponse EndSend(IAsyncResult asyncResult)
     {
-      if (asyncResult is TransportAsyncResult result)
+      if (asyncResult is WebRequestAsyncResult result)
       {
-        var statusCode = result.TransportState.Response.StatusCode;
+        var statusCode = result.WebRequestState.Response.StatusCode;
         return new WebResponse(statusCode);
       }
 
@@ -89,7 +89,7 @@ namespace Bugsnag
 
     private void ReadCallback(IAsyncResult asynchronousResult)
     {
-      var state = (TransportState)asynchronousResult.AsyncState;
+      var state = (WebRequestState)asynchronousResult.AsyncState;
       try
       {
         var response = (HttpWebResponse)state.Request.EndGetResponse(asynchronousResult);
@@ -104,12 +104,12 @@ namespace Bugsnag
         state.Response = exception.Response as HttpWebResponse;
       }
 
-      state.Callback(new TransportAsyncResult(asynchronousResult, state));
+      state.Callback(new WebRequestAsyncResult(asynchronousResult, state));
     }
 
     private void WriteCallback(IAsyncResult asynchronousResult)
     {
-      var state = (TransportState)asynchronousResult.AsyncState;
+      var state = (WebRequestState)asynchronousResult.AsyncState;
       try
       {
         using (var stream = state.Request.EndGetRequestStream(asynchronousResult))

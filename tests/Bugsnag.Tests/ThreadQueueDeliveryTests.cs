@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Bugsnag.Tests
 {
-  public class ThreadQueueTransportTests
+  public class ThreadQueueDeliveryTests
   {
     [Fact]
     public async void Test()
@@ -20,7 +20,7 @@ namespace Bugsnag.Tests
       for (int i = 0; i < numberOfRequests; i++)
       {
         var payload = new SamplePayload(i, server.Endpoint);
-        ThreadQueueTransport.Instance.Send(payload);
+        ThreadQueueDelivery.Instance.Send(payload);
       }
 
       var requests = await server.Requests();

@@ -78,7 +78,7 @@ namespace Bugsnag
       if (runtimeEnding)
       {
         SessionsStore.Instance.Stop();
-        ThreadQueueTransport.Instance.Stop();
+        ThreadQueueDelivery.Instance.Stop();
       }
     }
   }
