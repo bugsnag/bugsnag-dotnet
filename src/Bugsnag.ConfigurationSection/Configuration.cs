@@ -370,6 +370,8 @@ namespace Bugsnag.ConfigurationSection
       {
         try
         {
+          if (String.IsNullOrWhiteSpace(ProxyAddress)) return null;
+
           // we should probably store this so we don't try to create a new one each time this is accessed
           if (!string.IsNullOrEmpty(ProxyUsername) && !string.IsNullOrEmpty(ProxyPassword))
           {
