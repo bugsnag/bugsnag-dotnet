@@ -21,14 +21,16 @@ namespace Bugsnag.AspNet.Core
       services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
       return services
-        .AddScoped<ISessionTracker, SessionTracker>()
+        .AddScoped<ISessionTracker, SessionTracker>(context => {
+          var configuration = context.GetService<IOptions<Configuration>>();
+          return new SessionTracker(configuration.Value);
+        })
         .AddScoped<IBreadcrumbs, Breadcrumbs>()
         .AddSingleton<IDelivery>(ThreadQueueDelivery.Instance)
         .AddSingleton<IStartupFilter, BugsnagStartupFilter>()
         .AddScoped<IClient, Client>(context => {
           var configuration = context.GetService<IOptions<Configuration>>();
           var client = new Client(configuration.Value, context.GetService<IDelivery>(), context.GetService<IBreadcrumbs>(), context.GetService<ISessionTracker>());
-          DiagnosticExceptionListener.Instance.ConfigureClient(client);
           return client;
         });
     }

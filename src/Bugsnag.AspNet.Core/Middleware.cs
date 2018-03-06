@@ -8,6 +8,8 @@ namespace Bugsnag.AspNet.Core
   /// </summary>
   public class Middleware
   {
+    public const string HttpContextItemsKey = "Bugsnag.Client";
+
     private readonly RequestDelegate _next;
 
     public Middleware(RequestDelegate requestDelegate)
@@ -21,6 +23,8 @@ namespace Bugsnag.AspNet.Core
       {
         client.SessionTracking.CreateSession();
       }
+
+      context.Items[HttpContextItemsKey] = client;
 
       try
       {

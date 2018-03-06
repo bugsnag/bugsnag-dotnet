@@ -14,7 +14,7 @@ namespace Bugsnag.AspNet.Core
 
       return new Request
       {
-        ClientIp = ip.ToString(),
+        ClientIp = ip?.ToString(),
         Headers = httpContext.Request.Headers.ToDictionary(x => x.Key, x => string.Join(",", x.Value)),
         HttpMethod = httpContext.Request.Method,
         Url = httpContext.Request.GetDisplayUrl(),
