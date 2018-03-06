@@ -4,7 +4,9 @@ using System.Web;
 #if !NET35
 // Tasks for Async versions of Notify()
 using System.Threading.Tasks;
+#endif
 
+#if !NET35 && !MONO
 // Provide exception attribute for global filters (> .NET 4.0 )
 using System.Web.Mvc;
 #endif
@@ -104,7 +106,7 @@ namespace Bugsnag.Clients
         }
 #endif
 
-#if !NET35
+#if !NET35 && !MONO
         /// <summary>
         /// Exception attribute to automatically handle errors when registered (requires > .NET 4.0)
         /// </summary>

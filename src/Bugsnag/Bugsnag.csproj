@@ -50,17 +50,17 @@
     <AssemblyName>BugsnagMono</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="'$(Configuration)' != 'MonoRelease' And '$(OS)' != 'Unix'" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework" Condition="'$(Configuration)' != 'MonoRelease' And '$(OS)' != 'Unix'" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Deployment" Condition="'$(Configuration)' != 'MonoRelease'" />
+    <Reference Include="System.Deployment" Condition="'$(Configuration)' != 'MonoRelease' And '$(OS)' != 'Unix'" />
     <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
@@ -68,7 +68,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.4.0.20505.0\lib\net40\System.Web.Http.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="'$(Configuration)' != 'MonoRelease' And '$(OS)' != 'Unix'" >
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Microsoft.AspNet.Mvc.4.0.20505.0\lib\net40\System.Web.Mvc.dll</HintPath>
     </Reference>
@@ -99,7 +99,7 @@
     <Compile Include="ExceptionParser.cs" />
     <Compile Include="ConfigurationStorage\IConfigurationStorage.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Metadata.cs" />
+    <Compile Include="MetaData.cs" />
     <Compile Include="NotificationFactory.cs" />
     <Compile Include="Notifier.cs" />
     <Compile Include="Payload\App\AppInfo.cs" />

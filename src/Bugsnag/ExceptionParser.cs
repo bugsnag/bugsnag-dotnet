@@ -80,7 +80,7 @@ namespace Bugsnag
                 return null;
 
             // Get the filename the frame comes from without prefixes
-            var file = config.RemoveFileNamePrefix(frame.GetFileName());
+            var file = config.NormalizePath(config.RemoveFileNamePrefix(frame.GetFileName()));
 
             // Mark the frame is In Project if we are autodetecting and there is a filename, or 
             // the method comes from the configured project namespaces.

@@ -8,7 +8,9 @@ namespace Web.MVCApp
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+#if !MONO && !NET35
             filters.Add(WebMVCClient.ErrorHandler());
+#endif
             filters.Add(new HandleErrorAttribute());
         }
 

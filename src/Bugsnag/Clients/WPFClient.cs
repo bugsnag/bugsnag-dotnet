@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !MONO
+using System;
 using System.Linq;
 using System.Windows;
 
@@ -81,3 +82,4 @@ namespace Bugsnag.Clients
 #endif
     }
 }
+#endif

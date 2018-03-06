@@ -281,6 +281,16 @@ namespace Bugsnag
         }
 
         /// <summary>
+        /// Normalize the directory separators in the filename
+        /// </summary>
+        /// <param name="filename">The filename to modify</param>
+        /// <returns>The filename with normalized directory separators</returns>
+        internal string NormalizePath(string filename)
+        {
+            return filename != null ? filename.Replace('/', '\\') : null;
+        }
+
+        /// <summary>
         /// Indicates if a method name belongs to In Project namespaces
         /// </summary>
         /// <param name="fullMethodName">The fully qualified method name</param>

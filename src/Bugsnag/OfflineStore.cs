@@ -16,7 +16,7 @@ namespace Bugsnag
             using (var store = IsolatedStorageFile())
             {
                 store.CreateDirectory(CrashReportDirectory);
-                foreach (var filePath in store.GetFileNames(string.Format("{0}\\*", CrashReportDirectory)))
+                foreach (var filePath in store.GetFileNames(string.Format("{0}{1}*", CrashReportDirectory, Path.DirectorySeparatorChar)))
                 {
                     string fileData = ReadAndRemoveCrashReport(store, filePath);
 
@@ -91,7 +91,7 @@ namespace Bugsnag
 
         private static string FullCrashReportFilePath(object fileName)
         {
-            return string.Format("{0}\\{1}", CrashReportDirectory, fileName);
+            return string.Format("{0}{2}{1}", CrashReportDirectory, fileName, Path.DirectorySeparatorChar);
         }
 
         private static IsolatedStorageFile IsolatedStorageFile()
