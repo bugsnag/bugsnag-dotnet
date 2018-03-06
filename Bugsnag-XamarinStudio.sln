@@ -1,0 +1,92 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2CBE6402-4C06-42B2-BFBC-0D77C286C6DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.monoandroid", "src\Bugsnag\Bugsnag.monoandroid.csproj", "{E429F061-65F1-4B17-A122-F6115840D56D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.XamarinIOS", "src\Bugsnag\Bugsnag.XamarinIOS.csproj", "{E5EEF584-2A8A-4067-8309-15FE4D65DD64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugsnag.XamarinMac", "src\Bugsnag\Bugsnag.XamarinMac.csproj", "{990825BE-73ED-4A31-9178-B88119A72F61}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3668929-5936-4D38-BB0A-CC0B89C2BA42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B25A7B43-2D72-4970-8BBC-AF0C36DF1576}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		build\build.bat = build\build.bat
+		build\build.ps1 = build\build.ps1
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		MonoRelease|Any CPU = MonoRelease|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E429F061-65F1-4B17-A122-F6115840D56D} = {2CBE6402-4C06-42B2-BFBC-0D77C286C6DC}
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64} = {2CBE6402-4C06-42B2-BFBC-0D77C286C6DC}
+		{990825BE-73ED-4A31-9178-B88119A72F61} = {2CBE6402-4C06-42B2-BFBC-0D77C286C6DC}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$1.scope = text/plain
+		$0.CSharpFormattingPolicy = $2
+		$2.IndentSwitchBody = True
+		$2.IndentBlocksInsideExpressions = True
+		$2.AnonymousMethodBraceStyle = NextLine
+		$2.PropertyBraceStyle = NextLine
+		$2.PropertyGetBraceStyle = NextLine
+		$2.PropertySetBraceStyle = NextLine
+		$2.EventBraceStyle = NextLine
+		$2.EventAddBraceStyle = NextLine
+		$2.EventRemoveBraceStyle = NextLine
+		$2.StatementBraceStyle = NextLine
+		$2.ElseNewLinePlacement = NewLine
+		$2.CatchNewLinePlacement = NewLine
+		$2.FinallyNewLinePlacement = NewLine
+		$2.WhileNewLinePlacement = DoNotCare
+		$2.ArrayInitializerWrapping = DoNotChange
+		$2.ArrayInitializerBraceStyle = NextLine
+		$2.BeforeMethodDeclarationParentheses = False
+		$2.BeforeMethodCallParentheses = False
+		$2.BeforeConstructorDeclarationParentheses = False
+		$2.NewLineBeforeConstructorInitializerColon = NewLine
+		$2.NewLineAfterConstructorInitializerColon = SameLine
+		$2.BeforeDelegateDeclarationParentheses = False
+		$2.NewParentheses = False
+		$2.SpacesBeforeBrackets = False
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
