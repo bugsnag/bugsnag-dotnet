@@ -81,5 +81,27 @@ namespace Bugsnag.Payload
     {
       get { return this.Get("request") as Request; }
     }
+
+    public IEnumerable<Breadcrumb> Breadcrumbs
+    {
+      get { return this.Get("breadcrumbs") as IEnumerable<Breadcrumb>; }
+    }
+
+    /// <summary>
+    /// Called if the payload size is too large to send, removes data so that the payload
+    /// can be sent succesfully.
+    /// </summary>
+    public void TrimExtraData()
+    {
+      if (Breadcrumbs != null)
+      {
+        Remove("breadcrumbs");
+      }
+      if (Metadata != null)
+      {
+        Metadata.Clear();
+        Metadata.Add("notifier", "The serialized payload exceeded the 1MB size limit. Metadata and breadcrumbs have been stripped to make the payload a deliverable size.");
+      }
+    }
   }
 }

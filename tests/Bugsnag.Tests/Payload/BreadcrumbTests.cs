@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using Bugsnag.Payload;
 using Xunit;
 
@@ -33,6 +33,24 @@ namespace Bugsnag.Tests.Payload
       Assert.Equal("error", breadcrumb["type"]);
       Assert.NotNull(breadcrumb["metaData"]);
       Assert.IsType<DateTime>(breadcrumb["timestamp"]);
+    }
+
+    [Fact]
+    public void NullNameProvidesDefault()
+    {
+      var breadcrumb = new Breadcrumb(null, BreadcrumbType.Manual);
+
+      Assert.NotNull(breadcrumb.Name);
+    }
+
+    [Fact]
+    public void LongNamesAreTrimmed()
+    {
+      var name = new String('a', 500);
+
+      var breadcrumb = new Breadcrumb(name, BreadcrumbType.Manual);
+
+      Assert.Equal(name.Substring(0, 30), breadcrumb.Name);
     }
   }
 }

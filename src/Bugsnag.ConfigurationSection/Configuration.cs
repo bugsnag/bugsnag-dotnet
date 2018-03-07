@@ -386,5 +386,13 @@ namespace Bugsnag.ConfigurationSection
         }
       }
     }
+
+    private const string maximumBreadcrumbs = "maximumBreadcrumbs";
+
+    [ConfigurationProperty(maximumBreadcrumbs, IsRequired = false, DefaultValue = 25)]
+    public int MaximumBreadcrumbs
+    {
+      get { return (int)this[maximumBreadcrumbs]; }
+    }
   }
 }

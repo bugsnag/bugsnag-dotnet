@@ -108,5 +108,11 @@ namespace Bugsnag.ConfigurationSection.Tests
     {
       Assert.NotNull(TestConfiguration.Proxy);
     }
+
+    [Fact]
+    public void MaximumBreadcrumbsIsSet()
+    {
+      Assert.Equal(30, TestConfiguration.MaximumBreadcrumbs);
+    }
   }
 }

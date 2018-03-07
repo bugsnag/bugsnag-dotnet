@@ -47,23 +47,6 @@ namespace Bugsnag.Payload
       return value;
     }
 
-    public static byte[] Serialize(this IDictionary dictionary)
-    {
-      byte[] data = null;
-
-      try
-      {
-        var payload = SimpleJson.SimpleJson.SerializeObject(dictionary);
-        data = System.Text.Encoding.UTF8.GetBytes(payload);
-      }
-      catch (System.Exception exception)
-      {
-        Trace.WriteLine(exception);
-      }
-
-      return data;
-    }
-
     public static void FilterPayload(this IDictionary dictionary, string[] filters)
     {
       dictionary.FilterPayload(filters, new Dictionary<object, bool>());

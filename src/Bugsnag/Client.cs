@@ -28,7 +28,7 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.DetermineDefaultContext,
     };
 
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueDelivery.Instance, new Breadcrumbs(), new SessionTracker(configuration))
+    public Client(IConfiguration configuration) : this(configuration, ThreadQueueDelivery.Instance, new Breadcrumbs(configuration), new SessionTracker(configuration))
     {
 
     }

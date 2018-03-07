@@ -90,5 +90,11 @@ namespace Bugsnag
     /// If provided will be used to send data to Bugsnag.
     /// </summary>
     IWebProxy Proxy { get; }
+
+    /// <summary>
+    /// The maximum number of breadcrumbs to store per error report,
+    /// evicted in a FIFO manner.
+    /// </summary>
+    int MaximumBreadcrumbs { get; }
   }
 }

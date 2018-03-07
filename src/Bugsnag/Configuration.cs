@@ -23,6 +23,7 @@ namespace Bugsnag
       SessionEndpoint = new Uri(DefaultSessionEndpoint);
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
       MetadataFilters = new[] { "password", "Authorization" };
+      MaximumBreadcrumbs = 25;
     }
 
     public string ApiKey { get; set; }
@@ -56,5 +57,7 @@ namespace Bugsnag
     public TimeSpan SessionTrackingInterval { get; set; }
 
     public IWebProxy Proxy { get; set; }
+
+    public int MaximumBreadcrumbs { get; set; }
   }
 }

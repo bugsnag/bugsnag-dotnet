@@ -102,5 +102,11 @@ namespace Bugsnag.ConfigurationSection.Tests
     {
       Assert.True(TestConfiguration.AutoNotify);
     }
+
+    [Fact]
+    public void MaximumBreadcrumbsIsSet()
+    {
+      Assert.Equal(25, TestConfiguration.MaximumBreadcrumbs);
+    }
   }
 }

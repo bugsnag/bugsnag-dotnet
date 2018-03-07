@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 
 namespace Bugsnag.Payload
@@ -7,6 +8,12 @@ namespace Bugsnag.Payload
   public class Report : Dictionary<string, object>, IPayload
   {
     private static readonly string _payloadVersion = "4";
+
+    /// <summary>
+    /// The maximum size of the serialized payload which can be sent
+    /// to Bugsnag. The report will be trimmed if it exceeds this size.
+    /// </summary>
+    private static readonly int MaximumSize = 1024 * 1024;
 
     private readonly KeyValuePair<string, string>[] _headers;
 
@@ -93,5 +100,33 @@ namespace Bugsnag.Payload
     public IWebProxy Proxy { get; set; }
 
     public KeyValuePair<string, string>[] Headers { get { return _headers; } }
+
+    public byte[] Serialize()
+    {
+      byte[] data = null;
+
+      try
+      {
+        var payload = SimpleJson.SimpleJson.SerializeObject(this);
+        data = System.Text.Encoding.UTF8.GetBytes(payload);
+
+        if (data.Length > MaximumSize)
+        {
+          foreach (var @event in Events)
+          {
+            @event.TrimExtraData();
+          }
+        }
+
+        payload = SimpleJson.SimpleJson.SerializeObject(this);
+        data = System.Text.Encoding.UTF8.GetBytes(payload);
+      }
+      catch (System.Exception exception)
+      {
+        Trace.WriteLine(exception);
+      }
+
+      return data;
+    }
   }
 }

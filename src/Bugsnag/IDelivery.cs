@@ -13,12 +13,14 @@ namespace Bugsnag
     void Send(IPayload payload);
   }
 
-  public interface IPayload : IDictionary
+  public interface IPayload
   {
     Uri Endpoint { get; }
 
     IWebProxy Proxy { get; }
 
     KeyValuePair<string, string>[] Headers { get; }
+
+    byte[] Serialize();
   }
 }

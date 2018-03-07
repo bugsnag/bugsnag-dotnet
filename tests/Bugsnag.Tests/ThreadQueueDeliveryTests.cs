@@ -28,11 +28,11 @@ namespace Bugsnag.Tests
       Assert.Equal(numberOfRequests, requests.Count());
     }
 
-    private class SamplePayload : Dictionary<string, int>, IPayload
+    private class SamplePayload : IPayload
     {
       public SamplePayload(int count, Uri endpoint)
       {
-        this["count"] = count;
+        Count = count;
         Endpoint = endpoint;
       }
 
@@ -41,6 +41,13 @@ namespace Bugsnag.Tests
       public IWebProxy Proxy { get; set; }
 
       public KeyValuePair<string, string>[] Headers => new KeyValuePair<string, string>[] { };
+
+      public int Count { get; set; }
+
+      public byte[] Serialize()
+      {
+        return System.Text.Encoding.UTF8.GetBytes($"payload {Count}");
+      }
     }
   }
 }

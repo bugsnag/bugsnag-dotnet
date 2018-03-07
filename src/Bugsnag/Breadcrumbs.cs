@@ -17,14 +17,16 @@ namespace Bugsnag
   public class Breadcrumbs : IBreadcrumbs
   {
     private readonly object _lock = new object();
-    private readonly List<Breadcrumb> _breadcrumbs;
+    private readonly int _maximumBreadcrumbs;
+    private readonly Breadcrumb[] _breadcrumbs;
+    private int _current;
 
-    public Breadcrumbs()
+    public Breadcrumbs(IConfiguration configuration)
     {
-      _breadcrumbs = new List<Breadcrumb>();
+      _maximumBreadcrumbs = configuration.MaximumBreadcrumbs;
+      _current = 0;
+      _breadcrumbs = new Breadcrumb[_maximumBreadcrumbs];
     }
-
-    private List<Breadcrumb> InternalBreadcrumbs => _breadcrumbs;
 
     public void Leave(string message)
     {
@@ -38,11 +40,12 @@ namespace Bugsnag
 
     public void Leave(Breadcrumb breadcrumb)
     {
-      lock (_lock)
+      if (breadcrumb != null)
       {
-        if (breadcrumb != null)
+        lock (_lock)
         {
-          InternalBreadcrumbs.Add(breadcrumb);
+          _breadcrumbs[_current] = breadcrumb;
+          _current = (_current + 1) % _maximumBreadcrumbs;
         }
       }
     }
@@ -51,7 +54,18 @@ namespace Bugsnag
     {
       lock (_lock)
       {
-        return InternalBreadcrumbs.ToArray();
+        var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
+
+        if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
+
+        var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
+
+        for (int i = 0; i < numberOfBreadcrumbs; i++)
+        {
+          breadcrumbs[i] = _breadcrumbs[i];
+        }
+
+        return breadcrumbs;
       }
     }
   }
