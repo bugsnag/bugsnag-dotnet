@@ -13,11 +13,15 @@ namespace Bugsnag.AspNet.WebApi
       var exception = context.Exception;
       var request = context.Request;
 
-      if (request.Bugsnag() != null)
+      var client = request.Bugsnag();
+
+      if (client != null)
       {
-        request
-          .Bugsnag()
-          .AutoNotify(exception, request);
+        if (client.Configuration.AutoNotify)
+        {
+          client
+            .Notify(exception, Payload.HandledState.ForUnhandledException(), request);
+        }
       }
     }
   }

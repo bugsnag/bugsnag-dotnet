@@ -70,7 +70,10 @@ namespace Bugsnag
         {
           if (_currentClient != null)
           {
-            _currentClient.AutoNotify(exception);
+            if (_currentClient.Configuration.AutoNotify)
+            {
+              _currentClient.Notify(exception, Payload.HandledState.ForUnhandledException());
+            }
           }
         }
       }

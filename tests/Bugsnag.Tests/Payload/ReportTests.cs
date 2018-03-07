@@ -10,7 +10,7 @@ namespace Bugsnag.Tests.Payload
     {
       var configuration = new Configuration("123456");
       var exception = new System.DllNotFoundException();
-      var severity = Bugsnag.Payload.Severity.ForUnhandledException();
+      var severity = Bugsnag.Payload.HandledState.ForUnhandledException();
       var breadcrumbs = new Breadcrumb[0];
       var session = new Session();
       var request = new Request();

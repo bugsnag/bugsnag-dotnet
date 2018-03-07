@@ -35,9 +35,12 @@ namespace Bugsnag.AspNet
 
       if (application.Context.Items[Client.HttpContextItemsKey] is IClient client)
       {
-        var exception = application.Server.GetLastError();
+        if (client.Configuration.AutoNotify)
+        {
+          var exception = application.Server.GetLastError();
 
-        client.AutoNotify(exception, application.Context);
+          client.Notify(exception, Payload.HandledState.ForUnhandledException(), application.Context);
+        }
       }
     }
   }

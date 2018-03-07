@@ -8,7 +8,7 @@ namespace Bugsnag.Payload
   /// </summary>
   public class Event : Dictionary<string, object>
   {
-    public Event(string payloadVersion, App app, Device device, System.Exception exception, Severity severity, IEnumerable<Breadcrumb> breadcrumbs, Session session, Request request)
+    public Event(string payloadVersion, App app, Device device, System.Exception exception, HandledState severity, IEnumerable<Breadcrumb> breadcrumbs, Session session, Request request)
     {
       this.AddToPayload("payloadVersion", payloadVersion);
       this.AddToPayload("exceptions", new Exceptions(exception, 5).ToArray());

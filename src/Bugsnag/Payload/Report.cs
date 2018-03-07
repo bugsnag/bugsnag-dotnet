@@ -12,7 +12,7 @@ namespace Bugsnag.Payload
 
     private readonly System.Exception _originalException;
 
-    private readonly Severity _originalSeverity;
+    private readonly HandledState _originalSeverity;
 
     private readonly IConfiguration _configuration;
 
@@ -25,7 +25,7 @@ namespace Bugsnag.Payload
     /// <param name="exception"></param>
     /// <param name="severity"></param>
     /// <param name="breadcrumbs"></param>
-    public Report(IConfiguration configuration, System.Exception exception, Severity severity, Breadcrumb[] breadcrumbs, Session session, Request request)
+    public Report(IConfiguration configuration, System.Exception exception, HandledState severity, Breadcrumb[] breadcrumbs, Session session, Request request)
     {
       _ignored = false;
       Endpoint = configuration.Endpoint;
@@ -66,7 +66,7 @@ namespace Bugsnag.Payload
 
     public System.Exception OriginalException => _originalException;
 
-    public Severity OriginalSeverity => _originalSeverity;
+    public HandledState OriginalSeverity => _originalSeverity;
 
     public IConfiguration Configuration => _configuration;
 

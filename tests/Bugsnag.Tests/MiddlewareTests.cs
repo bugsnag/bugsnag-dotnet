@@ -12,7 +12,7 @@ namespace Bugsnag.Tests
     {
       var configuration = new Configuration("123456") { ReleaseStage = releaseStage, NotifyReleaseStages = notifyReleaseStages };
 
-      var report = new Report(configuration, new System.Exception(), Bugsnag.Payload.Severity.ForHandledException(), new Breadcrumb[0], new Session(), new Request());
+      var report = new Report(configuration, new System.Exception(), Bugsnag.Payload.HandledState.ForHandledException(), new Breadcrumb[0], new Session(), new Request());
 
       InternalMiddleware.ReleaseStageFilter(report);
 

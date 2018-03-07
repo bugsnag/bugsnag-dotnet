@@ -26,14 +26,21 @@ namespace Bugsnag.AspNet.Core
 
       context.Items[HttpContextItemsKey] = client;
 
-      try
+      if (client.Configuration.AutoNotify)
+      {
+        try
+        {
+          await _next(context);
+        }
+        catch (System.Exception exception)
+        {
+          client.Notify(exception, Payload.HandledState.ForUnhandledException(), context);
+          throw;
+        }
+      }
+      else
       {
         await _next(context);
-      }
-      catch (System.Exception exception)
-      {
-        client.AutoNotify(exception, context);
-        throw;
       }
     }
   }

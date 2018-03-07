@@ -6,52 +6,52 @@ namespace Bugsnag.Payload
   /// Represents the various fields that can be set in the "event" payload for
   /// showing the exceptions handled/unhandled state and severity.
   /// </summary>
-  public class Severity : Dictionary<string, object>
+  public class HandledState : Dictionary<string, object>
   {
     /// <summary>
-    /// Creates a Severity object for an error report payload where the exception was not handled by the application
+    /// Creates a HandledState object for an error report payload where the exception was not handled by the application
     /// and caught by a global error handler.
     /// </summary>
     /// <returns></returns>
-    public static Severity ForUnhandledException()
+    public static HandledState ForUnhandledException()
     {
-      return new Severity(false, Bugsnag.Severity.Error, SeverityReason.ForUnhandledException());
+      return new HandledState(false, Bugsnag.Severity.Error, SeverityReason.ForUnhandledException());
     }
 
     /// <summary>
-    /// Creates a Severity object for an error report payload where the exception was handled by the application
+    /// Creates a HandledState object for an error report payload where the exception was handled by the application
     /// and notified manually.
     /// </summary>
     /// <returns></returns>
-    public static Severity ForHandledException()
+    public static HandledState ForHandledException()
     {
-      return new Severity(true, Bugsnag.Severity.Warning, SeverityReason.ForHandledException());
+      return new HandledState(true, Bugsnag.Severity.Warning, SeverityReason.ForHandledException());
     }
 
     /// <summary>
-    /// Creates a Severity object for an error report payload where the exception was handled by the application
+    /// Creates a HandledState object for an error report payload where the exception was handled by the application
     /// and notified manually and the error severity was also passed in to override the default severity.
     /// </summary>
     /// <param name="severity"></param>
     /// <returns></returns>
-    public static Severity ForUserSpecifiedSeverity(Bugsnag.Severity severity)
+    public static HandledState ForUserSpecifiedSeverity(Bugsnag.Severity severity)
     {
-      return new Severity(true, severity, null);
+      return new HandledState(true, severity, null);
     }
 
     /// <summary>
-    /// Creates a Severity object for an error report payload where the severity for the exception was modified
+    /// Creates a HandledState object for an error report payload where the severity for the exception was modified
     /// while running the middleware/callback.
     /// </summary>
     /// <param name="severity"></param>
     /// <param name="previousSeverity"></param>
     /// <returns></returns>
-    public static Severity ForCallbackSpecifiedSeverity(Bugsnag.Severity severity, Severity previousSeverity)
+    public static HandledState ForCallbackSpecifiedSeverity(Bugsnag.Severity severity, HandledState previousSeverity)
     {
-      return new Severity(previousSeverity.Handled, severity, SeverityReason.ForCallbackSpecifiedSeverity());
+      return new HandledState(previousSeverity.Handled, severity, SeverityReason.ForCallbackSpecifiedSeverity());
     }
 
-    Severity(bool handled, Bugsnag.Severity severity, SeverityReason reason)
+    HandledState(bool handled, Bugsnag.Severity severity, SeverityReason reason)
     {
       this.AddToPayload("unhandled", !handled);
       this.AddToPayload("severityReason", reason);

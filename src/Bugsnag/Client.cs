@@ -60,45 +60,17 @@ namespace Bugsnag
 
     protected Middleware[] InternalMiddleware => DefaultInternalMiddleware;
 
-    public void Notify(System.Exception exception)
+    public void Notify(System.Exception exception, Request request = null)
     {
-      Notify(exception, (Request)null);
+      Notify(exception, HandledState.ForHandledException(), request);
     }
 
-    public void Notify(System.Exception exception, Request request)
+    public void Notify(System.Exception exception, Severity severity, Request request = null)
     {
-      Notify(exception, Payload.Severity.ForHandledException(), request);
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), request);
     }
 
-    public void Notify(System.Exception exception, Severity severity)
-    {
-      Notify(exception, severity, null);
-    }
-
-    public void Notify(System.Exception exception, Severity severity, Request request)
-    {
-      Notify(exception, Payload.Severity.ForUserSpecifiedSeverity(severity), request);
-    }
-
-    public void AutoNotify(System.Exception exception)
-    {
-      AutoNotify(exception, (Request)null);
-    }
-
-    public void AutoNotify(System.Exception exception, Request request)
-    {
-      if (Configuration.AutoNotify)
-      {
-        Notify(exception, Payload.Severity.ForUnhandledException(), request);
-      }
-    }
-
-    public void Notify(System.Exception exception, Payload.Severity severity)
-    {
-      Notify(exception, severity, null);
-    }
-
-    public void Notify(System.Exception exception, Payload.Severity severity, Request request)
+    public void Notify(System.Exception exception, HandledState severity, Request request = null)
     {
       var report = new Report(_configuration, exception, severity, Breadcrumbs.Retrieve().ToArray(), SessionTracking.CurrentSession, request);
 

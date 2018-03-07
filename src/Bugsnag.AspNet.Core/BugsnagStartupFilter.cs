@@ -56,7 +56,10 @@ namespace Bugsnag.AspNet.Core
 
         if (clientObject is IClient client)
         {
-          client.AutoNotify(exception, httpContext);
+          if (client.Configuration.AutoNotify)
+          {
+            client.Notify(exception, Payload.HandledState.ForUnhandledException(), httpContext);
+          }
         }
       }
     }

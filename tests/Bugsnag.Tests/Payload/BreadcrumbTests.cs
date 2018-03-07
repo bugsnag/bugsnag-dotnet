@@ -27,7 +27,7 @@ namespace Bugsnag.Tests.Payload
     public void FromReportIncludesExpectedKeys()
     {
       var configuration = new Configuration("123456");
-      var report = new Report(configuration, new System.Exception(), Bugsnag.Payload.Severity.ForHandledException(), new Breadcrumb[0], new Session(), new Request());
+      var report = new Report(configuration, new System.Exception(), Bugsnag.Payload.HandledState.ForHandledException(), new Breadcrumb[0], new Session(), new Request());
       var breadcrumb = Breadcrumb.FromReport(report);
 
       Assert.Equal("error", breadcrumb["type"]);

@@ -12,7 +12,7 @@ namespace Bugsnag.Tests.Payload
       var app = new App("version", "releaseStage", "type");
       var device = new Device("hostname");
       var exception = new System.DllNotFoundException();
-      var severity = Bugsnag.Payload.Severity.ForUnhandledException();
+      var severity = Bugsnag.Payload.HandledState.ForUnhandledException();
       var breadcrumbs = Enumerable.Empty<Breadcrumb>();
       var session = new Session();
       var request = new Request();
@@ -30,7 +30,7 @@ namespace Bugsnag.Tests.Payload
       var app = new App("version", "releaseStage", "type");
       var device = new Device("hostname");
       var exception = new System.DllNotFoundException();
-      var severity = Bugsnag.Payload.Severity.ForUnhandledException();
+      var severity = Bugsnag.Payload.HandledState.ForUnhandledException();
       var breadcrumbs = Enumerable.Empty<Breadcrumb>();
       var session = new Session();
       var request = new Request();

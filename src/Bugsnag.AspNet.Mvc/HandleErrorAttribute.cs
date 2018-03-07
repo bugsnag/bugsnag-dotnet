@@ -18,7 +18,10 @@ namespace Bugsnag.AspNet.Mvc
 
       if (filterContext.HttpContext.Items[Client.HttpContextItemsKey] is IClient client)
       {
-        client.AutoNotify(filterContext.Exception, filterContext.HttpContext);
+        if (client.Configuration.AutoNotify)
+        {
+          client.Notify(filterContext.Exception, Payload.HandledState.ForUnhandledException(), filterContext.HttpContext);
+        }
       }
     }
   }

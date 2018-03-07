@@ -4,7 +4,7 @@ namespace Bugsnag.Payload
 {
   public class ReportContext : Dictionary<string, object>
   {
-    public ReportContext(System.Exception exception, Severity severity)
+    public ReportContext(System.Exception exception, HandledState severity)
     {
       this.AddToPayload("bugsnag.original.exception", exception);
       this.AddToPayload("bugsnag.original.severity", severity);
@@ -15,9 +15,9 @@ namespace Bugsnag.Payload
       get { return this.Get("bugsnag.original.exception") as System.Exception; }
     }
 
-    public Severity OriginalSeverity
+    public HandledState OriginalSeverity
     {
-      get { return this.Get("bugsnag.original.severity") as Severity; }
+      get { return this.Get("bugsnag.original.severity") as HandledState; }
     }
   }
 }
