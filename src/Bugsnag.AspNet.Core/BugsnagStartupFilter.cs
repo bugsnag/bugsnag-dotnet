@@ -9,7 +9,7 @@ using Microsoft.Extensions.DiagnosticAdapter;
 namespace Bugsnag.AspNet.Core
 {
   /// <summary>
-  /// A stratup filter to ensure that the Bugsnag middleware is
+  /// A startup filter to ensure that the Bugsnag middleware is
   /// executed at the start of the middleware stack.
   /// </summary>
   public class BugsnagStartupFilter : IStartupFilter
