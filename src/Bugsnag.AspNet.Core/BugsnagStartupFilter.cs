@@ -39,7 +39,7 @@ namespace Bugsnag.AspNet.Core
       }
 
       /// <summary>
-      /// Handles exceptions that the Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware // TODO: this is not the right name
+      /// Handles exceptions that the Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware
       /// swallows.
       /// </summary>
       /// <param name="exception"></param>
