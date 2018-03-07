@@ -16,7 +16,7 @@ namespace Bugsnag.Tests
 
       InternalMiddleware.ReleaseStageFilter(report);
 
-      Assert.Equal(validReleaseStage, report.Ignore);
+      Assert.Equal(validReleaseStage, report.Ignored);
     }
 
     public static IEnumerable<object[]> TestData()

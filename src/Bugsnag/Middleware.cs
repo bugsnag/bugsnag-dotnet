@@ -20,10 +20,12 @@ namespace Bugsnag
     /// the report should not be sent based on the release stage information.
     /// </summary>
     public static Middleware ReleaseStageFilter = report => {
-      report.Ignore = !report.Ignore
-        && report.Configuration.ReleaseStage != null
+      if (report.Configuration.ReleaseStage != null
         && report.Configuration.NotifyReleaseStages != null
-        && !report.Configuration.NotifyReleaseStages.Contains(report.Configuration.ReleaseStage);
+        && !report.Configuration.NotifyReleaseStages.Contains(report.Configuration.ReleaseStage))
+      {
+        report.Ignore();
+      }
     };
 
     /// <summary>

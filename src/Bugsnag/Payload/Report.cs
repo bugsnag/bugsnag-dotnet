@@ -16,6 +16,8 @@ namespace Bugsnag.Payload
 
     private readonly IConfiguration _configuration;
 
+    private bool _ignored;
+
     /// <summary>
     /// Represents an error report that can be sent to the Bugsnag error notification endpoint.
     /// </summary>
@@ -25,7 +27,7 @@ namespace Bugsnag.Payload
     /// <param name="breadcrumbs"></param>
     public Report(IConfiguration configuration, System.Exception exception, Severity severity, Breadcrumb[] breadcrumbs, Session session, Request request)
     {
-      Ignore = false;
+      _ignored = false;
       Endpoint = configuration.Endpoint;
       Proxy = configuration.Proxy;
       _headers = new KeyValuePair<string, string>[] {
@@ -47,11 +49,14 @@ namespace Bugsnag.Payload
     }
 
     /// <summary>
-    /// Used to indicate to the Bugsnag client that this report should be delivered or not.
-    /// This can be modified during the middleware processing based on built in and custom
-    /// rules.
+    /// Used to indicate to the Bugsnag client that this report should not be delivered.
     /// </summary>
-    public bool Ignore { get; set; }
+    public void Ignore()
+    {
+      _ignored = true;
+    }
+
+    public bool Ignored => _ignored;
 
     /// <summary>
     /// The list of Bugsnag payload events contained in this report. There is usually only a single

@@ -134,7 +134,7 @@ namespace Bugsnag
         }
       }
 
-      if (!report.Ignore)
+      if (!report.Ignored)
       {
         Bugsnag.InternalMiddleware.ApplyMetadataFilters(report);
 
