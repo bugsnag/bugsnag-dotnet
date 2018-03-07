@@ -7,6 +7,20 @@
 - Visual Studio 2017
 - [.NET framework 3.5](https://docs.microsoft.com/en-us/dotnet/framework/install/dotnet-35-windows-10)
 
+## Running the build script
+
+Set Powershell execution policy to RemoteSigned. You can check this by running
+
+`Get-ExecutionPolicy`
+
+This should return
+
+`RemoteSigned`
+
+If not you will need to launch Powershell with "Run as administrator" option and then run
+
+`Set-ExecutionPolicy RemoteSigned`
+
 ## Building the Project
 
 `.\build.ps1 -Target Build`
