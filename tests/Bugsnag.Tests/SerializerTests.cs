@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Bugsnag.Tests
 {
-  public class SimpleJsonTests
+  public class SerializerTests
   {
     [Fact]
     public void CanSerialiseReport()
@@ -24,7 +24,7 @@ namespace Bugsnag.Tests
 
       var report = new Report(configuration, exception, Bugsnag.Payload.HandledState.ForHandledException(), new Breadcrumb[] { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session(), new Request());
 
-      var json = SimpleJson.SimpleJson.SerializeObject(report);
+      var json = Serializer.SerializeObject(report);
       Assert.NotNull(json);
     }
 
@@ -34,7 +34,7 @@ namespace Bugsnag.Tests
       var primary = new Dictionary<string, object>();
       var secondary = new Dictionary<string, object>() { { "primary", primary } };
       primary["secondary"] = secondary;
-      var json = SimpleJson.SimpleJson.SerializeObject(primary);
+      var json = Serializer.SerializeObject(primary);
       Assert.Contains("[Circular]", json);
     }
   }

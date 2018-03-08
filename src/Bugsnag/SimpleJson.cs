@@ -20,10 +20,10 @@
 // VERSION:
 
 // NOTE: uncomment the following line to make SimpleJson class internal.
-//#define SIMPLE_JSON_INTERNAL
+#define SIMPLE_JSON_INTERNAL
 
 // NOTE: uncomment the following line to make JsonArray and JsonObject class internal.
-//#define SIMPLE_JSON_OBJARRAYINTERNAL
+#define SIMPLE_JSON_OBJARRAYINTERNAL
 
 // NOTE: uncomment the following line to enable dynamic support.
 //#define SIMPLE_JSON_DYNAMIC
@@ -616,6 +616,7 @@ namespace SimpleJson
         /// </summary>
         /// <param name="json">A IDictionary&lt;string,object> / IList&lt;object></param>
         /// <param name="jsonSerializerStrategy">Serializer strategy to use</param>
+        /// <param name="seen"></param>
         /// <returns>A JSON encoded string, or null if object 'json' is not serializable</returns>
         public static string SerializeObject(object json, IJsonSerializerStrategy jsonSerializerStrategy, IDictionary seen)
         {

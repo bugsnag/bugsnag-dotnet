@@ -48,6 +48,7 @@ Task("Pack")
       .WithTarget("pack")
       .SetConfiguration(configuration)
       .WithProperty("IncludeSymbols", "true")
+      .WithProperty("GenerateDocumentationFile", "true")
       .WithProperty("PackageOutputPath", nugetPackageOutput.FullPath));
 });
 

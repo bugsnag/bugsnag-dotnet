@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 
@@ -37,19 +36,7 @@ namespace Bugsnag.Payload
 
     public byte[] Serialize()
     {
-      byte[] data = null;
-
-      try
-      {
-        var payload = SimpleJson.SimpleJson.SerializeObject(this);
-        data = System.Text.Encoding.UTF8.GetBytes(payload);
-      }
-      catch (System.Exception exception)
-      {
-        Trace.WriteLine(exception);
-      }
-
-      return data;
+      return Serializer.SerializeObjectToByteArray(this);
     }
   }
 

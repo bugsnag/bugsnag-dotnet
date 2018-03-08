@@ -4,6 +4,10 @@ using System.Net;
 
 namespace Bugsnag
 {
+  /// <summary>
+  /// An in memory implementation of the IConfiguration interface, with default
+  /// values populated.
+  /// </summary>
   public class Configuration : IConfiguration
   {
     public const string DefaultEndpoint = "https://notify.bugsnag.com";

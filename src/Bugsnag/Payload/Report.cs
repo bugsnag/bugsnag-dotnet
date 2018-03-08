@@ -32,6 +32,8 @@ namespace Bugsnag.Payload
     /// <param name="exception"></param>
     /// <param name="severity"></param>
     /// <param name="breadcrumbs"></param>
+    /// <param name="session"></param>
+    /// <param name="request"></param>
     public Report(IConfiguration configuration, System.Exception exception, HandledState severity, Breadcrumb[] breadcrumbs, Session session, Request request)
     {
       _ignored = false;
@@ -107,8 +109,7 @@ namespace Bugsnag.Payload
 
       try
       {
-        var payload = SimpleJson.SimpleJson.SerializeObject(this);
-        data = System.Text.Encoding.UTF8.GetBytes(payload);
+        data = Serializer.SerializeObjectToByteArray(this);
 
         if (data.Length > MaximumSize)
         {
@@ -118,8 +119,7 @@ namespace Bugsnag.Payload
           }
         }
 
-        payload = SimpleJson.SimpleJson.SerializeObject(this);
-        data = System.Text.Encoding.UTF8.GetBytes(payload);
+        data = Serializer.SerializeObjectToByteArray(this);
       }
       catch (System.Exception exception)
       {
