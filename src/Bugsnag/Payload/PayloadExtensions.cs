@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Bugsnag.Payload
 {
@@ -26,11 +25,11 @@ namespace Bugsnag.Payload
       switch (value)
       {
         case System.String s:
-          if (!String.IsNullOrWhiteSpace(s))
+          if (!Polyfills.String.IsNullOrWhiteSpace(s))
           {
             dictionary[key] = value;
           }
-          else
+          else if(dictionary.ContainsKey(key))
           {
             dictionary.Remove(key);
           }

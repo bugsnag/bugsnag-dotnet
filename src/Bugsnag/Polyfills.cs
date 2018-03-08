@@ -17,31 +17,26 @@ namespace Bugsnag.Polyfills
 #endif
     }
   }
-}
 
-#if NET35
-namespace Bugsnag
-{
-  /// <summary>
-  /// Shim this method for net35, source taken from the reference source on GitHub.
-  /// </summary>
   public static class String
   {
-    public static bool IsNullOrWhiteSpace(System.String value)
+    public static bool IsNullOrWhiteSpace(string s)
     {
-      if (value == null) return true;
+#if NET35
+      if (s == null) return true;
 
-      for (int i = 0; i < value.Length; i++)
+      for (int i = 0; i < s.Length; i++)
       {
-        if (!Char.IsWhiteSpace(value[i])) return false;
+        if (!Char.IsWhiteSpace(s[i])) return false;
       }
 
       return true;
+#else
+      return System.String.IsNullOrWhiteSpace(s);
+#endif
     }
   }
 }
-#endif
-
 
 #if NET35 || NET40
 namespace System.Reflection

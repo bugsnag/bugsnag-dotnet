@@ -35,7 +35,7 @@ namespace Bugsnag.Payload
 
       foreach (var frame in stackFrames)
       {
-        var stackFrame = new StackTraceLine(frame);
+        var stackFrame = StackTraceLine.FromStackFrame(frame);
 
         yield return stackFrame;
       }
@@ -52,14 +52,25 @@ namespace Bugsnag.Payload
   /// </summary>
   public class StackTraceLine : Dictionary<string, object>
   {
-    public StackTraceLine(StackFrame stackFrame)
+    public static StackTraceLine FromStackFrame(StackFrame stackFrame)
     {
       var method = stackFrame.GetMethod();
-      this.AddToPayload("file", stackFrame.GetFileName());
-      this.AddToPayload("lineNumber", stackFrame.GetFileLineNumber());
-      this.AddToPayload("method", new Method(method).DisplayName());
-      this.AddToPayload("inProject", false);
-      this.AddToPayload("code", new Code(stackFrame, 5).Display());
+      var file = stackFrame.GetFileName();
+      var lineNumber = stackFrame.GetFileLineNumber();
+      var methodName = new Method(method).DisplayName();
+      var inProject = false;
+      var code = new Code(stackFrame, 5).Display();
+
+      return new StackTraceLine(file, lineNumber, methodName, inProject, code);
+    }
+
+    public StackTraceLine(string file, int lineNumber, string methodName, bool inProject, Dictionary<string, string> code)
+    {
+      this.AddToPayload("file", file);
+      this.AddToPayload("lineNumber", lineNumber);
+      this.AddToPayload("method", methodName);
+      this.AddToPayload("inProject", inProject);
+      this.AddToPayload("code", code);
     }
 
     public string FileName

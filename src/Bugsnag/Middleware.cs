@@ -35,18 +35,30 @@ namespace Bugsnag
     {
       if (report.Configuration.ProjectRoots != null && report.Configuration.ProjectRoots.Any())
       {
+        var projectRoots = report.Configuration.ProjectRoots.Select(prefix => {
+          // if the file prefix is missing a final directory seperator then we should
+          // add one first
+          if (prefix[prefix.Length - 1] != System.IO.Path.DirectorySeparatorChar)
+          {
+            prefix = $"{prefix}{System.IO.Path.DirectorySeparatorChar}";
+          }
+          return prefix;
+        }).ToArray();
+
         foreach (var @event in report.Events)
         {
           foreach (var exception in @event.Exceptions)
           {
             foreach (var stackTraceLine in exception.StackTrace)
             {
-              foreach (var filePrefix in report.Configuration.ProjectRoots)
+              if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.FileName))
               {
-                if (!string.IsNullOrEmpty(stackTraceLine.FileName)
-                  && stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
+                foreach (var filePrefix in projectRoots)
                 {
-                  stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
+                  if (stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
+                  {
+                    stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
+                  }
                 }
               }
             }
