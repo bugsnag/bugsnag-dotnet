@@ -14,5 +14,7 @@ namespace Bugsnag
     ISessionTracker SessionTracking { get; }
 
     IConfiguration Configuration { get; }
+
+    void BeforeNotify(Middleware middleware);
   }
 }
