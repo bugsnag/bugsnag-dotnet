@@ -82,7 +82,7 @@ namespace Bugsnag.ConfigurationSection.Tests
     [Fact]
     public void GlobalMetadataIsSet()
     {
-      Assert.Equal(new[] { new KeyValuePair<string, string>("test", "wow") }, TestConfiguration.GlobalMetadata);
+      Assert.Equal(new[] { new KeyValuePair<string, object>("test", "wow") }, TestConfiguration.GlobalMetadata);
     }
 
     [Fact]

@@ -275,13 +275,13 @@ namespace Bugsnag.ConfigurationSection
       get { return (GlobalMetadataCollection)this[metadata]; }
     }
 
-    public KeyValuePair<string, string>[] GlobalMetadata
+    public KeyValuePair<string, object>[] GlobalMetadata
     {
       get
       {
         if (InternalGlobalMetadata.Count > 0)
         {
-          return InternalGlobalMetadata.Cast<GlobalMetadataItem>().Select(i => new KeyValuePair<string, string>(i.Key, i.Value)).ToArray();
+          return InternalGlobalMetadata.Cast<GlobalMetadataItem>().Select(i => new KeyValuePair<string, object>(i.Key, i.Value)).ToArray();
         }
 
         return null;
