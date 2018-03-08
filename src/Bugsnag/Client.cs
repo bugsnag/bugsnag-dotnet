@@ -36,6 +36,15 @@ namespace Bugsnag
     };
 
     /// <summary>
+    /// Constructs a client with the given apiKey using the default configuration values.
+    /// </summary>
+    /// <param name="apiKey"></param>
+    public Client(string apiKey) : this(new Configuration(apiKey))
+    {
+
+    }
+
+    /// <summary>
     /// Constructs a client with the default storage and delivery classes.
     /// </summary>
     /// <param name="configuration"></param>
