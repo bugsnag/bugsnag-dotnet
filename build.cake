@@ -95,6 +95,6 @@ Task("BuildExamples")
 });
 
 Task("Default")
-    .IsDependentOn("BuildExamples");
+    .IsDependentOn("PopulateExamplePackages");
 
 RunTarget(target);
