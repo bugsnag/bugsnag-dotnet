@@ -19,5 +19,20 @@ namespace Bugsnag.Tests.Payload
       var device = new Device(hostname);
       Assert.Equal(hostname, device["hostname"]);
     }
+
+    [Fact]
+    public void SpecifyTime()
+    {
+      var device = new Device("hostname");
+      Assert.NotNull(device["time"]);
+    }
+
+    [Fact]
+    public void Serializable()
+    {
+      var device = new Device("hostname");
+      var p = Serializer.SerializeObject(device);
+      Assert.NotNull(p);
+    }
   }
 }

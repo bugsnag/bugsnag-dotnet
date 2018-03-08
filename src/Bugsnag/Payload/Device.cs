@@ -7,7 +7,7 @@ namespace Bugsnag.Payload
   /// <summary>
   /// Represents the "device" key in the error report payload.
   /// </summary>
-  public class Device : Dictionary<string, string>
+  public class Device : Dictionary<string, object>
   {
     public Device() : this(Hostname)
     {
@@ -19,6 +19,7 @@ namespace Bugsnag.Payload
       this.AddToPayload("locale", CultureInfo.CurrentCulture.ToString());
       this.AddToPayload("timezone", TimeZoneInfo.Local.DisplayName);
       this.AddToPayload("osName", OsName);
+      this.AddToPayload("time", DateTime.UtcNow);
     }
 
     /// <summary>
