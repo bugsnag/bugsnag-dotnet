@@ -37,5 +37,32 @@ namespace Bugsnag.Tests
       var json = Serializer.SerializeObject(primary);
       Assert.Contains("[Circular]", json);
     }
+
+    [Fact]
+    public void OtherCircularReferenceTest()
+    {
+      var inner = new Circular { Name = "inner" };
+      var outer = new Circular { Name = "outer", Inner = inner };
+      inner.Inner = outer;
+
+      var json = Serializer.SerializeObject(outer);
+
+      Assert.Contains("[Circular]", json);
+    }
+
+    [Fact]
+    public void NullValueTest()
+    {
+      var o = new Dictionary<string, object> { { "test", null } };
+      var json = Serializer.SerializeObject(o);
+      Assert.NotNull(json);
+    }
+
+    private class Circular
+    {
+      public string Name { get; set; }
+
+      public Circular Inner { get; set; }
+    }
   }
 }

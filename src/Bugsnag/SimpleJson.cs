@@ -1023,22 +1023,35 @@ namespace SimpleJson
 
         static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder, IDictionary seen)
         {
-            if (seen.Contains(value))
-            {
-                return SerializeString("[Circular]", builder);
-            }
-            seen.Add(value, true);
             bool success;
             switch (value)
             {
                 case String s:
                     success = SerializeString(s, builder);
                     break;
-                case IDictionary dict:
+                case IDictionary<string, object> dict:
+                    if (seen.Contains(dict)) return SerializeString("[Circular]", builder);
+                    seen.Add(dict, true);
                     success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
+                    seen.Remove(dict);
+                    break;
+                case IDictionary<string, string> dict:
+                    if (seen.Contains(dict)) return SerializeString("[Circular]", builder);
+                    seen.Add(dict, true);
+                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
+                    seen.Remove(dict);
+                    break;
+                case IDictionary dict:
+                    if (seen.Contains(dict)) return SerializeString("[Circular]", builder);
+                    seen.Add(dict, true);
+                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
+                    seen.Remove(dict);
                     break;
                 case IEnumerable enumerable:
+                    if (seen.Contains(enumerable)) return SerializeString("[Circular]", builder);
+                    seen.Add(enumerable, true);
                     success = SerializeArray(jsonSerializerStrategy, enumerable, builder, seen);
+                    seen.Remove(enumerable);
                     break;
                 case sbyte _:
                 case byte _:
@@ -1062,15 +1075,17 @@ namespace SimpleJson
                     success = true;
                     break;
                 default:
+                    if (seen.Contains(value)) return SerializeString("[Circular]", builder);
+                    seen.Add(value, true);
                     object serializedObject;
                     success = jsonSerializerStrategy.TrySerializeNonPrimitiveObject(value, out serializedObject);
                     if (success)
                     {
                         SerializeValue(jsonSerializerStrategy, serializedObject, builder, seen);
                     }
+                    seen.Remove(value);
                     break;
             }
-            seen.Remove(value);
             return success;
         }
 
