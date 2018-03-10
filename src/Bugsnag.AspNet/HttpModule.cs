@@ -19,9 +19,7 @@ namespace Bugsnag.AspNet
     {
       var application = (HttpApplication)sender;
 
-      var client = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
-
-      application.Context.Items[Client.HttpContextItemsKey] = client;
+      var client = Client.Current;
 
       if (client.Configuration.AutoCaptureSessions)
       {

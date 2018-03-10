@@ -50,11 +50,4 @@ namespace Bugsnag.AspNet
       client.Notify(exception, severity, httpContext.ToRequest());
     }
   }
-
-  public static class Client
-  {
-    public const string HttpContextItemsKey = "Bugsnag.Client";
-
-    public static IClient Current => HttpContext.Current.Items[HttpContextItemsKey] as IClient;
-  }
 }
