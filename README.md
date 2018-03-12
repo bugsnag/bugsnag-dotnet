@@ -1,6 +1,6 @@
 # Bugsnag Notifier for .NET
 
-[![build status](https://ci.appveyor.com/api/projects/status/0c0mlvop5equtm43/branch/master?svg=true)](https://ci.appveyor.com/project/snmaynard/bugsnag-dotnet)
+[![build status](https://ci.appveyor.com/api/projects/status/github/bugsnag/bugsnag-dotnet?branch=master&svg=true)](https://ci.appveyor.com/project/bugsnag/bugsnag-dotnet)
 [![Documentation](https://img.shields.io/badge/documentation-latest-blue.svg)](https://docs.bugsnag.com/platforms/dotnet/)
 
 The Bugsnag Notifier for .NET gives you instant notification of exceptions
