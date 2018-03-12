@@ -3,7 +3,8 @@
 
 ### Requirements
 
-see the main [README](../#requirements)
+- Visual Studio 2017
+- .NET Framework 4.7
 
 ### Setup
 
@@ -14,17 +15,10 @@ use with this application:
 <bugsnag apiKey="APIKEY" releaseStage="development" notifyReleaseStages="development" projectNamespaces="net47_console" projectRoots="C:\app\" />
 ```
 
-Follow the [instructions](../) in order to bootstrap and build the
-required docker images.
+From within Visual Studio you can compile and launch the console application.
 
-Run `docker-compose up` in this directory to start the console application. An
-unhandled exception will be triggered.
+### Steps taken to install Bugsnag
 
-If you make any code changes you will need to rebuild the docker image
-(`docker-compose build`) as we are not mounting this code directory inside of
-the container.
-
-The steps taken to configure Bugsnag for this application:
 - Add the required nuget packages (see `packages.config`)
 - Add the configuration sections to the `App.config`
 
@@ -37,5 +31,5 @@ The steps taken to configure Bugsnag for this application:
 - Create a Bugsnag client when the console application starts
 
 ```
-var client = new Client(Bugsnag.ConfigurationSection.Configuration.Settings);
+var bugsnag = new Client(Bugsnag.ConfigurationSection.Configuration.Settings);
 ```

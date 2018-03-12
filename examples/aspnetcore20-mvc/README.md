@@ -3,7 +3,8 @@ ASP.NET Core 2.0 MVC Example Application
 
 ### Requirements
 
-see the main [README](../#requirements)
+- Visual Studio 2017
+- .NET Core 2.0 development tools for web
 
 ### Setup
 
@@ -18,17 +19,9 @@ services.AddBugsnag(config => {
 });
 ```
 
-Follow the [instructions](../) in order to bootstrap and build the
-required docker images.
+From within Visual Studio you can compile and start the website.
 
-Run `docker-compose up` in this directory to start the website. You can browse to
-`http://localhost:8083/`. If you navigate to `About` you will cause an unhandled
-exception in MVC.
+### Steps taken to install Bugsnag
 
-If you make any code changes you will need to rebuild the docker image
-(`docker-compose build`) as we are not mounting this code directory inside of
-the container.
-
-The steps taken to configure Bugsnag for this application:
 - Add the required nuget packages (see `aspnetcore20-mvc.csproj`)
 - Add Bugsnag with the convenience method in `Startup.cs`
