@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <OutputPath>$(BaseOutputPath)</OutputPath>
+  </PropertyGroup>
+</Project>

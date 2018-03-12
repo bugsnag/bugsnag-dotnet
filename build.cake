@@ -4,14 +4,12 @@ var target = Argument("target", "Default");
 // this can be changed once we are pushing the nuget packages up
 var nugetPackageOutput = MakeAbsolute(Directory("./packages"));
 var configuration = Argument("configuration", "Release");
-var examples = GetSubDirectories("./examples");
+var buildDir = MakeAbsolute(Directory("./build"));
 
 Task("Clean")
     .Does(() =>
 {
-    CleanDirectories("./**/bin");
-    CleanDirectories("./**/obj");
-    CleanDirectories("./**/packages");
+    CleanDirectory(buildDir);
     CleanDirectory(nugetPackageOutput);
 });
 
@@ -28,6 +26,7 @@ Task("Build")
 {
   MSBuild("./Bugsnag.sln", settings =>
     settings
+      .WithProperty("BaseOutputPath", $"{buildDir.FullPath}\\")
       .SetVerbosity(Verbosity.Minimal)
       .SetConfiguration(configuration));
 });
@@ -35,7 +34,7 @@ Task("Build")
 Task("Test")
   .IsDependentOn("Build")
   .Does(() => {
-    var testAssemblies = GetFiles($"./tests/**/bin/{configuration}/**/*.Tests.dll");
+    var testAssemblies = GetFiles($"{buildDir}/**/*.Tests.dll");
     XUnit2(testAssemblies,
       new XUnit2Settings {
           ArgumentCustomization = args => {
