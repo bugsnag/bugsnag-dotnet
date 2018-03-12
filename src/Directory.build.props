@@ -6,7 +6,7 @@
     <PackageTags>bugsnag crash exception-handling exception-reporting exception-handler error-monitoring error-reporting error-handling unhandled-exceptions debug exceptions error errors bug bugs crash-reporting crash-reporting-tool error-log diagnostic</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/bugsnag/bugsnag-dotnet</PackageProjectUrl>
-    <PackageIconUrl>https://dbd6j53uzcole.cloudfront.net/assets/images/website/logo-mark.0b14965b.png</PackageIconUrl>
+    <PackageIconUrl>https://s3.amazonaws.com/bugsnag.com/images/square-logo-small.png</PackageIconUrl>
     <DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' != 'netstandard1.3' AND '$(TargetFramework)' != 'netstandard2.0'">true</DisableImplicitFrameworkReferences>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>7.1</LangVersion>
