@@ -2,6 +2,7 @@
   <PropertyGroup>
     <PackageId>Bugsnag.AspNet.Mvc</PackageId>
     <Title>Bugsnag .NET ASP.NET MVC Notifier</Title>
+    <Description>The Bugsnag Notifier for ASP.NET MVC gives you instant notification of exceptions thrown from your ASP.NET MVC applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.</Description>
     <TargetFrameworks>net35;net40;net45</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>

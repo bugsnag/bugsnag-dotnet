@@ -2,6 +2,8 @@
   <PropertyGroup>
     <Authors>snmaynard kattrali martin308</Authors>
     <Version>2.0.0-alpha</Version>
+    <Copyright>© 2018 Bugsnag Inc.</Copyright>
+    <PackageTags>error tracking reporting logging crash exception monitoring log analysis aggregation</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/bugsnag/bugsnag-dotnet</PackageProjectUrl>
     <PackageIconUrl>https://dbd6j53uzcole.cloudfront.net/assets/images/website/logo-mark.0b14965b.png</PackageIconUrl>

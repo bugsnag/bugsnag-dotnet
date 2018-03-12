@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>Bugsnag.ConfigurationSection</PackageId>
-    <Title>Bugsnag .NET ASP.NET Notifier</Title>
+    <Title>Bugsnag .NET Configuration</Title>
+    <Description>The Bugsnag .NET configuration library is used to configure your Bugsnag integration using a Web.config or App.config</Description>
     <TargetFrameworks>net35;net45</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>

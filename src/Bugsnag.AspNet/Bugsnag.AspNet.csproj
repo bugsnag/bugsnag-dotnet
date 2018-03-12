@@ -2,6 +2,7 @@
   <PropertyGroup>
     <PackageId>Bugsnag.AspNet</PackageId>
     <Title>Bugsnag .NET ASP.NET Notifier</Title>
+    <Description>The Bugsnag Notifier for ASP.NET gives you instant notification of exceptions thrown from your ASP.NET applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.</Description>
     <TargetFrameworks>net35;net40;net45</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
