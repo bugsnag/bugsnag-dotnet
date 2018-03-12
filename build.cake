@@ -1,16 +1,15 @@
 #tool "nuget:?package=xunit.runner.console"
 
 var target = Argument("target", "Default");
+var buildDir = Directory("./build");
 // this can be changed once we are pushing the nuget packages up
-var nugetPackageOutput = MakeAbsolute(Directory("./packages"));
+var nugetPackageOutput = buildDir + Directory("packages");
 var configuration = Argument("configuration", "Release");
-var buildDir = MakeAbsolute(Directory("./build"));
 
 Task("Clean")
     .Does(() =>
 {
     CleanDirectory(buildDir);
-    CleanDirectory(nugetPackageOutput);
 });
 
 Task("Restore-NuGet-Packages")
@@ -26,7 +25,7 @@ Task("Build")
 {
   MSBuild("./Bugsnag.sln", settings =>
     settings
-      .WithProperty("BaseOutputPath", $"{buildDir.FullPath}\\")
+      .WithProperty("BaseOutputPath", $"{MakeAbsolute(buildDir).FullPath}\\")
       .SetVerbosity(Verbosity.Minimal)
       .SetConfiguration(configuration));
 });
@@ -58,7 +57,7 @@ Task("Pack")
       .SetConfiguration(configuration)
       .WithProperty("IncludeSymbols", "true")
       .WithProperty("GenerateDocumentationFile", "true")
-      .WithProperty("PackageOutputPath", nugetPackageOutput.FullPath));
+      .WithProperty("PackageOutputPath", MakeAbsolute(nugetPackageOutput).FullPath));
 });
 
 Task("PopulateExamplePackages")
