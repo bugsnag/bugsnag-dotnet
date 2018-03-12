@@ -4,3 +4,4 @@ build_script:
 test: off
 artifacts:
   - path: 'build\packages\*.nupkg'
+  - path: 'build\Release\**\Bugsnag.*'
