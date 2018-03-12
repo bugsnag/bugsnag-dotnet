@@ -5,6 +5,7 @@ var buildDir = Directory("./build");
 // this can be changed once we are pushing the nuget packages up
 var nugetPackageOutput = buildDir + Directory("packages");
 var configuration = Argument("configuration", "Release");
+var examples = GetSubDirectories("./examples");
 
 Task("Clean")
     .Does(() =>
