@@ -3,4 +3,4 @@ build_script:
   - ps: .\build.ps1 -Target Appveyor
 test: off
 artifacts:
-  - path: 'packages\*.nupkg'
+  - path: 'build\packages\*.nupkg'
