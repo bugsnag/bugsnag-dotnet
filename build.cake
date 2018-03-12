@@ -35,7 +35,17 @@ Task("Build")
 Task("Test")
   .IsDependentOn("Build")
   .Does(() => {
-    XUnit2(GetFiles($"./tests/**/bin/{configuration}/**/*.Tests.dll"));
+    var testAssemblies = GetFiles($"./tests/**/bin/{configuration}/**/*.Tests.dll");
+    XUnit2(testAssemblies,
+      new XUnit2Settings {
+          ArgumentCustomization = args => {
+            if (AppVeyor.IsRunningOnAppVeyor)
+            {
+              args.Append("-appveyor");
+            }
+            return args;
+          }
+      });
   });
 
 Task("Pack")
@@ -95,6 +105,9 @@ Task("BuildExamples")
 });
 
 Task("Default")
-    .IsDependentOn("PopulateExamplePackages");
+    .IsDependentOn("Test");
+
+Task("Appveyor")
+    .IsDependentOn("Pack");
 
 RunTarget(target);
