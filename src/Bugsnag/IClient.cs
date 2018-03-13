@@ -31,6 +31,7 @@ namespace Bugsnag
     /// </summary>
     /// <param name="exception"></param>
     /// <param name="severity"></param>
+    /// <param name="callback"></param>
     void Notify(System.Exception exception, Severity severity, Middleware callback);
 
     /// <summary>
@@ -38,17 +39,17 @@ namespace Bugsnag
     /// state.
     /// </summary>
     /// <param name="exception"></param>
-    /// <param name="severity"></param>
-    void Notify(System.Exception exception, HandledState severity);
+    /// <param name="handledState"></param>
+    void Notify(System.Exception exception, HandledState handledState);
 
     /// <summary>
     /// Notify Bugsnag of the provided exception, using the specified handled
     /// state and use the provided middleware.
     /// </summary>
     /// <param name="exception"></param>
-    /// <param name="severity"></param>
+    /// <param name="handledState"></param>
     /// <param name="callback"></param>
-    void Notify(System.Exception exception, HandledState severity, Middleware callback);
+    void Notify(System.Exception exception, HandledState handledState, Middleware callback);
 
     /// <summary>
     /// Notify Bugsnag of the prebuilt report object and use the provided
