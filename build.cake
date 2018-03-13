@@ -1,4 +1,6 @@
 #tool "nuget:?package=xunit.runner.console"
+#addin nuget:?package=Cake.SemVer
+#addin nuget:?package=semver&version=2.0.4
 
 var target = Argument("target", "Default");
 var buildDir = Directory("./build");
@@ -72,7 +74,6 @@ Task("PopulateExamplePackages")
 });
 
 Task("BuildExamples")
-  .IsDependentOn("PopulateExamplePackages")
   .Does(() =>
 {
       var failures = examples.AsParallel().Select(e => {
@@ -103,10 +104,22 @@ Task("BuildExamples")
       }
 });
 
+Task("PokeBuildNumber")
+  .Does(() =>
+{
+    var file = File("src/Directory.build.props");
+    var path = "/Project/PropertyGroup/Version";
+    XmlPoke(
+      file,
+      path,
+      ParseSemVer(XmlPeek(file, path)).Change(patch: AppVeyor.Environment.Build.Number).ToString());
+});
+
 Task("Default")
     .IsDependentOn("Test");
 
 Task("Appveyor")
+    .IsDependentOn("PokeBuildNumber")
     .IsDependentOn("Pack");
 
 RunTarget(target);
