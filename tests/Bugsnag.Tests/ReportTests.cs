@@ -20,7 +20,7 @@ namespace Bugsnag.Tests
         exception = caughtException;
       }
 
-      var report = new Report(configuration, exception, Bugsnag.Payload.HandledState.ForHandledException(), new Breadcrumb[] { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session(), new Request());
+      var report = new Report(configuration, exception, HandledState.ForHandledException(), new Breadcrumb[] { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session());
       Assert.NotNull(report);
     }
 
@@ -30,7 +30,7 @@ namespace Bugsnag.Tests
       System.Exception exception = new System.Exception("test");
       var configuration = new Configuration("123456");
 
-      var report = new Report(configuration, exception, Bugsnag.Payload.HandledState.ForHandledException(), new Breadcrumb[] { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session(), new Request());
+      var report = new Report(configuration, exception, HandledState.ForHandledException(), new Breadcrumb[] { new Breadcrumb("test", BreadcrumbType.Manual) }, new Session());
       Assert.NotNull(report);
     }
   }

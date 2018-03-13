@@ -32,7 +32,6 @@ namespace Bugsnag
       Bugsnag.InternalMiddleware.RemoveProjectRoots,
       Bugsnag.InternalMiddleware.DetectInProjectNamespaces,
       Bugsnag.InternalMiddleware.AttachGlobalMetadata,
-      Bugsnag.InternalMiddleware.DetermineDefaultContext,
     };
 
     /// <summary>
@@ -71,25 +70,12 @@ namespace Bugsnag
       UnhandledException.Instance.ConfigureClient(this, configuration);
     }
 
-    /// <summary>
-    /// The configuration object that this client is using.
-    /// </summary>
     public IConfiguration Configuration => _configuration;
 
-    /// <summary>
-    /// The breadcrumbs functionality for the client.
-    /// </summary>
     public IBreadcrumbs Breadcrumbs => _breadcrumbs;
 
-    /// <summary>
-    /// The session tracking functionality for the client.
-    /// </summary>
     public ISessionTracker SessionTracking => _sessionTracking;
 
-    /// <summary>
-    /// Adds middleware to be executed before an error report is sent.
-    /// </summary>
-    /// <param name="middleware"></param>
     public void BeforeNotify(Middleware middleware)
     {
       lock (_middlewareLock)
@@ -104,48 +90,39 @@ namespace Bugsnag
     /// </summary>
     protected Middleware[] InternalMiddleware => DefaultInternalMiddleware;
 
-    /// <summary>
-    /// Notifies Bugsnag of a handled exception with optional request information.
-    /// </summary>
-    /// <param name="exception"></param>
-    /// <param name="request"></param>
-    public void Notify(System.Exception exception, Request request = null)
+    public void Notify(System.Exception exception)
     {
-      Notify(exception, HandledState.ForHandledException(), request);
+      Notify(exception, (Middleware)null);
     }
 
-    /// <summary>
-    /// Notifies Bugsnag of a handled exception with a custom severity level
-    /// and optional request information.
-    /// </summary>
-    /// <param name="exception"></param>
-    /// <param name="severity"></param>
-    /// <param name="request"></param>
-    public void Notify(System.Exception exception, Severity severity, Request request = null)
+    public void Notify(System.Exception exception, Middleware callback)
     {
-      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), request);
+      Notify(exception, HandledState.ForHandledException(), callback);
     }
 
-    /// <summary>
-    /// Notifies Bugsnag of an exception with the provided handled state and
-    /// optional request information.
-    /// </summary>
-    /// <param name="exception"></param>
-    /// <param name="severity"></param>
-    /// <param name="request"></param>
-    public void Notify(System.Exception exception, HandledState severity, Request request = null)
+    public void Notify(System.Exception exception, Severity severity)
     {
-      var report = new Report(_configuration, exception, severity, Breadcrumbs.Retrieve().ToArray(), SessionTracking.CurrentSession, request);
-
-      Notify(report);
+      Notify(exception, severity, null);
     }
 
-    /// <summary>
-    /// Notifies Bugsnag with a prebuilt error report. Running through the
-    /// various defined middleware.
-    /// </summary>
-    /// <param name="report"></param>
-    public void Notify(Report report)
+    public void Notify(System.Exception exception, Severity severity, Middleware callback)
+    {
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback);
+    }
+
+    public void Notify(System.Exception exception, HandledState handledState)
+    {
+      Notify(exception, handledState, null);
+    }
+
+    public void Notify(System.Exception exception, HandledState handledState, Middleware callback)
+    {
+      var report = new Report(_configuration, exception, handledState, Breadcrumbs.Retrieve().ToArray(), SessionTracking.CurrentSession);
+
+      Notify(report, callback);
+    }
+
+    public void Notify(Report report, Middleware callback)
     {
       foreach (var middleware in InternalMiddleware)
       {
@@ -174,8 +151,18 @@ namespace Bugsnag
         }
       }
 
+      try
+      {
+        callback?.Invoke(report);
+      }
+      catch (System.Exception exception)
+      {
+        Trace.WriteLine(exception);
+      }
+
       if (!report.Ignored)
       {
+        Bugsnag.InternalMiddleware.DetermineDefaultContext(report);
         Bugsnag.InternalMiddleware.ApplyMetadataFilters(report);
 
         _delivery.Send(report);

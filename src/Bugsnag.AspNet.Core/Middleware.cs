@@ -24,6 +24,13 @@ namespace Bugsnag.AspNet.Core
         client.SessionTracking.CreateSession();
       }
 
+      client.BeforeNotify(report => {
+        foreach (var @event in report.Events)
+        {
+          @event.Request = context.ToRequest();
+        }
+      });
+
       context.Items[HttpContextItemsKey] = client;
 
       if (client.Configuration.AutoNotify)
@@ -34,7 +41,7 @@ namespace Bugsnag.AspNet.Core
         }
         catch (System.Exception exception)
         {
-          client.Notify(exception, Payload.HandledState.ForUnhandledException(), context);
+          client.Notify(exception, Payload.HandledState.ForUnhandledException());
           throw;
         }
       }
