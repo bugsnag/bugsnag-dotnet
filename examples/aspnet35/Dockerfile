@@ -13,7 +13,6 @@ WORKDIR /app
 
 WORKDIR /app
 COPY packages.config nuget.config ./
-COPY packages ./packages
 RUN ["nuget.exe", "restore", "packages.config", "-PackagesDirectory", "packages"]
 
 COPY . .

@@ -2,7 +2,6 @@ FROM microsoft/dotnet-framework-build:3.5 AS build-env
 
 WORKDIR /app
 COPY packages.config nuget.config ./
-COPY packages ./packages
 RUN ["nuget.exe", "restore", "packages.config", "-PackagesDirectory", "packages"]
 
 COPY . .
