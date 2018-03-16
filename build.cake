@@ -10,17 +10,11 @@ var configuration = Argument("configuration", "Release");
 var examples = GetSubDirectories("./examples");
 
 Task("Clean")
-    .Does(() =>
-{
-    CleanDirectory(buildDir);
-});
+    .Does(() => CleanDirectory(buildDir));
 
 Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean")
-    .Does(() =>
-{
-    NuGetRestore("./Bugsnag.sln");
-});
+    .Does(() => NuGetRestore("./Bugsnag.sln"));
 
 Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
