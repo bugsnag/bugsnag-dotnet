@@ -8,6 +8,7 @@ var buildDir = Directory("./build");
 var nugetPackageOutput = buildDir + Directory("packages");
 var configuration = Argument("configuration", "Release");
 var examples = GetSubDirectories("./examples");
+var buildProps = File("./src/Directory.build.props");
 
 Task("Clean")
     .Does(() => CleanDirectory(buildDir));
@@ -91,12 +92,11 @@ Task("BuildExamples")
 Task("PokeBuildNumber")
   .Does(() =>
 {
-    var file = File("src/Directory.build.props");
     var path = "/Project/PropertyGroup/Version";
     XmlPoke(
-      file,
+      buildProps,
       path,
-      ParseSemVer(XmlPeek(file, path)).Change(patch: AppVeyor.Environment.Build.Number).ToString());
+      ParseSemVer(XmlPeek(buildProps, path)).Change(patch: AppVeyor.Environment.Build.Number).ToString());
 });
 
 Task("Default")
