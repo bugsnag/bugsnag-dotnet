@@ -63,16 +63,6 @@ Task("Pack")
       .WithProperty("PackageOutputPath", MakeAbsolute(nugetPackageOutput).FullPath));
 });
 
-Task("PopulateExamplePackages")
-  .IsDependentOn("Pack")
-  .Does(() =>
-{
-      foreach (var directory in examples)
-      {
-          CopyDirectory(nugetPackageOutput, directory.Combine(new DirectoryPath("packages")));
-      }
-});
-
 Task("BuildExamples")
   .Does(() =>
 {
