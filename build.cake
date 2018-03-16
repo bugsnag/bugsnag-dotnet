@@ -2,6 +2,7 @@
 #addin nuget:?package=Cake.SemVer
 #addin nuget:?package=semver&version=2.0.4
 
+var solution = File("./Bugsnag.sln");
 var target = Argument("target", "Default");
 var buildDir = Directory("./build");
 var nugetPackageOutput = buildDir + Directory("packages");
@@ -13,13 +14,13 @@ Task("Clean")
 
 Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean")
-    .Does(() => NuGetRestore("./Bugsnag.sln"));
+    .Does(() => NuGetRestore(solution));
 
 Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
 {
-  MSBuild("./Bugsnag.sln", settings =>
+  MSBuild(solution, settings =>
     settings
       .WithProperty("BaseOutputPath", $"{MakeAbsolute(buildDir).FullPath}\\")
       .SetVerbosity(Verbosity.Minimal)
@@ -46,7 +47,7 @@ Task("Pack")
   .IsDependentOn("Test")
   .Does(() =>
 {
-  MSBuild("./Bugsnag.sln", settings =>
+  MSBuild(solution, settings =>
     settings
       .SetVerbosity(Verbosity.Minimal)
       .WithTarget("pack")
