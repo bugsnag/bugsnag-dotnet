@@ -18,15 +18,14 @@ Task("Restore-NuGet-Packages")
     .Does(() => NuGetRestore(solution));
 
 Task("Build")
-    .IsDependentOn("Restore-NuGet-Packages")
-    .Does(() =>
-{
-  MSBuild(solution, settings =>
-    settings
-      .WithProperty("BaseOutputPath", $"{MakeAbsolute(buildDir).FullPath}\\")
-      .SetVerbosity(Verbosity.Minimal)
-      .SetConfiguration(configuration));
-});
+  .IsDependentOn("Restore-NuGet-Packages")
+  .Does(() => {
+    MSBuild(solution, settings =>
+      settings
+        .WithProperty("BaseOutputPath", $"{MakeAbsolute(buildDir).FullPath}\\")
+        .SetVerbosity(Verbosity.Minimal)
+        .SetConfiguration(configuration));
+  });
 
 Task("Test")
   .IsDependentOn("Build")
@@ -46,64 +45,70 @@ Task("Test")
 
 Task("Pack")
   .IsDependentOn("Test")
-  .Does(() =>
-{
-  MSBuild(solution, settings =>
-    settings
-      .SetVerbosity(Verbosity.Minimal)
-      .WithTarget("pack")
-      .SetConfiguration(configuration)
-      .WithProperty("IncludeSymbols", "true")
-      .WithProperty("GenerateDocumentationFile", "true")
-      .WithProperty("PackageOutputPath", MakeAbsolute(nugetPackageOutput).FullPath));
-});
+  .Does(() => {
+    MSBuild(solution, settings =>
+      settings
+        .SetVerbosity(Verbosity.Minimal)
+        .WithTarget("pack")
+        .SetConfiguration(configuration)
+        .WithProperty("IncludeSymbols", "true")
+        .WithProperty("GenerateDocumentationFile", "true")
+        .WithProperty("PackageOutputPath", MakeAbsolute(nugetPackageOutput).FullPath));
+  });
 
 Task("BuildExamples")
-  .Does(() =>
-{
-      var failures = examples.AsParallel().Select(e => {
-        IEnumerable<string> stdOut;
-        IEnumerable<string> errOut;
-        var settings = new ProcessSettings { Arguments = "build", WorkingDirectory = e, RedirectStandardOutput = true, RedirectStandardError = true };
-        var exitCode = StartProcess("docker-compose", settings, out stdOut, out errOut);
-        Information("docker-compose build {0}", e);
-        return new { ExitCode = exitCode, StdOutput = stdOut, ErrOutput = errOut, Example = e };
-      }).Where(o => o.ExitCode != 0).ToArray();
+  .Does(() => {
+    var failures = examples.AsParallel().Select(e => {
+      IEnumerable<string> stdOut;
+      IEnumerable<string> errOut;
+      var settings = new ProcessSettings {
+        Arguments = "build",
+        WorkingDirectory = e,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true
+      };
+      var exitCode = StartProcess("docker-compose", settings, out stdOut, out errOut);
+      Information("docker-compose build {0}", e);
+      return new {
+        ExitCode = exitCode,
+        StdOutput = stdOut,
+        ErrOutput = errOut,
+        Example = e
+      };
+    }).Where(o => o.ExitCode != 0).ToArray();
 
-      foreach (var failure in failures)
+    foreach (var failure in failures)
+    {
+      Error(failure.Example);
+      foreach (var output in failure.StdOutput)
       {
-        Error(failure.Example);
-        foreach (var output in failure.StdOutput)
-        {
-          Error(output);
-        }
-        foreach (var output in failure.ErrOutput)
-        {
-          Error(output);
-        }
+        Error(output);
       }
+      foreach (var output in failure.ErrOutput)
+      {
+        Error(output);
+      }
+    }
 
-      if (failures.Any())
-      {
-        throw new Exception("Failed to build examples");
-      }
-});
+    if (failures.Any())
+    {
+      throw new Exception("Failed to build examples");
+    }
+  });
 
 Task("PokeBuildNumber")
-  .Does(() =>
-{
+  .Does(() => {
     var path = "/Project/PropertyGroup/Version";
-    XmlPoke(
-      buildProps,
-      path,
-      ParseSemVer(XmlPeek(buildProps, path)).Change(patch: AppVeyor.Environment.Build.Number).ToString());
-});
+    var newVersion = ParseSemVer(XmlPeek(buildProps, path))
+      .Change(patch: AppVeyor.Environment.Build.Number);
+    XmlPoke(buildProps,  path, newVersion.ToString());
+  });
 
 Task("Default")
-    .IsDependentOn("Test");
+  .IsDependentOn("Test");
 
 Task("Appveyor")
-    .IsDependentOn("PokeBuildNumber")
-    .IsDependentOn("Pack");
+  .IsDependentOn("PokeBuildNumber")
+  .IsDependentOn("Pack");
 
 RunTarget(target);
