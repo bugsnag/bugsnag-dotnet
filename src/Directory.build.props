@@ -1,7 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
     <Authors>snmaynard kattrali martin308</Authors>
-    <Version>2.0.0-alpha</Version>
+    <Version></Version>
     <Copyright>© 2018 Bugsnag Inc.</Copyright>
     <PackageTags>bugsnag crash exception-handling exception-reporting exception-handler error-monitoring error-reporting error-handling unhandled-exceptions debug exceptions error errors bug bugs crash-reporting crash-reporting-tool error-log diagnostic</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/bugsnag/bugsnag-dotnet/master/LICENSE.txt</PackageLicenseUrl>

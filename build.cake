@@ -96,19 +96,17 @@ Task("BuildExamples")
     }
   });
 
-Task("PokeBuildNumber")
+Task("SetVersion")
   .Does(() => {
     var path = "/Project/PropertyGroup/Version";
-    var newVersion = ParseSemVer(XmlPeek(buildProps, path))
-      .Change(patch: AppVeyor.Environment.Build.Number);
-    XmlPoke(buildProps,  path, newVersion.ToString());
+    XmlPoke(buildProps,  path, AppVeyor.Environment.Build.Version);
   });
 
 Task("Default")
   .IsDependentOn("Test");
 
 Task("Appveyor")
-  .IsDependentOn("PokeBuildNumber")
+  .IsDependentOn("SetVersion")
   .IsDependentOn("Pack");
 
 RunTarget(target);
