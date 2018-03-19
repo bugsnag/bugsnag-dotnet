@@ -21,6 +21,13 @@ namespace Bugsnag.AspNet
 
       var client = Client.Current;
 
+      client.BeforeNotify(report => {
+        foreach (var @event in report.Events)
+        {
+          @event.Request = application.Context.ToRequest();
+        }
+      });
+
       if (client.Configuration.AutoCaptureSessions)
       {
         client.SessionTracking.CreateSession();
@@ -37,7 +44,7 @@ namespace Bugsnag.AspNet
         {
           var exception = application.Server.GetLastError();
 
-          client.Notify(exception, Payload.HandledState.ForUnhandledException(), application.Context);
+          client.Notify(exception, Payload.HandledState.ForUnhandledException());
         }
       }
     }

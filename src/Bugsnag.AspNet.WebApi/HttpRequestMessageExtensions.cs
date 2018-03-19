@@ -6,6 +6,8 @@ namespace Bugsnag.AspNet.WebApi
 {
   public static class HttpRequestMessageExtensions
   {
+    public const string HttpContextItemsKey = "Bugsnag.Client";
+
     public static Request ToRequest(this HttpRequestMessage request)
     {
       return new Request
@@ -19,14 +21,14 @@ namespace Bugsnag.AspNet.WebApi
 
     public static void UseBugsnagClient(this HttpRequestMessage request, IClient client)
     {
-      request.Properties[Client.HttpContextItemsKey] = client;
+      request.Properties[HttpContextItemsKey] = client;
     }
 
     public static IClient Bugsnag(this HttpRequestMessage request)
     {
-      if (request.Properties.ContainsKey(Client.HttpContextItemsKey))
+      if (request.Properties.ContainsKey(HttpContextItemsKey))
       {
-        return request.Properties[Client.HttpContextItemsKey] as IClient;
+        return request.Properties[HttpContextItemsKey] as IClient;
       }
 
       return null;

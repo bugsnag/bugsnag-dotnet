@@ -12,7 +12,7 @@ namespace Bugsnag.Tests
     {
       var configuration = new Configuration("123456") { ReleaseStage = releaseStage, NotifyReleaseStages = notifyReleaseStages };
 
-      var report = new Report(configuration, new System.Exception(), Bugsnag.Payload.HandledState.ForHandledException(), new Breadcrumb[0], new Session(), new Request());
+      var report = new Report(configuration, new System.Exception(), Bugsnag.Payload.HandledState.ForHandledException(), new Breadcrumb[0], new Session());
 
       InternalMiddleware.ReleaseStageFilter(report);
 
@@ -35,7 +35,7 @@ namespace Bugsnag.Tests
     public void ProjectRootStrippingTests(string[] projectRoots, string fileName, string expectedFileName)
     {
       var configuration = new Configuration("123456") { ProjectRoots = projectRoots };
-      var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session(), new Request());
+      var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session());
 
       foreach (var @event in report.Events)
       {

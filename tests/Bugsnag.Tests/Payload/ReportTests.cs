@@ -14,9 +14,8 @@ namespace Bugsnag.Tests.Payload
       var severity = HandledState.ForUnhandledException();
       var breadcrumbs = new Breadcrumb[0];
       var session = new Session();
-      var request = new Request();
 
-      var @event = new Report(configuration, exception, severity, breadcrumbs, session, request);
+      var @event = new Report(configuration, exception, severity, breadcrumbs, session);
 
       Assert.Equal(configuration.ApiKey, @event["apiKey"]);
       Assert.NotNull(@event["notifier"]);
@@ -31,9 +30,8 @@ namespace Bugsnag.Tests.Payload
       var severity = HandledState.ForUnhandledException();
       var breadcrumbs = new Breadcrumb[] { new Breadcrumb("wow bread!", BreadcrumbType.Manual) };
       var session = new Session();
-      var request = new Request();
 
-      var report = new Report(configuration, exception, severity, breadcrumbs, session, request);
+      var report = new Report(configuration, exception, severity, breadcrumbs, session);
 
       foreach (var @event in report.Events)
       {

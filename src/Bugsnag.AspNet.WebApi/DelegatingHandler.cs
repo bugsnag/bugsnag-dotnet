@@ -43,9 +43,9 @@ namespace Bugsnag.AspNet.WebApi
 
           if (potentialItems is IDictionary dictionary)
           {
-            if (dictionary.Contains(Client.HttpContextItemsKey))
+            if (dictionary.Contains(HttpRequestMessageExtensions.HttpContextItemsKey))
             {
-              client = dictionary[Client.HttpContextItemsKey] as IClient;
+              client = dictionary[HttpRequestMessageExtensions.HttpContextItemsKey] as IClient;
             }
           }
         }
@@ -53,8 +53,15 @@ namespace Bugsnag.AspNet.WebApi
 
       if (client == null)
       {
-        client = new Bugsnag.Client(_configuration);
+        client = new Client(_configuration);
       }
+
+      client.BeforeNotify(report => {
+        foreach (var @event in report.Events)
+        {
+          @event.Request = request.ToRequest();
+        }
+      });
 
       if (client.Configuration.AutoCaptureSessions)
       {

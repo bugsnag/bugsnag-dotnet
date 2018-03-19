@@ -15,11 +15,10 @@ namespace Bugsnag.Tests.Payload
       var severity = Bugsnag.Payload.HandledState.ForUnhandledException();
       var breadcrumbs = Enumerable.Empty<Breadcrumb>();
       var session = new Session();
-      var request = new Request();
 
       var payloadVersion = "4";
 
-      var @event = new Event(payloadVersion, app, device, exception, severity, breadcrumbs, session, request);
+      var @event = new Event(payloadVersion, app, device, exception, severity, breadcrumbs, session);
 
       Assert.Equal(payloadVersion, @event["payloadVersion"]);
     }
@@ -33,9 +32,8 @@ namespace Bugsnag.Tests.Payload
       var severity = Bugsnag.Payload.HandledState.ForUnhandledException();
       var breadcrumbs = Enumerable.Empty<Breadcrumb>();
       var session = new Session();
-      var request = new Request();
 
-      var @event = new Event("1", app, device, exception, severity, breadcrumbs, session, request);
+      var @event = new Event("1", app, device, exception, severity, breadcrumbs, session);
 
       foreach (var key in severity.Keys)
       {

@@ -33,8 +33,7 @@ namespace Bugsnag.Payload
     /// <param name="severity"></param>
     /// <param name="breadcrumbs"></param>
     /// <param name="session"></param>
-    /// <param name="request"></param>
-    public Report(IConfiguration configuration, System.Exception exception, HandledState severity, Breadcrumb[] breadcrumbs, Session session, Request request)
+    public Report(IConfiguration configuration, System.Exception exception, HandledState severity, Breadcrumb[] breadcrumbs, Session session)
     {
       _ignored = false;
       Endpoint = configuration.Endpoint;
@@ -54,7 +53,7 @@ namespace Bugsnag.Payload
       var app = new App(configuration);
       var device = new Device();
 
-      this.AddToPayload("events", new[] { new Event(_payloadVersion, app, device, exception, severity, breadcrumbs, session, request) });
+      this.AddToPayload("events", new[] { new Event(_payloadVersion, app, device, exception, severity, breadcrumbs, session) });
     }
 
     /// <summary>

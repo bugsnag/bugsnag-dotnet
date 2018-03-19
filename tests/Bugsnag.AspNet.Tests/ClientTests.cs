@@ -31,7 +31,13 @@ namespace Bugsnag.AspNet.Tests
       }
       catch (Exception e)
       {
-        client.Notify(e, new BugsnagHttpContext());
+        var context = new BugsnagHttpContext();
+        client.Notify(e, report => {
+          foreach (var @event in report.Events)
+          {
+            @event.Request = context.ToRequest();
+          }
+        });
       }
 
       var requests = await server.Requests();

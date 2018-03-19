@@ -20,7 +20,7 @@ namespace Bugsnag.AspNet.Mvc
       {
         if (client.Configuration.AutoNotify)
         {
-          client.Notify(filterContext.Exception, Payload.HandledState.ForUnhandledException(), filterContext.HttpContext);
+          client.Notify(filterContext.Exception, Payload.HandledState.ForUnhandledException());
         }
       }
     }

@@ -17,7 +17,7 @@ namespace Bugsnag.AspNet.WebApi
         if (client.Configuration.AutoNotify)
         {
           client
-            .Notify(exception, Payload.HandledState.ForUnhandledException(), request);
+            .Notify(exception, Payload.HandledState.ForUnhandledException());
         }
       }
     }
