@@ -99,7 +99,7 @@ namespace Bugsnag
     /// </summary>
     public static Middleware CheckIgnoreClasses = report =>
     {
-      if (report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
+      if (!report.Ignored && report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
       {
         foreach (var @event in report.Events)
         {
