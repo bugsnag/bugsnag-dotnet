@@ -8,6 +8,19 @@ namespace Bugsnag.Tests.Payload
   public class ExceptionTests
   {
     [Fact]
+    public void StackTraceIsPresent()
+    {
+      var exception = new System.Exception("oh noes!");
+
+      var exceptions = new Exceptions(exception, 5);
+
+      foreach (var ex in exceptions)
+      {
+        Assert.NotEmpty(ex.StackTrace);
+      }
+    }
+
+    [Fact]
     public void CorrectNumberOfExceptions()
     {
       var exception = new System.Exception("oh noes!");

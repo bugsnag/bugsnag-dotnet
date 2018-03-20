@@ -24,18 +24,40 @@ namespace Bugsnag.Payload
         yield break;
       }
 
-      var needFileInfo = true;
-      var stackTrace = new System.Diagnostics.StackTrace(_originalException, needFileInfo);
-      var stackFrames = stackTrace.GetFrames();
+      var exceptionStackTrace = true;
+      var stackFrames = new System.Diagnostics.StackTrace(_originalException, true).GetFrames();
+
+      if (stackFrames == null)
+      {
+        // this usually means that the exception has not been thrown so we need
+        // to try and create a stack trace at the point that the notify call
+        // was made.
+        exceptionStackTrace = false;
+        stackFrames = new System.Diagnostics.StackTrace(true).GetFrames();
+      }
 
       if (stackFrames == null)
       {
         yield break;
       }
 
+      bool seenBugsnagFrames = false;
+
       foreach (var frame in stackFrames)
       {
         var stackFrame = StackTraceLine.FromStackFrame(frame);
+
+        if (!exceptionStackTrace)
+        {
+          // if the exception has not come from a stack trace then we need to
+          // skip the frames that originate from inside the notifier code base
+          var currentStackFrameIsNotify = stackFrame.MethodName.StartsWith("Bugsnag.Client.Notify");
+          seenBugsnagFrames = seenBugsnagFrames || currentStackFrameIsNotify;
+          if (!seenBugsnagFrames || currentStackFrameIsNotify)
+          {
+            continue;
+          }
+        }
 
         yield return stackFrame;
       }
