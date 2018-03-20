@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using Bugsnag.Payload;
+using Bugsnag.Polyfills;
 
 namespace Bugsnag
 {
@@ -100,10 +102,20 @@ namespace Bugsnag
       {
         foreach (var @event in report.Events)
         {
-          @event.Exceptions = @event.Exceptions
-            .Where(e => !report.Configuration.IgnoreClasses.Any(@class => @class == e.ErrorClass))
-            .ToArray();
-          // TODO: if we filter out all of the exceptions should we still send the report?
+          foreach (var ignoredClass in report.Configuration.IgnoreClasses)
+          {
+            foreach (var exception in @event.Exceptions)
+            {
+              if (ignoredClass.IsInstanceOfType(exception.OriginalException))
+              {
+                report.Ignore();
+              }
+
+              if (report.Ignored) break;
+            }
+            if (report.Ignored) break;
+          }
+          if (report.Ignored) break;
         }
       }
     };

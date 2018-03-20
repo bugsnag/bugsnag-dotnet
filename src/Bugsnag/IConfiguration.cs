@@ -59,7 +59,7 @@ namespace Bugsnag
     /// These will be used to filter exceptions from being sent to Bugsnag based on the Error Class of the exception.
     /// eg. "System.FileNotFoundException"
     /// </summary>
-    string[] IgnoreClasses { get; }
+    Type[] IgnoreClasses { get; }
 
     /// <summary>
     /// This can be used to include these values as metadata in all error reports submitted to Bugsnag.

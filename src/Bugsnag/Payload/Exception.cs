@@ -75,8 +75,11 @@ namespace Bugsnag.Payload
   /// </summary>
   public class Exception : Dictionary<string, object>
   {
+    private readonly System.Exception _originalException;
+
     public Exception(System.Exception exception)
     {
+      _originalException = exception;
       this.AddToPayload("errorClass", TypeNameHelper.GetTypeDisplayName(exception.GetType()));
       this.AddToPayload("message", exception.Message);
       this.AddToPayload("stacktrace", new StackTrace(exception).ToArray());
@@ -85,5 +88,7 @@ namespace Bugsnag.Payload
     public IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
 
     public string ErrorClass { get { return this.Get("errorClass") as string; } }
+
+    public System.Exception OriginalException => _originalException;
   }
 }

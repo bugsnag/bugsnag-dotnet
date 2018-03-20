@@ -1,4 +1,5 @@
 using Bugsnag.Payload;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -91,6 +92,25 @@ namespace Bugsnag.Tests
       yield return new object[] { "https://app.bugsnag.com/user/new/", "/user/new/" };
       yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", "/user/new/" };
       yield return new object[] { null, null };
+    }
+
+    [Theory]
+    [MemberData(nameof(IgnoreClassesTestData))]
+    public void IgnoreClassesTest(System.Exception thrownException, Type ignoreClass, bool ignored)
+    {
+      var configuration = new Configuration("123456") { IgnoreClasses = new[] { ignoreClass } };
+      var report = new Report(configuration, thrownException, HandledState.ForHandledException(), new Breadcrumb[0], new Session());
+
+      InternalMiddleware.RemoveIgnoredExceptions(report);
+
+      Assert.Equal(ignored, report.Ignored);
+    }
+
+    public static IEnumerable<object[]> IgnoreClassesTestData()
+    {
+      yield return new object[] { new System.Exception(), typeof(System.Exception), true };
+      yield return new object[] { new System.DllNotFoundException(), typeof(System.Exception), true };
+      yield return new object[] { new System.Exception(), typeof(System.DllNotFoundException), false };
     }
   }
 }

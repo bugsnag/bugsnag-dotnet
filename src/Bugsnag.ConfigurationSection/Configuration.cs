@@ -223,16 +223,21 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    public string[] IgnoreClasses
+    private Type[] _ignoreClasses;
+
+    public Type[] IgnoreClasses
     {
       get
       {
-        if (InternalIgnoreClasses != null)
+        if (_ignoreClasses == null && InternalIgnoreClasses != null)
         {
-          return InternalIgnoreClasses.Split(',');
+          _ignoreClasses = InternalIgnoreClasses
+            .Split(',')
+            .Select(c => Type.GetType(c))
+            .Where(t => t != null).ToArray();
         }
 
-        return null;
+        return _ignoreClasses;
       }
     }
 

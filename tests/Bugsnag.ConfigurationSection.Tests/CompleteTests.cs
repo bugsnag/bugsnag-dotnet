@@ -70,7 +70,7 @@ namespace Bugsnag.ConfigurationSection.Tests
     [Fact]
     public void IgnoreClassesIsSet()
     {
-      Assert.Equal(new[] { "NotAGoodClass", "NotThatBadException" }, TestConfiguration.IgnoreClasses);
+      Assert.Equal(new[] { typeof(NotImplementedException), typeof(DllNotFoundException) }, TestConfiguration.IgnoreClasses);
     }
 
     [Fact]
