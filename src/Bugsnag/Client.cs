@@ -28,7 +28,7 @@ namespace Bugsnag
     /// </summary>
     protected static Middleware[] DefaultInternalMiddleware = new Middleware[] {
       Bugsnag.InternalMiddleware.ReleaseStageFilter,
-      Bugsnag.InternalMiddleware.RemoveIgnoredExceptions,
+      Bugsnag.InternalMiddleware.CheckIgnoreClasses,
       Bugsnag.InternalMiddleware.RemoveProjectRoots,
       Bugsnag.InternalMiddleware.DetectInProjectNamespaces,
       Bugsnag.InternalMiddleware.AttachGlobalMetadata,

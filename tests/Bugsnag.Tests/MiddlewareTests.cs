@@ -101,7 +101,7 @@ namespace Bugsnag.Tests
       var configuration = new Configuration("123456") { IgnoreClasses = new[] { ignoreClass } };
       var report = new Report(configuration, thrownException, HandledState.ForHandledException(), new Breadcrumb[0], new Session());
 
-      InternalMiddleware.RemoveIgnoredExceptions(report);
+      InternalMiddleware.CheckIgnoreClasses(report);
 
       Assert.Equal(ignored, report.Ignored);
     }

@@ -94,9 +94,10 @@ namespace Bugsnag
     };
 
     /// <summary>
-    /// Strips exceptions from the report if they include any 'ignored classes'
+    /// Ignore the report if any of the exceptions in it are included in the
+    /// IgnoreClasses.
     /// </summary>
-    public static Middleware RemoveIgnoredExceptions = report =>
+    public static Middleware CheckIgnoreClasses = report =>
     {
       if (report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
       {
