@@ -28,7 +28,7 @@ namespace Bugsnag.Sample.AspNet35
       }
       catch (Exception exception)
       {
-        AspNet.Client.Current.NotifyWithHttpContext(exception);
+        AspNet.Client.Current.Notify(exception);
       }
     }
   }

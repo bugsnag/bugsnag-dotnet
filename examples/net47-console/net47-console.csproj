@@ -32,15 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bugsnag">
-      <HintPath>packages\Bugsnag.2.0.0-alpha\lib\net45\Bugsnag.dll</HintPath>
+    <Reference Include="Bugsnag, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.2.0.12-alpha\lib\net45\Bugsnag.dll</HintPath>
     </Reference>
-    <Reference Include="Bugsnag.ConfigurationSection">
-      <HintPath>packages\Bugsnag.ConfigurationSection.2.0.0-alpha\lib\net45\Bugsnag.ConfigurationSection.dll</HintPath>
+    <Reference Include="Bugsnag.ConfigurationSection, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.ConfigurationSection.2.0.12-alpha\lib\net45\Bugsnag.ConfigurationSection.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

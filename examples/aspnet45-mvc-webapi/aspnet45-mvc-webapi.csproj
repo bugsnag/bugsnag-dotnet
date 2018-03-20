@@ -46,6 +46,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bugsnag, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.2.0.12-alpha\lib\net45\Bugsnag.dll</HintPath>
+    </Reference>
+    <Reference Include="Bugsnag.AspNet, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.AspNet.2.0.12-alpha\lib\net45\Bugsnag.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Bugsnag.AspNet.Mvc, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.AspNet.Mvc.2.0.12-alpha\lib\net45\Bugsnag.AspNet.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Bugsnag.AspNet.WebApi, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.AspNet.WebApi.2.0.12-alpha\lib\net45\Bugsnag.AspNet.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Bugsnag.ConfigurationSection, Version=2.0.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.ConfigurationSection.2.0.12-alpha\lib\net45\Bugsnag.ConfigurationSection.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -142,22 +157,6 @@
     </Reference>
     <Reference Include="Microsoft.AI.Web">
       <HintPath>packages\Microsoft.ApplicationInsights.Web.2.2.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
-    </Reference>
-
-    <Reference Include="Bugsnag">
-      <HintPath>packages\Bugsnag.2.0.0-alpha\lib\net45\Bugsnag.dll</HintPath>
-    </Reference>
-    <Reference Include="Bugsnag.AspNet">
-      <HintPath>packages\Bugsnag.AspNet.2.0.0-alpha\lib\net45\Bugsnag.AspNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Bugsnag.AspNet.Mvc">
-      <HintPath>packages\Bugsnag.AspNet.Mvc.2.0.0-alpha\lib\net45\Bugsnag.AspNet.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="Bugsnag.AspNet.WebApi">
-      <HintPath>packages\Bugsnag.AspNet.WebApi.2.0.0-alpha\lib\net45\Bugsnag.AspNet.WebApi.dll</HintPath>
-    </Reference>
-    <Reference Include="Bugsnag.ConfigurationSection">
-      <HintPath>packages\Bugsnag.ConfigurationSection.2.0.0-alpha\lib\net45\Bugsnag.ConfigurationSection.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
