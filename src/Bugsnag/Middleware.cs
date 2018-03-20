@@ -129,8 +129,6 @@ namespace Bugsnag
     {
       if (report.Configuration.MetadataFilters != null)
       {
-        // should this be applied to the whole report? We should probably focus it to specific sections
-        // of the payload
         foreach (var @event in report.Events)
         {
           @event.App.FilterPayload(report.Configuration.MetadataFilters);
