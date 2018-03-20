@@ -28,27 +28,46 @@ namespace Bugsnag.Tests.Payload
       Assert.Equal(2, exceptions.Count());
     }
 
-    [Fact]
-    public void HandleAggregateExceptions()
+    public class AggregateExceptions
     {
-      Exceptions exceptions = null;
-      var exceptionsToThrow = new[] { new System.Exception(), new System.DllNotFoundException() };
-      var tasks = exceptionsToThrow.Select(e => Task.Run(() => { throw e; })).ToArray();
+      Exception[] exceptions;
 
-      try
+      public AggregateExceptions()
       {
-        Task.WaitAll(tasks);
+        Exceptions exceptions = null;
+        var exceptionsToThrow = new[] { new System.Exception(), new System.DllNotFoundException() };
+        var tasks = exceptionsToThrow.Select(e => Task.Run(() => { throw e; })).ToArray();
+
+        try
+        {
+          Task.WaitAll(tasks);
+        }
+        catch (System.Exception exception)
+        {
+          exceptions = new Exceptions(exception, 0);
+        }
+
+        this.exceptions = exceptions.ToArray();
       }
-      catch (System.Exception exception)
+
+      [Fact]
+      public void ContainsDllNotFoundException()
       {
-        exceptions = new Exceptions(exception, 0);
+        Assert.Contains(exceptions, exception => exception.ErrorClass == "System.DllNotFoundException");
       }
 
-      var results = exceptions.ToArray();
+      [Fact]
+      public void ContainsException()
+      {
+        Assert.Contains(exceptions, exception => exception.ErrorClass == "System.Exception");
+      }
 
-      Assert.Contains(results, exception => exception.ErrorClass == "System.DllNotFoundException");
-      Assert.Contains(results, exception => exception.ErrorClass == "System.Exception");
-      Assert.Contains(results, exception => exception.ErrorClass == "System.AggregateException");
+      [Fact]
+      public void AggregateExceptionIsLast()
+      {
+        var lastException = exceptions.Last();
+        Assert.Equal("System.AggregateException", lastException.ErrorClass);
+      }
     }
   }
 }
