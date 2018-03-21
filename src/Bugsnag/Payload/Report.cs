@@ -70,7 +70,7 @@ namespace Bugsnag.Payload
     /// The list of Bugsnag payload events contained in this report. There is usually only a single
     /// event per payload but the Bugsnag error reporting API supports/requires this key to be an array.
     /// </summary>
-    public IEnumerable<Event> Events { get { return this.Get("events") as IEnumerable<Event>; } }
+    public Event[] Events { get { return this.Get("events") as Event[]; } set { this.AddToPayload("events", value); } }
 
     public System.Exception OriginalException => _originalException;
 

@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Bugsnag.Payload;
-using Bugsnag.Polyfills;
 
 namespace Bugsnag
 {
@@ -101,22 +100,30 @@ namespace Bugsnag
     {
       if (!report.Ignored && report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
       {
-        foreach (var @event in report.Events)
-        {
+        // filter the events from the report that have an exception in the
+        // IgnoreClasses property of the configuration.
+        var events = report.Events.Where(@event => {
           foreach (var ignoredClass in report.Configuration.IgnoreClasses)
           {
             foreach (var exception in @event.Exceptions)
             {
               if (ignoredClass.IsInstanceOfType(exception.OriginalException))
               {
-                report.Ignore();
+                return false;
               }
-
-              if (report.Ignored) break;
             }
-            if (report.Ignored) break;
           }
-          if (report.Ignored) break;
+
+          return true;
+        });
+
+        report.Events = events.ToArray();
+
+        // if we have filtered all events from the report then we should ignore
+        // the whole report.
+        if (!report.Events.Any())
+        {
+          report.Ignore();
         }
       }
     };
