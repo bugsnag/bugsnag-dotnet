@@ -78,7 +78,7 @@ namespace Bugsnag.AspNet.Tests
     [Fact]
     public void ContextIsSet()
     {
-      Assert.Contains("\"context\":\"https://www.bugsnag.com/\"", _request);
+      Assert.Contains("\"context\":\"/\"", _request);
     }
 
     class BugsnagHttpContext : HttpContextBase
