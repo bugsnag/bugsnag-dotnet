@@ -61,7 +61,9 @@ namespace Bugsnag.Tests
 
       var requests = await server.Requests();
 
-      Assert.Single(requests);
+      var request = requests.Single();
+
+      Assert.DoesNotContain("Bugsnag.Client.Notify", request);
     }
   }
 }
