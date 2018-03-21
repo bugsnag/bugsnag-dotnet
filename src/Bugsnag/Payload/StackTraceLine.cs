@@ -27,6 +27,7 @@ namespace Bugsnag.Payload
       var exceptionStackTrace = true;
       var stackFrames = new System.Diagnostics.StackTrace(_originalException, true).GetFrames();
 
+#if !NETSTANDARD1_3
       if (stackFrames == null)
       {
         // this usually means that the exception has not been thrown so we need
@@ -35,6 +36,7 @@ namespace Bugsnag.Payload
         exceptionStackTrace = false;
         stackFrames = new System.Diagnostics.StackTrace(true).GetFrames();
       }
+#endif
 
       if (stackFrames == null)
       {
