@@ -47,20 +47,17 @@ namespace Bugsnag
           return prefix;
         }).ToArray();
 
-        foreach (var @event in report.Events)
+        foreach (var exception in report.Event.Exceptions)
         {
-          foreach (var exception in @event.Exceptions)
+          foreach (var stackTraceLine in exception.StackTrace)
           {
-            foreach (var stackTraceLine in exception.StackTrace)
+            if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.FileName))
             {
-              if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.FileName))
+              foreach (var filePrefix in projectRoots)
               {
-                foreach (var filePrefix in projectRoots)
+                if (stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
                 {
-                  if (stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
-                  {
-                    stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
-                  }
+                  stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
                 }
               }
             }
@@ -76,16 +73,13 @@ namespace Bugsnag
     {
       if (report.Configuration.ProjectNamespaces != null && report.Configuration.ProjectNamespaces.Any())
       {
-        foreach (var @event in report.Events)
+        foreach (var exception in report.Event.Exceptions)
         {
-          foreach (var exception in @event.Exceptions)
+          foreach (var stackTraceLine in exception.StackTrace)
           {
-            foreach (var stackTraceLine in exception.StackTrace)
+            foreach (var @namespace in report.Configuration.ProjectNamespaces)
             {
-              foreach (var @namespace in report.Configuration.ProjectNamespaces)
-              {
-                stackTraceLine.InProject = stackTraceLine.MethodName.StartsWith(@namespace);
-              }
+              stackTraceLine.InProject = stackTraceLine.MethodName.StartsWith(@namespace);
             }
           }
         }
@@ -100,28 +94,11 @@ namespace Bugsnag
     {
       if (!report.Ignored && report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
       {
-        // filter the events from the report that have an exception in the
-        // IgnoreClasses property of the configuration.
-        var events = report.Events.Where(@event => {
-          foreach (var ignoredClass in report.Configuration.IgnoreClasses)
-          {
-            foreach (var exception in @event.Exceptions)
-            {
-              if (ignoredClass.IsInstanceOfType(exception.OriginalException))
-              {
-                return false;
-              }
-            }
-          }
+        var containsIgnoredClass = report.Configuration.IgnoreClasses
+          .Any(@class => report.Event.Exceptions
+            .Any(exception => @class.IsInstanceOfType(exception.OriginalException)));
 
-          return true;
-        });
-
-        report.Events = events.ToArray();
-
-        // if we have filtered all events from the report then we should ignore
-        // the whole report.
-        if (!report.Events.Any())
+        if (containsIgnoredClass)
         {
           report.Ignore();
         }
@@ -135,12 +112,9 @@ namespace Bugsnag
     {
       if (report.Configuration.GlobalMetadata != null)
       {
-        foreach (var @event in report.Events)
+        foreach (var item in report.Configuration.GlobalMetadata)
         {
-          foreach (var item in report.Configuration.GlobalMetadata)
-          {
-            @event.Metadata.Add(item.Key, item.Value);
-          }
+          report.Event.Metadata.Add(item.Key, item.Value);
         }
       }
     };
@@ -149,29 +123,23 @@ namespace Bugsnag
     {
       if (report.Configuration.MetadataFilters != null)
       {
-        foreach (var @event in report.Events)
-        {
-          @event.App.FilterPayload(report.Configuration.MetadataFilters);
-          @event.Device.FilterPayload(report.Configuration.MetadataFilters);
-          @event.Metadata.FilterPayload(report.Configuration.MetadataFilters);
-        }
+        report.Event.App.FilterPayload(report.Configuration.MetadataFilters);
+        report.Event.Device.FilterPayload(report.Configuration.MetadataFilters);
+        report.Event.Metadata.FilterPayload(report.Configuration.MetadataFilters);
       }
     };
 
     public static Middleware DetermineDefaultContext = report =>
     {
-      foreach (var @event in report.Events)
+      if (report.Event.Request != null)
       {
-        if (@event.Request != null)
+        if (Uri.TryCreate(report.Event.Request.Url, UriKind.Absolute, out Uri uri))
         {
-          if (Uri.TryCreate(@event.Request.Url, UriKind.Absolute, out Uri uri))
-          {
-            @event.Context = uri.AbsolutePath;
-          }
-          else
-          {
-            @event.Context = @event.Request.Url;
-          }
+          report.Event.Context = uri.AbsolutePath;
+        }
+        else
+        {
+          report.Event.Context = report.Event.Request.Url;
         }
       }
     };

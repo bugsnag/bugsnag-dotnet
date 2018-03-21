@@ -23,6 +23,8 @@ namespace Bugsnag.Payload
 
     private readonly IConfiguration _configuration;
 
+    private readonly Event _event;
+
     private bool _ignored;
 
     /// <summary>
@@ -53,7 +55,9 @@ namespace Bugsnag.Payload
       var app = new App(configuration);
       var device = new Device();
 
-      this.AddToPayload("events", new[] { new Event(_payloadVersion, app, device, exception, severity, breadcrumbs, session) });
+      _event = new Event(_payloadVersion, app, device, exception, severity, breadcrumbs, session);
+
+      this.AddToPayload("events", new[] { _event });
     }
 
     /// <summary>
@@ -70,28 +74,13 @@ namespace Bugsnag.Payload
     /// The list of Bugsnag payload events contained in this report. There is usually only a single
     /// event per payload but the Bugsnag error reporting API supports/requires this key to be an array.
     /// </summary>
-    public Event[] Events { get { return this.Get("events") as Event[]; } set { this.AddToPayload("events", value); } }
+    public Event Event => _event;
 
     public System.Exception OriginalException => _originalException;
 
     public HandledState OriginalSeverity => _originalSeverity;
 
     public IConfiguration Configuration => _configuration;
-
-    /// <summary>
-    /// Convenience method for setting the User on 'all' of the events in the
-    /// payload.
-    /// </summary>
-    public User User
-    {
-      set
-      {
-        foreach (var @event in Events)
-        {
-          @event.User = value;
-        }
-      }
-    }
 
     /// <summary>
     /// THe endpoint to send the error report to.
@@ -112,10 +101,7 @@ namespace Bugsnag.Payload
 
         if (data.Length > MaximumSize)
         {
-          foreach (var @event in Events)
-          {
-            @event.TrimExtraData();
-          }
+          Event.TrimExtraData();
         }
 
         data = Serializer.SerializeObjectToByteArray(this);

@@ -22,10 +22,7 @@ namespace Bugsnag.AspNet
       var client = Client.Current;
 
       client.BeforeNotify(report => {
-        foreach (var @event in report.Events)
-        {
-          @event.Request = application.Context.ToRequest();
-        }
+        report.Event.Request = application.Context.ToRequest();
       });
 
       if (client.Configuration.AutoCaptureSessions)

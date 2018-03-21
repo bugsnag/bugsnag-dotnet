@@ -25,10 +25,7 @@ namespace Bugsnag.AspNet.Core
       }
 
       client.BeforeNotify(report => {
-        foreach (var @event in report.Events)
-        {
-          @event.Request = context.ToRequest();
-        }
+        report.Event.Request = context.ToRequest();
       });
 
       context.Items[HttpContextItemsKey] = client;

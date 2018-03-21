@@ -57,10 +57,7 @@ namespace Bugsnag.AspNet.WebApi
       }
 
       client.BeforeNotify(report => {
-        foreach (var @event in report.Events)
-        {
-          @event.Request = request.ToRequest();
-        }
+        report.Event.Request = request.ToRequest();
       });
 
       if (client.Configuration.AutoCaptureSessions)
