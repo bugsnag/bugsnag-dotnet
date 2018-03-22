@@ -24,8 +24,13 @@ namespace Bugsnag.AspNet.Core
         client.SessionTracking.CreateSession();
       }
 
+      // capture the request information now as the http context
+      // may be changed by other error handlers after an exception
+      // has occurred
+      var bugsnagRequestInformation = context.ToRequest();
+
       client.BeforeNotify(report => {
-        report.Event.Request = context.ToRequest();
+        report.Event.Request = bugsnagRequestInformation;
       });
 
       context.Items[HttpContextItemsKey] = client;
