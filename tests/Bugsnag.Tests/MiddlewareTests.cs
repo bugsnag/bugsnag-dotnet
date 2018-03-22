@@ -59,6 +59,10 @@ namespace Bugsnag.Tests
     {
       yield return new object[] { new string[] { @"C:\app" }, @"C:\app\Class.cs", "Class.cs" };
       yield return new object[] { new string[] { @"C:\app\" }, @"C:\app\Class.cs", "Class.cs" };
+      // for this scenario we should only strip the file path once, here we
+      // have a setup where the first prefix will then also cause the second
+      // prefix to match. This should only strip the first prefix
+      yield return new object[] { new string[] { @"C:\app\", @"test\path" }, @"C:\app\test\path\Class.cs", @"test\path\Class.cs" };
     }
 
     [Theory]
