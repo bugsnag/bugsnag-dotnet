@@ -58,6 +58,7 @@ namespace Bugsnag
                 if (stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
                 {
                   stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
+                  break;
                 }
               }
             }
