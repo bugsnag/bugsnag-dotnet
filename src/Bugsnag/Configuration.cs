@@ -28,6 +28,7 @@ namespace Bugsnag
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
       MetadataFilters = new[] { "password", "Authorization" };
       MaximumBreadcrumbs = 25;
+      ReleaseStage = Environment.GetEnvironmentVariable("BUGSNAG_RELEASE_STAGE");
     }
 
     public string ApiKey { get; set; }

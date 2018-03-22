@@ -14,6 +14,12 @@ namespace Bugsnag.AspNet.Core
   /// </summary>
   public class BugsnagStartupFilter : IStartupFilter
   {
+    static BugsnagStartupFilter()
+    {
+      // populate the env variable that the client expects with the netcore provided value
+      Environment.SetEnvironmentVariable("BUGSNAG_RELEASE_STAGE", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+    }
+
     public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
     {
       return builder =>
