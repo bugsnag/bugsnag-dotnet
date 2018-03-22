@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using Bugsnag.Payload;
 
 namespace Bugsnag
@@ -46,20 +47,17 @@ namespace Bugsnag
           return prefix;
         }).ToArray();
 
-        foreach (var @event in report.Events)
+        foreach (var exception in report.Event.Exceptions)
         {
-          foreach (var exception in @event.Exceptions)
+          foreach (var stackTraceLine in exception.StackTrace)
           {
-            foreach (var stackTraceLine in exception.StackTrace)
+            if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.FileName))
             {
-              if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.FileName))
+              foreach (var filePrefix in projectRoots)
               {
-                foreach (var filePrefix in projectRoots)
+                if (stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
                 {
-                  if (stackTraceLine.FileName.StartsWith(filePrefix, System.StringComparison.Ordinal))
-                  {
-                    stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
-                  }
+                  stackTraceLine.FileName = stackTraceLine.FileName.Remove(0, filePrefix.Length);
                 }
               }
             }
@@ -75,16 +73,13 @@ namespace Bugsnag
     {
       if (report.Configuration.ProjectNamespaces != null && report.Configuration.ProjectNamespaces.Any())
       {
-        foreach (var @event in report.Events)
+        foreach (var exception in report.Event.Exceptions)
         {
-          foreach (var exception in @event.Exceptions)
+          foreach (var stackTraceLine in exception.StackTrace)
           {
-            foreach (var stackTraceLine in exception.StackTrace)
+            foreach (var @namespace in report.Configuration.ProjectNamespaces)
             {
-              foreach (var @namespace in report.Configuration.ProjectNamespaces)
-              {
-                stackTraceLine.InProject = stackTraceLine.MethodName.StartsWith(@namespace);
-              }
+              stackTraceLine.InProject = stackTraceLine.MethodName.StartsWith(@namespace);
             }
           }
         }
@@ -92,18 +87,20 @@ namespace Bugsnag
     };
 
     /// <summary>
-    /// Strips exceptions from the report if they include any 'ignored classes'
+    /// Ignore the report if any of the exceptions in it are included in the
+    /// IgnoreClasses.
     /// </summary>
-    public static Middleware RemoveIgnoredExceptions = report =>
+    public static Middleware CheckIgnoreClasses = report =>
     {
-      if (report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
+      if (!report.Ignored && report.Configuration.IgnoreClasses != null && report.Configuration.IgnoreClasses.Any())
       {
-        foreach (var @event in report.Events)
+        var containsIgnoredClass = report.Configuration.IgnoreClasses
+          .Any(@class => report.Event.Exceptions
+            .Any(exception => @class.IsInstanceOfType(exception.OriginalException)));
+
+        if (containsIgnoredClass)
         {
-          @event.Exceptions = @event.Exceptions
-            .Where(e => !report.Configuration.IgnoreClasses.Any(@class => @class == e.ErrorClass))
-            .ToArray();
-          // TODO: if we filter out all of the exceptions should we still send the report?
+          report.Ignore();
         }
       }
     };
@@ -115,12 +112,9 @@ namespace Bugsnag
     {
       if (report.Configuration.GlobalMetadata != null)
       {
-        foreach (var @event in report.Events)
+        foreach (var item in report.Configuration.GlobalMetadata)
         {
-          foreach (var item in report.Configuration.GlobalMetadata)
-          {
-            @event.Metadata.Add(item.Key, item.Value);
-          }
+          report.Event.Metadata.Add(item.Key, item.Value);
         }
       }
     };
@@ -129,31 +123,23 @@ namespace Bugsnag
     {
       if (report.Configuration.MetadataFilters != null)
       {
-        // should this be applied to the whole report? We should probably focus it to specific sections
-        // of the payload
-        foreach (var @event in report.Events)
-        {
-          @event.App.FilterPayload(report.Configuration.MetadataFilters);
-          @event.Device.FilterPayload(report.Configuration.MetadataFilters);
-          @event.Metadata.FilterPayload(report.Configuration.MetadataFilters);
-        }
+        report.Event.App.FilterPayload(report.Configuration.MetadataFilters);
+        report.Event.Device.FilterPayload(report.Configuration.MetadataFilters);
+        report.Event.Metadata.FilterPayload(report.Configuration.MetadataFilters);
       }
     };
 
     public static Middleware DetermineDefaultContext = report =>
     {
-      foreach (var @event in report.Events)
+      if (report.Event.Request != null)
       {
-        if (@event.Request != null)
+        if (Uri.TryCreate(report.Event.Request.Url, UriKind.Absolute, out Uri uri))
         {
-          if (Uri.TryCreate(@event.Request.Url, UriKind.Absolute, out Uri uri))
-          {
-            @event.Context = uri.AbsolutePath;
-          }
-          else
-          {
-            @event.Context = @event.Request.Url;
-          }
+          report.Event.Context = uri.AbsolutePath;
+        }
+        else
+        {
+          report.Event.Context = report.Event.Request.Url;
         }
       }
     };

@@ -33,21 +33,15 @@ namespace Bugsnag.Tests.Payload
 
       var report = new Report(configuration, exception, severity, breadcrumbs, session);
 
-      foreach (var @event in report.Events)
-      {
-        @event.Metadata.Add("small metadat", "so small");
-        @event.Metadata.Add("large metadata", new String('a', (1024 * 1024)));
-      }
+      report.Event.Metadata.Add("small metadat", "so small");
+      report.Event.Metadata.Add("large metadata", new String('a', (1024 * 1024)));
 
       var data = report.Serialize();
 
       Assert.NotNull(data);
 
-      foreach (var @event in report.Events)
-      {
-        Assert.Null(@event.Breadcrumbs);
-        Assert.Single(@event.Metadata);
-      }
+      Assert.Null(report.Event.Breadcrumbs);
+      Assert.Single(report.Event.Metadata);
     }
   }
 }

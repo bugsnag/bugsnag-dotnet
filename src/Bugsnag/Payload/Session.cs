@@ -29,16 +29,13 @@ namespace Bugsnag.Payload
     {
       if (this.Get("events") is SessionEvents sessions)
       {
-        foreach (var @event in report.Events)
+        if (report.Event.IsHandled)
         {
-          if (@event.IsHandled)
-          {
-            sessions.IncrementHandledCount();
-          }
-          else
-          {
-            sessions.IncrementUnhandledCount();
-          }
+          sessions.IncrementHandledCount();
+        }
+        else
+        {
+          sessions.IncrementUnhandledCount();
         }
       }
     }

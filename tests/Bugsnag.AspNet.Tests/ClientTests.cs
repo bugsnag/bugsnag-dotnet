@@ -33,10 +33,7 @@ namespace Bugsnag.AspNet.Tests
       {
         var context = new BugsnagHttpContext();
         client.Notify(e, report => {
-          foreach (var @event in report.Events)
-          {
-            @event.Request = context.ToRequest();
-          }
+          report.Event.Request = context.ToRequest();
         });
       }
 

@@ -1,4 +1,5 @@
 using Bugsnag.Payload;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -37,25 +38,19 @@ namespace Bugsnag.Tests
       var configuration = new Configuration("123456") { ProjectRoots = projectRoots };
       var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session());
 
-      foreach (var @event in report.Events)
+      foreach (var exception in report.Event.Exceptions)
       {
-        foreach (var exception in @event.Exceptions)
-        {
-          var stacktrace = new StackTraceLine[] { new StackTraceLine(fileName, 1, string.Empty, false, null) };
-          exception["stacktrace"] = stacktrace;
-        }
+        var stacktrace = new StackTraceLine[] { new StackTraceLine(fileName, 1, string.Empty, false, null) };
+        exception["stacktrace"] = stacktrace;
       }
 
       InternalMiddleware.RemoveProjectRoots(report);
 
-      foreach (var @event in report.Events)
+      foreach (var exception in report.Event.Exceptions)
       {
-        foreach (var exception in @event.Exceptions)
+        foreach (var stacktraceline in exception.StackTrace)
         {
-          foreach (var stacktraceline in exception.StackTrace)
-          {
-            Assert.Equal(expectedFileName, stacktraceline.FileName);
-          }
+          Assert.Equal(expectedFileName, stacktraceline.FileName);
         }
       }
     }
@@ -72,17 +67,11 @@ namespace Bugsnag.Tests
     {
       var configuration = new Configuration("123456");
       var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session());
-      foreach (var @event in report.Events)
-      {
-        @event.Request = new Request { Url = requestUrl };
-      }
+      report.Event.Request = new Request { Url = requestUrl };
 
       InternalMiddleware.DetermineDefaultContext(report);
 
-      foreach (var @event in report.Events)
-      {
-        Assert.Equal(expectedContext, @event.Context);
-      }
+      Assert.Equal(expectedContext, report.Event.Context);
     }
 
     public static IEnumerable<object[]> DetermineDefaultContextTestData()
@@ -91,6 +80,25 @@ namespace Bugsnag.Tests
       yield return new object[] { "https://app.bugsnag.com/user/new/", "/user/new/" };
       yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", "/user/new/" };
       yield return new object[] { null, null };
+    }
+
+    [Theory]
+    [MemberData(nameof(IgnoreClassesTestData))]
+    public void IgnoreClassesTest(System.Exception thrownException, Type ignoreClass, bool ignored)
+    {
+      var configuration = new Configuration("123456") { IgnoreClasses = new[] { ignoreClass } };
+      var report = new Report(configuration, thrownException, HandledState.ForHandledException(), new Breadcrumb[0], new Session());
+
+      InternalMiddleware.CheckIgnoreClasses(report);
+
+      Assert.Equal(ignored, report.Ignored);
+    }
+
+    public static IEnumerable<object[]> IgnoreClassesTestData()
+    {
+      yield return new object[] { new System.Exception(), typeof(System.Exception), true };
+      yield return new object[] { new System.DllNotFoundException(), typeof(System.Exception), true };
+      yield return new object[] { new System.Exception(), typeof(System.DllNotFoundException), false };
     }
   }
 }

@@ -48,7 +48,7 @@ namespace Bugsnag
 
     public string[] ProjectNamespaces { get; set; }
 
-    public string[] IgnoreClasses { get; set; }
+    public Type[] IgnoreClasses { get; set; }
 
     public KeyValuePair<string, object>[] GlobalMetadata { get; set; }
 
