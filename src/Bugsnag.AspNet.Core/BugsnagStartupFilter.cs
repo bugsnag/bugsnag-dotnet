@@ -16,8 +16,13 @@ namespace Bugsnag.AspNet.Core
   {
     static BugsnagStartupFilter()
     {
-      // populate the env variable that the client expects with the netcore provided value
-      Environment.SetEnvironmentVariable("BUGSNAG_RELEASE_STAGE", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+      // populate the env variable that the client expects with the netcore
+      // provided value unless it has already been specified
+      if (Environment.GetEnvironmentVariable("BUGSNAG_RELEASE_STAGE") == null)
+      {
+        Environment.SetEnvironmentVariable("BUGSNAG_RELEASE_STAGE",
+          Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+      }
     }
 
     public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
