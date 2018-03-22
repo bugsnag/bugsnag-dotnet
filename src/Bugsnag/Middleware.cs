@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Bugsnag.Payload;
 
@@ -145,7 +146,14 @@ namespace Bugsnag
       {
         if (@event.Request != null)
         {
-          @event.Context = @event.Request.Url;
+          if (Uri.TryCreate(@event.Request.Url, UriKind.Absolute, out Uri uri))
+          {
+            @event.Context = uri.AbsolutePath;
+          }
+          else
+          {
+            @event.Context = @event.Request.Url;
+          }
         }
       }
     };
