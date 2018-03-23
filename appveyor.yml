@@ -2,10 +2,12 @@ image: Visual Studio 2017
 version: 2.0.{build}-alpha
 build_script:
   - ps: .\build.ps1 -Target Appveyor
+after_build:
+  - ps: 7z a build\bugsnag.zip build\Release\**\Bugsnag*.dll build\Release\**\Bugsnag*.pdb
 test: off
 artifacts:
   - path: 'build\packages\*.nupkg'
-  - path: 'build\Release\**\Bugsnag.*'
+  - path: 'build\bugsnag.zip'
 deploy:
   - provider: NuGet
     api_key:
@@ -18,7 +20,7 @@ deploy:
     description: draft release
     auth_token:
       secure: fS4KNFA01HMw4lYhlOHd3Upi18Ih1i5wU2Lp0tPaeiUNf69wTXYH70pLFpgDHZlW
-    artifact: /.*\.(nupkg|dll)/
+    artifact: build\bugsnag.zip
     draft: true
     on:
       appveyor_repo_tag: true
