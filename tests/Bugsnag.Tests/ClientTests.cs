@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -39,31 +40,44 @@ namespace Bugsnag.Tests
       Assert.Single(requests);
     }
 
-    [Fact]
-    public async void TestNonThrownException()
+    public class NonThrownException : IAsyncLifetime
     {
-      var server = new TestServer(1);
+      public string BugsnagPayload { get; set; }
 
-      server.Start();
+      public Task DisposeAsync()
+      {
+        return Task.CompletedTask;
+      }
 
-      var metadata = new Dictionary<string, object>() { { "password", "secret" } };
-      var subMetadata = new Dictionary<string, object>() { { "circular", metadata }, { "password", "not again!" }, { "uri", new Uri("http://google.com?password=1111&wow=cool") } };
-      metadata["test"] = subMetadata;
-      var filters = new string[] { "password" };
+      public async Task InitializeAsync()
+      {
+        var server = new TestServer(1);
 
-      var client = new Client(new Configuration("123456") { Endpoint = server.Endpoint, MetadataFilters = filters });
+        server.Start();
 
-      client.BeforeNotify(r => {
-        r.Event.Metadata["bugsnag"] = metadata;
-      });
+        var metadata = new Dictionary<string, object>() { { "password", "secret" } };
+        var subMetadata = new Dictionary<string, object>() { { "circular", metadata }, { "password", "not again!" }, { "uri", new Uri("http://google.com?password=1111&wow=cool") } };
+        metadata["test"] = subMetadata;
+        var filters = new string[] { "password" };
 
-      client.Notify(new ArgumentNullException());
+        var client = new Client(new Configuration("123456") { Endpoint = server.Endpoint, MetadataFilters = filters });
 
-      var requests = await server.Requests();
+        client.BeforeNotify(r => {
+          r.Event.Metadata["bugsnag"] = metadata;
+        });
 
-      var request = requests.Single();
+        client.Notify(new ArgumentNullException());
 
-      Assert.DoesNotContain("Bugsnag.Client.Notify", request);
+        var requests = await server.Requests();
+
+        BugsnagPayload = requests.Single();
+      }
+
+      [Fact]
+      public void TestNonThrownException()
+      {
+        Assert.DoesNotContain("Bugsnag.Client.Notify", BugsnagPayload);
+      }
     }
   }
 }
