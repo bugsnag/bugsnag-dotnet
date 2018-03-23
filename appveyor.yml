@@ -6,3 +6,19 @@ test: off
 artifacts:
   - path: 'build\packages\*.nupkg'
   - path: 'build\Release\**\Bugsnag.*'
+deploy:
+  - provider: NuGet
+    api_key:
+      secure: X9kbHgyAVS0K82qDvjVm9BzE8W1Yu/+Tjd9uLGFKqzrXu4B78V1dIWZ5usa0reVq
+    skip_symbols: false
+    artifact: /.*\.nupkg/
+    on:
+      appveyor_repo_tag: true
+  - provider: GitHub
+    description: draft release
+    auth_token:
+      secure: fS4KNFA01HMw4lYhlOHd3Upi18Ih1i5wU2Lp0tPaeiUNf69wTXYH70pLFpgDHZlW
+    artifact: /.*\.(nupkg|dll)/
+    draft: true
+    on:
+      appveyor_repo_tag: true
