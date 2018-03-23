@@ -66,15 +66,37 @@ namespace Bugsnag.Tests
           r.Event.Metadata["bugsnag"] = metadata;
         });
 
-        client.Notify(new ArgumentNullException());
+        TestNotifyMethod(client);
 
         var requests = await server.Requests();
 
         BugsnagPayload = requests.Single();
       }
 
+      /// <summary>
+      /// A method that we can use to check that the stack trace contains the
+      /// initial notify call method.
+      /// </summary>
+      /// <param name="client"></param>
+      private void TestNotifyMethod(IClient client)
+      {
+        client.Notify(new ArgumentNullException());
+      }
+
+      /// <summary>
+      /// The stack trace should contain the notify method above.
+      /// </summary>
       [Fact]
-      public void TestNonThrownException()
+      public void ContainsExternalNotifyMethod()
+      {
+        Assert.Contains("Bugsnag.Tests.ClientTests+NonThrownException.TestNotifyMethod(IClient client)", BugsnagPayload);
+      }
+
+      /// <summary>
+      /// The stack trace should not contain the internal notify call.
+      /// </summary>
+      [Fact]
+      public void DoesNotContainInternalNotifyMethod()
       {
         Assert.DoesNotContain("Bugsnag.Client.Notify", BugsnagPayload);
       }
