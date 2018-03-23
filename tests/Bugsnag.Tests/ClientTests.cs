@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -78,6 +79,7 @@ namespace Bugsnag.Tests
       /// initial notify call method.
       /// </summary>
       /// <param name="client"></param>
+      [MethodImpl(MethodImplOptions.NoInlining)]
       private void TestNotifyMethod(IClient client)
       {
         client.Notify(new ArgumentNullException());
