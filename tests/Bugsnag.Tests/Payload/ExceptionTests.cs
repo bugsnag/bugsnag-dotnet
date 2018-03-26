@@ -17,15 +17,40 @@ namespace Bugsnag.Tests.Payload
       Assert.Single(exceptions);
     }
 
-    [Fact]
-    public void IncludeInnerExceptions()
+    public class InnerExceptions
     {
-      var innerException = new System.Exception();
-      var exception = new System.Exception("oh noes!", innerException);
+      Exception[] exceptions;
 
-      var exceptions = new Exceptions(exception, 5);
+      public InnerExceptions()
+      {
+        try
+        {
+          try
+          {
+            throw new System.Exception("inner");
+          }
+          catch (System.Exception ex1)
+          {
+            throw new System.Exception("outer", ex1);
+          }
+        }
+        catch (System.Exception exception)
+        {
+          exceptions = new Exceptions(exception, 0).ToArray();
+        }
+      }
 
-      Assert.Equal(2, exceptions.Count());
+      [Fact]
+      public void IncludesAllExceptions()
+      {
+        Assert.Equal(2, exceptions.Count());
+      }
+
+      [Fact]
+      public void OuterExceptionIsFirst()
+      {
+        Assert.Equal("outer", exceptions.First().ErrorMessage);
+      }
     }
 
     public class AggregateExceptions
@@ -63,10 +88,10 @@ namespace Bugsnag.Tests.Payload
       }
 
       [Fact]
-      public void AggregateExceptionIsLast()
+      public void AggregateExceptionIsFirst()
       {
-        var lastException = exceptions.Last();
-        Assert.Equal("System.AggregateException", lastException.ErrorClass);
+        var firstException = exceptions.First();
+        Assert.Equal("System.AggregateException", firstException.ErrorClass);
       }
     }
   }
