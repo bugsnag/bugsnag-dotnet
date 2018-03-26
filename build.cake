@@ -105,7 +105,7 @@ Task("SetVersion")
     }
     else
     {
-      version = $"{version}-dev{AppVeyor.Environment.Repository.Commit.Id.Substring(0, 7)}";
+      version = $"{version}-dev-{AppVeyor.Environment.Repository.Commit.Id.Substring(0, 7)}";
     }
     AppVeyor.UpdateBuildVersion(version);
     var path = "/Project/PropertyGroup/Version";
