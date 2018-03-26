@@ -1,12 +1,38 @@
-## 1.0.0
+Changelog
+=========
 
-#### Features
+## 2.0.x (2018-03-26)
 
-* Add support for a new feature
-  | [Some User](https://github.com/someuser)
-  | [#123](https://github.com/bugsnag/bugsnag-bugsnag-dotnet/issues/123)
+This is a major release to make the library clearer and easier to use and expand the support to new platforms. For upgrading instructions, see [the upgrading guide](UPGRADING.md#1x-to-2x).
 
-#### Enhancements
+### Enhancements
 
-#### Bug Fixes
+* Rewritten to support .NET Core
+* ASP.NET Core support added
+* Improved ASP.NET support
+* Much more
 
+## 1.4.0
+
+### Enhancements
+
+* Track whether an exception was captured automatically
+
+## 1.3.0
+
+### Enhancements
+
+* Support offline storage
+
+## 1.2.0
+
+### Enhancements
+
+* Add async notify support
+
+## 1.1.0
+
+### Enhancements
+
+* .NET 3.5 Support
+* Azure Support
