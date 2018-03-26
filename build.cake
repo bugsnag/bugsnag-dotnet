@@ -98,8 +98,18 @@ Task("BuildExamples")
 
 Task("SetVersion")
   .Does(() => {
+    var version = AppVeyor.Environment.Build.Version;
+    if (AppVeyor.Environment.Repository.Tag.IsTag)
+    {
+      version = AppVeyor.Environment.Repository.Tag.Name.TrimStart('v');
+    }
+    else
+    {
+      version = $"{version}-dev-{AppVeyor.Environment.Repository.Commit.Id.Substring(0, 7)}";
+    }
+    AppVeyor.UpdateBuildVersion(version);
     var path = "/Project/PropertyGroup/Version";
-    XmlPoke(buildProps,  path, AppVeyor.Environment.Build.Version);
+    XmlPoke(buildProps,  path, version);
   });
 
 Task("Default")
