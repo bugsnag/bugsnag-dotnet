@@ -36,6 +36,8 @@ namespace Bugsnag.Payload
     {
       if (ex == null) yield break;
 
+      yield return ex;
+
       switch (ex)
       {
         case ReflectionTypeLoadException typeLoadException:
@@ -65,8 +67,6 @@ namespace Bugsnag.Payload
           }
           break;
       }
-
-      yield return ex;
     }
   }
 
@@ -88,6 +88,8 @@ namespace Bugsnag.Payload
     public IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
 
     public string ErrorClass { get { return this.Get("errorClass") as string; } }
+
+    public string ErrorMessage { get { return this.Get("message") as string; } }
 
     public System.Exception OriginalException => _originalException;
   }
