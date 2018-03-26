@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 2.0.x (2018-03-26)
+## 2.0.0 (2018-03-26)
 
 This is a major release to make the library clearer and easier to use and expand the support to new platforms. For upgrading instructions, see [the upgrading guide](UPGRADING.md#1x-to-2x).
 
