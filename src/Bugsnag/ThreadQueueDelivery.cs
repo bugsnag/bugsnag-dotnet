@@ -60,7 +60,7 @@ namespace Bugsnag
     private ThreadQueueDelivery()
     {
       _queue = new BlockingQueue<IPayload>();
-      _worker = new Thread(new ThreadStart(ProcessQueue));
+      _worker = new Thread(new ThreadStart(ProcessQueue)) { IsBackground = true };
       _worker.Start();
     }
 
