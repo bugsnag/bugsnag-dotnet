@@ -85,8 +85,11 @@ catch (System.Exception ex)
 ```
 var configuration = new Bugsnag.Configuration("{API_KEY}");
 var client = new Bugsnag.Client(configuration);
-client.BeforeNotify((configuration, report) => {
-	report.User = new Bugsnag.Payload.User() { Name = "Testy McTest" };
+client.BeforeNotify((report) => {
+	report.Event.User = new Bugsnag.Payload.User {
+    Id = "1",
+    Name = "Testy McTest",
+    Email = "support@bugsnag.com" };
 });
 ```
 
