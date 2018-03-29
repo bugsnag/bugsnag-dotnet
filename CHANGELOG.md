@@ -3,7 +3,7 @@ Changelog
 
 ## Unreleased
 
-### Enhancements
+### Bug fixes
 
 * Allow the severity to be changed in callbacks
   | [martin308](https://github.com/martin308)
