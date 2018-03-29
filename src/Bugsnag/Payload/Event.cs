@@ -8,7 +8,9 @@ namespace Bugsnag.Payload
   /// </summary>
   public class Event : Dictionary<string, object>
   {
-    public Event(string payloadVersion, App app, Device device, System.Exception exception, HandledState severity, IEnumerable<Breadcrumb> breadcrumbs, Session session)
+    private HandledState _handledState;
+
+    public Event(string payloadVersion, App app, Device device, System.Exception exception, HandledState handledState, IEnumerable<Breadcrumb> breadcrumbs, Session session)
     {
       this.AddToPayload("payloadVersion", payloadVersion);
       this.AddToPayload("exceptions", new Exceptions(exception, 5).ToArray());
@@ -17,11 +19,7 @@ namespace Bugsnag.Payload
       this.AddToPayload("metaData", new Metadata());
       this.AddToPayload("breadcrumbs", breadcrumbs);
       this.AddToPayload("session", session);
-
-      foreach (var item in severity)
-      {
-        this[item.Key] = item.Value;
-      }
+      HandledState = handledState;
     }
 
     public bool IsHandled
@@ -85,6 +83,30 @@ namespace Bugsnag.Payload
     public IEnumerable<Breadcrumb> Breadcrumbs
     {
       get { return this.Get("breadcrumbs") as IEnumerable<Breadcrumb>; }
+    }
+
+    public Severity Severity
+    {
+      set
+      {
+        HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
+      }
+      get
+      {
+        return _handledState.Severity;
+      }
+    }
+
+    private HandledState HandledState
+    {
+      set
+      {
+        _handledState = value;
+        foreach (var item in value)
+        {
+          this[item.Key] = item.Value;
+        }
+      }
     }
 
     /// <summary>
