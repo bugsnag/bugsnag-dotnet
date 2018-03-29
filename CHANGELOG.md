@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## Unreleased
+
+### Enhancements
+
+* Allow the severity to be changed in callbacks
+  | [martin308](https://github.com/martin308)
+  | [#84](https://github.com/bugsnag/bugsnag-dotnet/pull/84)
+
 ## 2.0.1 (2018-03-27)
 
 ### Bug fixes
