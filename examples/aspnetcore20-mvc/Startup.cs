@@ -23,7 +23,7 @@ namespace aspnetcore20_mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddBugsnag(config => {
-                config.ApiKey = "<API_KEY>";
+                config.ApiKey = "665eea988511ad88d252916c3980e280";
                 config.ProjectNamespaces = new[]{ "aspnetcore20_mvc" };
                 config.ProjectRoots = new[]{ @"C:\app\" };
             });

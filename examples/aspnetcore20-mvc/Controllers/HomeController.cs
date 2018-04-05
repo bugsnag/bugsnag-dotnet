@@ -23,7 +23,7 @@ namespace aspnetcore20_mvc.Controllers
             return View();
         }
 
-        public IActionResult About()
+        public IActionResult Problems()
         {
             _client.Breadcrumbs.Leave("Here comes the exception...");
             throw new NotImplementedException();
