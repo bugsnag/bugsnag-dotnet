@@ -9,13 +9,20 @@ using Bugsnag;
 
 namespace aspnetcore20_mvc.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : Microsoft.AspNetCore.Mvc.Controller
     {
-        private readonly IClient _client;
+        private readonly Bugsnag.IClient _bugsnag;
 
-        public HomeController(IClient client)
+        public HomeController(Bugsnag.IClient client)
         {
-          _client = client;
+            _bugsnag = client;
+            _bugsnag.BeforeNotify(report => {             
+                if (report.OriginalException is System.NotImplementedException)
+                {
+                    report.Event.Metadata.Add("paying account", true);
+                    report.Event.Context = "an-important-context";
+                }
+            });
         }
 
         public IActionResult Index()
@@ -25,13 +32,21 @@ namespace aspnetcore20_mvc.Controllers
 
         public IActionResult Problems()
         {
-            _client.Breadcrumbs.Leave("Here comes the exception...");
+            _bugsnag.Breadcrumbs.Leave("Here comes the exception...");
             throw new NotImplementedException();
         }
 
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
+            try
+            {
+                throw new System.Exception("Error!");
+            }
+            catch (Exception ex)
+            {
+                _bugsnag.Notify(ex);
+            }
 
             return View();
         }
