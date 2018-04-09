@@ -85,6 +85,10 @@ namespace Bugsnag.Tests
       yield return new object[] { "https://app.bugsnag.com/user/new/", null, "/user/new/" };
       yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", null, "/user/new/" };
       yield return new object[] { null, null, null };
+      yield return new object[] { "not-a-valid-url", "existing-context", "existing-context" };
+      yield return new object[] { "https://app.bugsnag.com/user/new/", "existing-context", "existing-context" };
+      yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", "existing-context", "existing-context" };
+      yield return new object[] { null, "existing-context", "existing-context" };
     }
 
     [Theory]
