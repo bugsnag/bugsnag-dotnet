@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## Unreleased
+
+### Bug fixes
+
+* Only set the context to the current request URL if the context has not already been set
+  | [tremlab](https://github.com/tremlab)
+  | [#89](https://github.com/bugsnag/bugsnag-dotnet/pull/89)
+
 ## 2.0.2 (2018-03-28)
 
 ### Bug fixes

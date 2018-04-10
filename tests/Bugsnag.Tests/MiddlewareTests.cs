@@ -67,11 +67,12 @@ namespace Bugsnag.Tests
 
     [Theory]
     [MemberData(nameof(DetermineDefaultContextTestData))]
-    public void DetermineDefaultContextTests(string requestUrl, string expectedContext)
+    public void DetermineDefaultContextTests(string requestUrl, string existingContext, string expectedContext)
     {
       var configuration = new Configuration("123456");
       var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session());
       report.Event.Request = new Request { Url = requestUrl };
+      report.Event.Context = existingContext;
 
       InternalMiddleware.DetermineDefaultContext(report);
 
@@ -80,10 +81,14 @@ namespace Bugsnag.Tests
 
     public static IEnumerable<object[]> DetermineDefaultContextTestData()
     {
-      yield return new object[] { "not-a-valid-url", "not-a-valid-url" };
-      yield return new object[] { "https://app.bugsnag.com/user/new/", "/user/new/" };
-      yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", "/user/new/" };
-      yield return new object[] { null, null };
+      yield return new object[] { "not-a-valid-url", null, "not-a-valid-url" };
+      yield return new object[] { "https://app.bugsnag.com/user/new/", null, "/user/new/" };
+      yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", null, "/user/new/" };
+      yield return new object[] { null, null, null };
+      yield return new object[] { "not-a-valid-url", "existing-context", "existing-context" };
+      yield return new object[] { "https://app.bugsnag.com/user/new/", "existing-context", "existing-context" };
+      yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", "existing-context", "existing-context" };
+      yield return new object[] { null, "existing-context", "existing-context" };
     }
 
     [Theory]
