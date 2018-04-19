@@ -129,20 +129,5 @@ namespace Bugsnag
         report.Event.Metadata.FilterPayload(report.Configuration.MetadataFilters);
       }
     };
-
-    public static Middleware DetermineDefaultContext = report =>
-    {
-      if (report.Event.Request != null && report.Event.Context == null)
-      {
-        if (Uri.TryCreate(report.Event.Request.Url, UriKind.Absolute, out Uri uri))
-        {
-          report.Event.Context = uri.AbsolutePath;
-        }
-        else
-        {
-          report.Event.Context = report.Event.Request.Url;
-        }
-      }
-    };
   }
 }
