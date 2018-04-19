@@ -120,6 +120,12 @@ namespace Bugsnag
       }
     };
 
+    /// <summary>
+    /// Applies the configured metadata filters to specified sections of the report.
+    /// 
+    /// This is no longer used by the notifier and can be removed in the next
+    /// major version bump.
+    /// </summary>
     public static Middleware ApplyMetadataFilters = report =>
     {
       if (report.Configuration.MetadataFilters != null)

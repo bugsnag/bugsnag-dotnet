@@ -162,8 +162,6 @@ namespace Bugsnag
 
       if (!report.Ignored)
       {
-        Bugsnag.InternalMiddleware.ApplyMetadataFilters(report);
-
         _delivery.Send(report);
 
         Breadcrumbs.Leave(Breadcrumb.FromReport(report));
