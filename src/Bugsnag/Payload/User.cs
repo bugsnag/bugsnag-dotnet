@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Bugsnag.Payload
 {
-  public class User : Dictionary<string, string>
+  public class User : Dictionary<string, string>, IFilterable
   {
     public string Id
     {

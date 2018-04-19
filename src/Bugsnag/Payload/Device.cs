@@ -7,7 +7,7 @@ namespace Bugsnag.Payload
   /// <summary>
   /// Represents the "device" key in the error report payload.
   /// </summary>
-  public class Device : Dictionary<string, object>
+  public class Device : Dictionary<string, object>, IFilterable
   {
     public Device() : this(Hostname)
     {

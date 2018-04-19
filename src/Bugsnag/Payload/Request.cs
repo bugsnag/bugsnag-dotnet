@@ -5,7 +5,7 @@ namespace Bugsnag.Payload
   /// <summary>
   /// Represents the "request" key in the error report payload.
   /// </summary>
-  public class Request : Dictionary<string, object>
+  public class Request : Dictionary<string, object>, IFilterable
   {
     public string ClientIp { get { return this.Get("clientIp") as string; } set { this.AddToPayload("clientIp", value); } }
 
