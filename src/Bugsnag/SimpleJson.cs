@@ -620,14 +620,24 @@ namespace SimpleJson
         /// <returns>A JSON encoded string, or null if object 'json' is not serializable</returns>
         public static string SerializeObject(object json, IJsonSerializerStrategy jsonSerializerStrategy, IDictionary seen)
         {
+            return SerializeObject(json, jsonSerializerStrategy, seen, new Dictionary<string, bool>());
+        }
+
+        public static string SerializeObject(object json, IJsonSerializerStrategy jsonSerializerStrategy, IDictionary seen, IDictionary filters)
+        {
             StringBuilder builder = new StringBuilder(BUILDER_CAPACITY);
-            bool success = SerializeValue(jsonSerializerStrategy, json, builder, seen);
+            bool success = SerializeValue(jsonSerializerStrategy, json, builder, seen, filters, false);
             return (success ? builder.ToString() : null);
         }
 
         public static string SerializeObject(object json)
         {
-            return SerializeObject(json, CurrentJsonSerializerStrategy, new Dictionary<object, bool>());
+            return SerializeObject(json, new Dictionary<string, bool>());
+        }
+
+        public static string SerializeObject(object json, IDictionary filters)
+        {
+            return SerializeObject(json, CurrentJsonSerializerStrategy, new Dictionary<object, bool>(), filters);
         }
 
         public static string EscapeToJavascriptString(string jsonString)
@@ -1021,7 +1031,7 @@ namespace SimpleJson
             return TOKEN_NONE;
         }
 
-        static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder, IDictionary seen)
+        static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder, IDictionary seen, IDictionary filters, bool applyFilters)
         {
             bool success;
             switch (value)
@@ -1029,28 +1039,34 @@ namespace SimpleJson
                 case String s:
                     success = SerializeString(s, builder);
                     break;
+                case Bugsnag.IFilterable filterable:
+                    if (seen.Contains(filterable)) return SerializeString("[Circular]", builder);
+                    seen.Add(filterable, true);
+                    success = SerializeObject(jsonSerializerStrategy, filterable.Keys, filterable.Values, builder, seen, filters, true);
+                    seen.Remove(filterable);
+                    break;
                 case IDictionary<string, object> dict:
                     if (seen.Contains(dict)) return SerializeString("[Circular]", builder);
                     seen.Add(dict, true);
-                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
+                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen, filters, applyFilters);
                     seen.Remove(dict);
                     break;
                 case IDictionary<string, string> dict:
                     if (seen.Contains(dict)) return SerializeString("[Circular]", builder);
                     seen.Add(dict, true);
-                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
+                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen, filters, applyFilters);
                     seen.Remove(dict);
                     break;
                 case IDictionary dict:
                     if (seen.Contains(dict)) return SerializeString("[Circular]", builder);
                     seen.Add(dict, true);
-                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen);
+                    success = SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder, seen, filters, applyFilters);
                     seen.Remove(dict);
                     break;
                 case IEnumerable enumerable:
                     if (seen.Contains(enumerable)) return SerializeString("[Circular]", builder);
                     seen.Add(enumerable, true);
-                    success = SerializeArray(jsonSerializerStrategy, enumerable, builder, seen);
+                    success = SerializeArray(jsonSerializerStrategy, enumerable, builder, seen, filters, applyFilters);
                     seen.Remove(enumerable);
                     break;
                 case sbyte _:
@@ -1081,7 +1097,7 @@ namespace SimpleJson
                     success = jsonSerializerStrategy.TrySerializeNonPrimitiveObject(value, out serializedObject);
                     if (success)
                     {
-                        SerializeValue(jsonSerializerStrategy, serializedObject, builder, seen);
+                        SerializeValue(jsonSerializerStrategy, serializedObject, builder, seen, filters, applyFilters);
                     }
                     seen.Remove(value);
                     break;
@@ -1089,7 +1105,7 @@ namespace SimpleJson
             return success;
         }
 
-        static bool SerializeObject(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable keys, IEnumerable values, StringBuilder builder, IDictionary seen)
+        static bool SerializeObject(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable keys, IEnumerable values, StringBuilder builder, IDictionary seen, IDictionary filters, bool applyFilters)
         {
             builder.Append("{");
             IEnumerator ke = keys.GetEnumerator();
@@ -1105,9 +1121,11 @@ namespace SimpleJson
                 if (stringKey != null)
                     SerializeString(stringKey, builder);
                 else
-                    if (!SerializeValue(jsonSerializerStrategy, value, builder, seen)) return false;
+                    if (!SerializeValue(jsonSerializerStrategy, value, builder, seen, filters, applyFilters)) return false;
                 builder.Append(":");
-                if (!SerializeValue(jsonSerializerStrategy, value, builder, seen))
+                if (applyFilters && filters.Contains(key))
+                    SerializeString("[Filtered]", builder);
+                else if (!SerializeValue(jsonSerializerStrategy, value, builder, seen, filters, applyFilters))
                     return false;
                 first = false;
             }
@@ -1115,7 +1133,7 @@ namespace SimpleJson
             return true;
         }
 
-        static bool SerializeArray(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable anArray, StringBuilder builder, IDictionary seen)
+        static bool SerializeArray(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable anArray, StringBuilder builder, IDictionary seen, IDictionary filters, bool applyFilters)
         {
             builder.Append("[");
             bool first = true;
@@ -1123,7 +1141,7 @@ namespace SimpleJson
             {
                 if (!first)
                     builder.Append(",");
-                if (!SerializeValue(jsonSerializerStrategy, value, builder, seen))
+                if (!SerializeValue(jsonSerializerStrategy, value, builder, seen, filters, applyFilters))
                     return false;
                 first = false;
             }
