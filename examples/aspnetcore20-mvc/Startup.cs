@@ -23,17 +23,17 @@ namespace aspnetcore20_mvc
         {
             // Initialize Bugsnag to begin tracking errors. Only an api key is required, but here are some other helpful configuration details:
             services.AddBugsnag(configuration => {
-                configuration.ApiKey = "665eea988511ad88d252916c3980e280";
+                configuration.ApiKey = "YOUR_API_KEY";
                 // We mark stacktrace lines as inProject if they come from namespaces included in your project namespaces.
                 configuration.ProjectNamespaces = new[]{ "aspnetcore20_mvc" };
                 // Project roots are used to strip file paths in each error reports stack trace in order to normalize them across builds.
-                configuration.ProjectRoots = new[]{ @"/Users/reneebalmert/Documents/Code/notif_demos/dotnet/aspnetcore/bugsnag-dotnet/examples/" };
+                // configuration.ProjectRoots = new[]{ @"/Users/bgates/bugsnag-dotnet/examples/" };
                 configuration.AppType = "worker";
                 configuration.AppVersion = "2.5.1";
                 // Bugsnag can track the number of “sessions” that happen in your application, and calculate a crash rate for each release. This defaults to false.
                 configuration.AutoCaptureSessions = true;
                 // Metadata that will be attached to all error reports sent by the client.
-                configuration.GlobalMetadata = new[] { new KeyValuePair<string, object>("company", new System.Collections.Generic.Dictionary<string, string> { 
+                configuration.GlobalMetadata = new[] { new KeyValuePair<string, object>("company", new System.Collections.Generic.Dictionary<string, string> {
                     { "department", "Westworld" },
                     { "name", "Delos Destinations, Inc." },
                     // because of the MetadataFilters, the below value will be redacted in your Bugsnag dashboard.
