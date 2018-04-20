@@ -1,27 +1,38 @@
-ASP.NET Core 2.0 MVC Example Application
-====
+# ASP.NET Core 2.0 MVC Example Application
 
-### Requirements
+This example shows how you can use the Bugsnag .NET notifier in a basic ASP.NET CORE 2.0 MVC app. (We also have an [example](https://github.com/bugsnag/bugsnag-dotnet/tree/master/examples/aspnetcore11-mvc) for ASP.NET CORE 1.3)
+
+## Requirements
 
 - Visual Studio 2017
 - .NET Core 2.0 development tools for web
 
-### Setup
+## Setup
 
-In the `Startup.cs` file enter the Bugsnag API key that you want to use with
-this application:
+Try this out with [your own Bugsnag account](https://app.bugsnag.com/user/new)! You'll be able to see how the errors are reported in the dashboard, how breadcrumbs are left, how errors are grouped and how they relate to the original source. Don't forget to replace the placeholder API token with your own!
 
-```
-services.AddBugsnag(config => {
-    config.ApiKey = "<API_KEY>";
-    config.ProjectNamespaces = new[]{ "aspnetcore11_mvc" };
-    config.ProjectRoots = new[]{ @"C:\app\" };
-});
-```
+To get set up, follow the instructions below.
 
-From within Visual Studio you can compile and start the website.
+1. Clone the repo and `cd` into this directory:
+    ```sh
+    git clone https://github.com/bugsnag/bugsnag-dotnet.git
+    cd bugsnag-dotnet/examples/aspnetcore20-mvc
+    ```
 
-### Steps taken to install Bugsnag
+1. In the [Startup.cs](Startup.cs) file Replace the `API_KEY` placeholder with your own Bugsnag API key.
 
-- Add the required nuget packages (see `aspnetcore20-mvc.csproj`)
-- Add Bugsnag with the convenience method in `Startup.cs`
+1. In the [aspnetcore20-mvc.csproj](aspnetcore20-mvc.csproj) file, make sure `Bugsnag.AspNet.Core` is included in your NuGet packages, as well as  `Microsoft.AspNetCore.All`.
+
+1. To report non-fatal exceptions, in the [HomeController.cs](HomeController.cs) file, make sure to declare the `IClient` dependency where you want the Bugsnag client injected into your classes.
+
+1. Build the application:
+    ```sh
+    dotnet build
+    ```
+
+1. Run the application:
+    ```sh
+    dotnet run
+    ```
+
+1. View the example page which will (most likely) be served at: http://localhost:5000
