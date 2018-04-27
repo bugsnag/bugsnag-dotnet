@@ -81,5 +81,29 @@ namespace Bugsnag.Tests.Payload
       Assert.Equal(updatedSeverity, @event.Severity);
       Assert.Contains("severityReason", @event.Keys);
     }
+
+    [Theory]
+    [MemberData(nameof(ContextIsSetByRequestData))]
+    public void ContextIsSetByRequest(Request request, string existingContext, string expectedContext)
+    {
+      var configuration = new Configuration("123456");
+      var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session());
+      report.Event.Context = existingContext;
+      report.Event.Request = request;
+
+      Assert.Equal(expectedContext, report.Event.Context);
+    }
+
+    public static IEnumerable<object[]> ContextIsSetByRequestData()
+    {
+      yield return new object[] { new Request { Url = "not-a-valid-url" }, null, "not-a-valid-url" };
+      yield return new object[] { new Request { Url = "https://app.bugsnag.com/user/new/" }, null, "/user/new/" };
+      yield return new object[] { new Request { Url = "https://app.bugsnag.com/user/new/?query=ignored" }, null, "/user/new/" };
+      yield return new object[] { null, null, null };
+      yield return new object[] { new Request { Url = "not-a-valid-url" }, "existing-context", "existing-context" };
+      yield return new object[] { new Request { Url = "https://app.bugsnag.com/user/new/" }, "existing-context", "existing-context" };
+      yield return new object[] { new Request { Url = "https://app.bugsnag.com/user/new/?query=ignored" }, "existing-context", "existing-context" };
+      yield return new object[] { null, "existing-context", "existing-context" };
+    }
   }
 }

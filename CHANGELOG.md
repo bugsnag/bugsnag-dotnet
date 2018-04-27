@@ -5,6 +5,10 @@ Changelog
 
 ### Bug fixes
 
+* Request context is now available in custom middleware
+  | [martin308](https://github.com/martin308)
+  | [#91](https://github.com/bugsnag/bugsnag-dotnet/pull/91)
+
 * Only set the context to the current request URL if the context has not already been set
   | [tremlab](https://github.com/tremlab)
   | [#89](https://github.com/bugsnag/bugsnag-dotnet/pull/89)

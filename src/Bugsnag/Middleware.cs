@@ -130,6 +130,12 @@ namespace Bugsnag
       }
     };
 
+    /// <summary>
+    /// Uses a request if set on the report to provide a default context.
+    /// 
+    /// This is no longer used by the notifier and can be removed in the next
+    /// major version bump. Replaced by code in <see cref="Event.Request"/>
+    /// </summary>
     public static Middleware DetermineDefaultContext = report =>
     {
       if (report.Event.Request != null && report.Event.Context == null)

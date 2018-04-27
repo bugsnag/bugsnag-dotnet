@@ -162,7 +162,6 @@ namespace Bugsnag
 
       if (!report.Ignored)
       {
-        Bugsnag.InternalMiddleware.DetermineDefaultContext(report);
         Bugsnag.InternalMiddleware.ApplyMetadataFilters(report);
 
         _delivery.Send(report);
