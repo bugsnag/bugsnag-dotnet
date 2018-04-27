@@ -129,5 +129,26 @@ namespace Bugsnag
         report.Event.Metadata.FilterPayload(report.Configuration.MetadataFilters);
       }
     };
+
+    /// <summary>
+    /// Uses a request if set on the report to provide a default context.
+    /// 
+    /// This is no longer used by the notifier and can be removed in the next
+    /// major version bump. Replaced by code in <see cref="Event.Request"/>
+    /// </summary>
+    public static Middleware DetermineDefaultContext = report =>
+    {
+      if (report.Event.Request != null && report.Event.Context == null)
+      {
+        if (Uri.TryCreate(report.Event.Request.Url, UriKind.Absolute, out Uri uri))
+        {
+          report.Event.Context = uri.AbsolutePath;
+        }
+        else
+        {
+          report.Event.Context = report.Event.Request.Url;
+        }
+      }
+    };
   }
 }
