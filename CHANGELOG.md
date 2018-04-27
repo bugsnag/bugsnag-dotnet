@@ -3,6 +3,12 @@ Changelog
 
 ## Unreleased
 
+### Enhancements
+
+* Improve metadata filtering
+  | [martin308](https://github.com/martin308)
+  | [#90](https://github.com/bugsnag/bugsnag-dotnet/pull/90)
+
 ### Bug fixes
 
 * Request context is now available in custom middleware
