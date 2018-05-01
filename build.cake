@@ -9,6 +9,7 @@ var nugetPackageOutput = buildDir + Directory("packages");
 var configuration = Argument("configuration", "Release");
 var examples = GetFiles("./examples/**/*.sln");
 var buildProps = File("./src/Directory.build.props");
+string version = "1.0.0";
 
 Task("Clean")
     .Does(() => CleanDirectory(buildDir));
@@ -68,7 +69,7 @@ Task("BuildExamples")
 
 Task("SetVersion")
   .Does(() => {
-    var version = AppVeyor.Environment.Build.Version;
+    version = AppVeyor.Environment.Build.Version;
     if (AppVeyor.Environment.Repository.Tag.IsTag)
     {
       version = AppVeyor.Environment.Repository.Tag.Name.TrimStart('v');
@@ -82,11 +83,23 @@ Task("SetVersion")
     XmlPoke(buildProps,  path, version);
   });
 
+
+Task("MazeRunner")
+  .IsDependentOn("Pack")
+  .Does(() => {
+    StartProcess("cmd", "/c bundle install");
+    var mazeRunner = StartProcess("cmd", $"/c \"set BUGSNAG_VERSION={version} && bundle exec bugsnag-maze-runner\"");
+    if (mazeRunner != 0) {
+      throw new Exception("maze-runner failed");
+    }
+  });
+
 Task("Default")
   .IsDependentOn("Test");
 
 Task("Appveyor")
   .IsDependentOn("SetVersion")
-  .IsDependentOn("Pack");
+  .IsDependentOn("Pack")
+  .IsDependentOn("MazeRunner");
 
 RunTarget(target);
