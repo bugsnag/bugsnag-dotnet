@@ -6,3 +6,4 @@ Scenario: Notify is called
   When I run the console app "DotNetCore2Console" with "handled"
   Then I should receive a request
   And the request is a valid for the error reporting API
+  And the request is valid for a handled exception
