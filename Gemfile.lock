@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 86bcf9eac835623c2d4e76708e7a6c4bcba4afb4
+  revision: bfb2e8b7fc628e9682f0b5bee35dec40d5dd04c7
   specs:
     bugsnag-maze-runner (1.0.0)
       cucumber (~> 3.1.0)
