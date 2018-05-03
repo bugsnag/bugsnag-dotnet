@@ -7,7 +7,7 @@ namespace Bugsnag.Payload
 {
   public class Report : Dictionary<string, object>, IPayload
   {
-    private static readonly string _payloadVersion = "4.0";
+    private static readonly string _payloadVersion = "4";
 
     /// <summary>
     /// The maximum size of the serialized payload which can be sent
