@@ -34,7 +34,7 @@ namespace aspnetcore20_mvc.Controllers
                     report.Event.Context = "an-important-context";
                 }
 
-                // note that if you return false from the BeforeNotify, this will cancel the entire error report.
+                // note that using report.Ignore() will cancel the entire error report.
             });
         }
 
@@ -52,9 +52,9 @@ namespace aspnetcore20_mvc.Controllers
 
         public IActionResult Problems()
         {
-            // Bugsnag will automatically include the last 25 breabcrumbs to an error report, but you can also manually log breadcrumbs.
+            // You can leave manual breadcrumbs via the Breadcrumbs property on the client object.
             _bugsnag.Breadcrumbs.Leave("Something happened!");
-            // You can optionally attach a type and metadata to a breadcrumb
+            // You can optionally attach a type and metadata to a breadcrumb.
             var metadata = new Dictionary<string, string> { { "message", "wait for it......" } };
             _bugsnag.Breadcrumbs.Leave("Here comes the exception...", Bugsnag.BreadcrumbType.Navigation, metadata);
 
@@ -71,7 +71,7 @@ namespace aspnetcore20_mvc.Controllers
             }
             catch (Exception ex)
             {
-                // To report handled exceptions, make sure to declare the ICLient dependency (above), then you can pass the exception object to your client for notification.
+                // To report handled exceptions, make sure to declare the IClient dependency (above), then you can pass the exception object to your client for notification.
                 _bugsnag.Notify(ex);
             }
 
