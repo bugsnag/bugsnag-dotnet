@@ -11,24 +11,20 @@ namespace aspnetcore20_mvc.Controllers
 {
     public class HomeController : Microsoft.AspNetCore.Mvc.Controller
     {
-<<<<<<< HEAD
-=======
+
         // The Bugsnag client (initialized in Startup.cs) will be injected into your classes where you declare the IClient dependency.
         // This allows you to report handled exceptions within your controller.
->>>>>>> d97829850fa17bb6f127b80787299422a628290a
         private readonly Bugsnag.IClient _bugsnag;
 
-        public HomeController(Bugsnag.IClient client)
+        public HomeController(Bugsnag.IClient bugsnag)
         {
-            _bugsnag = client;
-<<<<<<< HEAD
+            _bugsnag = bugsnag;
             _bugsnag.BeforeNotify(report => {             
                 if (report.OriginalException is System.NotImplementedException)
                 {
                     report.Event.Metadata.Add("paying account", true);
                     report.Event.Context = "an-important-context";
                 }
-=======
             // A BeforeNotify callback lets you evaluate, modify, add and remove data before sending the error to bugsnag. The actions here will be applied to *all* errors, handled and unhandled.
             _bugsnag.BeforeNotify(report => {
                 // In order to correlate errors with customer reports, or to see a list of users who experienced each error, you can attach user data in your callback
@@ -36,7 +32,7 @@ namespace aspnetcore20_mvc.Controllers
                 {
                     Id = "006",
                     Name = "Hedy Lamarr",
-                    Email = "h.lamarr@ww.com"
+                    Email = "h.lamarr@delos.com"
                 };
                 //this example makes some modifications that only apply to reports of error class "System.NotImplementedException".
                 if (report.OriginalException is System.NotImplementedException)
@@ -46,7 +42,6 @@ namespace aspnetcore20_mvc.Controllers
                 }
 
                 // note that using report.Ignore() will cancel the entire error report.
->>>>>>> d97829850fa17bb6f127b80787299422a628290a
             });
         }
 
@@ -64,9 +59,7 @@ namespace aspnetcore20_mvc.Controllers
 
         public IActionResult Problems()
         {
-<<<<<<< HEAD
             _bugsnag.Breadcrumbs.Leave("Here comes the exception...");
-=======
             // You can leave manual breadcrumbs via the Breadcrumbs property on the client object.
             _bugsnag.Breadcrumbs.Leave("Something happened!");
             // You can optionally attach a type and metadata to a breadcrumb.
@@ -74,7 +67,6 @@ namespace aspnetcore20_mvc.Controllers
             _bugsnag.Breadcrumbs.Leave("Here comes the exception...", Bugsnag.BreadcrumbType.Navigation, metadata);
 
             // below deliberately throws an unhandled excpetion, which will automatically be reported by Bugsnag and crash the app.
->>>>>>> d97829850fa17bb6f127b80787299422a628290a
             throw new NotImplementedException();
         }
 
@@ -83,18 +75,15 @@ namespace aspnetcore20_mvc.Controllers
             ViewData["Message"] = "Your contact page.";
             try
             {
-<<<<<<< HEAD
                 throw new System.Exception("Error!");
             }
             catch (Exception ex)
             {
-=======
                 throw new System.Exception("Error on contact page!");
             }
             catch (Exception ex)
             {
                 // To report handled exceptions, make sure to declare the IClient dependency (above), then you can pass the exception object to your client for notification.
->>>>>>> d97829850fa17bb6f127b80787299422a628290a
                 _bugsnag.Notify(ex);
             }
 
