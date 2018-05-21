@@ -51,8 +51,13 @@ namespace Bugsnag.Payload
       return new HandledState(previousSeverity.Handled, severity, SeverityReason.ForCallbackSpecifiedSeverity());
     }
 
+    private readonly Severity _severity;
+
+    public Severity Severity => _severity;
+
     HandledState(bool handled, Bugsnag.Severity severity, SeverityReason reason)
     {
+      _severity = severity;
       this.AddToPayload("unhandled", !handled);
       this.AddToPayload("severityReason", reason);
 

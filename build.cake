@@ -7,7 +7,7 @@ var target = Argument("target", "Default");
 var buildDir = Directory("./build");
 var nugetPackageOutput = buildDir + Directory("packages");
 var configuration = Argument("configuration", "Release");
-var examples = GetSubDirectories("./examples");
+var examples = GetFiles("./examples/**/*.sln");
 var buildProps = File("./src/Directory.build.props");
 
 Task("Clean")
@@ -58,41 +58,11 @@ Task("Pack")
 
 Task("BuildExamples")
   .Does(() => {
-    var failures = examples.AsParallel().Select(e => {
-      IEnumerable<string> stdOut;
-      IEnumerable<string> errOut;
-      var settings = new ProcessSettings {
-        Arguments = "build",
-        WorkingDirectory = e,
-        RedirectStandardOutput = true,
-        RedirectStandardError = true
-      };
-      var exitCode = StartProcess("docker-compose", settings, out stdOut, out errOut);
-      Information("docker-compose build {0}", e);
-      return new {
-        ExitCode = exitCode,
-        StdOutput = stdOut,
-        ErrOutput = errOut,
-        Example = e
-      };
-    }).Where(o => o.ExitCode != 0).ToArray();
-
-    foreach (var failure in failures)
-    {
-      Error(failure.Example);
-      foreach (var output in failure.StdOutput)
-      {
-        Error(output);
-      }
-      foreach (var output in failure.ErrOutput)
-      {
-        Error(output);
-      }
-    }
-
-    if (failures.Any())
-    {
-      throw new Exception("Failed to build examples");
+    foreach (var example in examples) {
+      NuGetRestore(example);
+      MSBuild(example, settings =>
+        settings
+          .SetVerbosity(Verbosity.Minimal));
     }
   });
 

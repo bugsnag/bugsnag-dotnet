@@ -132,7 +132,7 @@ namespace Bugsnag
 
     public static Middleware DetermineDefaultContext = report =>
     {
-      if (report.Event.Request != null)
+      if (report.Event.Request != null && report.Event.Context == null)
       {
         if (Uri.TryCreate(report.Event.Request.Url, UriKind.Absolute, out Uri uri))
         {
