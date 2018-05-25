@@ -33,7 +33,7 @@ namespace Bugsnag.Tests
     }
 
     [Fact]
-    public async void CurrentSessionCanBeSetO()
+    public async void EmptySessionsPayloadsAreNotSent()
     {
       var server = new TestServer();
 
