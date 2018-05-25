@@ -30,7 +30,7 @@ namespace Bugsnag.AspNet.Core.Tests
     [Fact]
     public async void TestWithDeveloperExceptionPage()
     {
-      var bugsnag = new Bugsnag.Tests.TestServer(1);
+      var bugsnag = new Bugsnag.Tests.TestServer();
       bugsnag.Start();
 
       var builder = new WebHostBuilder()
@@ -46,7 +46,7 @@ namespace Bugsnag.AspNet.Core.Tests
       var client = server.CreateClient();
       var response = await client.SendAsync(new System.Net.Http.HttpRequestMessage());
 
-      var bugsnags = await bugsnag.Requests();
+      var bugsnags = await bugsnag.Requests(1);
 
       Assert.NotNull(response);
     }

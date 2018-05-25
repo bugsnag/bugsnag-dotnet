@@ -19,7 +19,7 @@ namespace Bugsnag.AspNet.Tests
 
     public async Task InitializeAsync()
     {
-      var server = new TestServer(1);
+      var server = new TestServer();
 
       server.Start();
 
@@ -37,7 +37,7 @@ namespace Bugsnag.AspNet.Tests
         });
       }
 
-      var requests = await server.Requests();
+      var requests = await server.Requests(1);
 
       _request = requests.Single();
     }

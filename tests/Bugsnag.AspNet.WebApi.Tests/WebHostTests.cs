@@ -22,7 +22,7 @@ namespace Bugsnag.AspNet.WebApi.Tests
     [Fact]
     public async void Test()
     {
-      var bugsnagServer = new TestServer(1);
+      var bugsnagServer = new TestServer();
 
       bugsnagServer.Start();
 
@@ -37,7 +37,7 @@ namespace Bugsnag.AspNet.WebApi.Tests
 
       var response = await client.SendAsync(request);
 
-      var responses = await bugsnagServer.Requests();
+      var responses = await bugsnagServer.Requests(1);
 
       Assert.Single(responses);
       Assert.Contains("Bugsnag is great!", responses.Single());

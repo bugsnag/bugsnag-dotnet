@@ -16,7 +16,7 @@ namespace Bugsnag.Tests
     [Fact]
     public async void CurrentSessionCanBeSet()
     {
-      var server = new TestServer(1);
+      var server = new TestServer();
 
       server.Start();
 
@@ -24,7 +24,7 @@ namespace Bugsnag.Tests
 
       sessionTracking.CreateSession();
 
-      var requests = await server.Requests();
+      var requests = await server.Requests(1);
 
       Assert.NotNull(sessionTracking.CurrentSession);
     }
