@@ -12,7 +12,7 @@ namespace Bugsnag.Tests
     [Fact]
     public async void TestThrownException()
     {
-      var server = new TestServer(1);
+      var server = new TestServer();
 
       server.Start();
 
@@ -36,7 +36,7 @@ namespace Bugsnag.Tests
         client.Notify(e);
       }
 
-      var requests = await server.Requests();
+      var requests = await server.Requests(1);
 
       Assert.Single(requests);
     }
@@ -52,7 +52,7 @@ namespace Bugsnag.Tests
 
       public async Task InitializeAsync()
       {
-        var server = new TestServer(1);
+        var server = new TestServer();
 
         server.Start();
 
@@ -69,7 +69,7 @@ namespace Bugsnag.Tests
 
         TestNotifyMethod(client);
 
-        var requests = await server.Requests();
+        var requests = await server.Requests(1);
 
         BugsnagPayload = requests.Single();
       }

@@ -17,10 +17,10 @@ namespace Bugsnag.Tests
     private readonly RequestCollection<string> _requests;
     private readonly int _port;
 
-    public TestServer(int expectedNumberOfRequests)
+    public TestServer()
     {
       _port = PortAllocations.Instance.NextFreePort();
-      _requests = new RequestCollection<string>(expectedNumberOfRequests);
+      _requests = new RequestCollection<string>();
       _webHost = new WebHostBuilder()
         .ConfigureServices(services => services.AddSingleton(typeof(RequestCollection<string>), _requests))
         .UseStartup<Startup>()
@@ -37,9 +37,15 @@ namespace Bugsnag.Tests
       _webHost.Start();
     }
 
-    public async Task<IEnumerable<string>> Requests()
+    public async Task<IEnumerable<string>> Requests(int numberOfRequests)
     {
-      var items = await _requests.Items();
+      var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+      return await Requests(numberOfRequests, cts.Token);
+    }
+
+    public async Task<IEnumerable<string>> Requests(int numberOfRequests, CancellationToken token)
+    {
+      var items = await _requests.Items(numberOfRequests, token);
       await _webHost.StopAsync();
       return items;
     }
@@ -88,16 +94,14 @@ namespace Bugsnag.Tests
 
     class RequestCollection<T>
     {
-      private readonly int _expectedNumberOfRequests;
       private readonly List<T> _requests;
       private readonly object _requestsLock;
       private readonly TaskCompletionSource<List<T>> _taskCompletionSource;
 
-      public RequestCollection(int expectedNumberOfRequests)
+      public RequestCollection()
       {
         _taskCompletionSource = new TaskCompletionSource<List<T>>();
-        _expectedNumberOfRequests = expectedNumberOfRequests;
-        _requests = new List<T>(expectedNumberOfRequests);
+        _requests = new List<T>();
         _requestsLock= new object();
       }
 
@@ -106,17 +110,26 @@ namespace Bugsnag.Tests
         lock (_requestsLock)
         {
           _requests.Add(item);
-
-          if (_requests.Count >= _expectedNumberOfRequests)
-          {
-            _taskCompletionSource.SetResult(_requests);
-          }
         }
       }
 
-      public Task<List<T>> Items()
+      public Task<List<T>> Items(int numberOfRequests, CancellationToken token)
       {
-        return _taskCompletionSource.Task;
+        return Task.Factory.StartNew(async () =>
+        {
+          while (true)
+          {
+            lock (_requestsLock)
+            {
+              if (_requests.Count >= numberOfRequests)
+              {
+                return new List<T>(_requests);
+              }
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.Delay(TimeSpan.FromSeconds(1));
+          }
+        }, token).Unwrap();
       }
     }
   }
