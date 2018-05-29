@@ -1,4 +1,6 @@
 image: Visual Studio 2017
+install:
+  - set PATH=C:\Ruby25-x64\bin;%PATH%
 build_script:
   - ps: .\build.ps1 -Target Appveyor
 after_build:

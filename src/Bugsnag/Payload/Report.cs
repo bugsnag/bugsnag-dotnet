@@ -97,14 +97,14 @@ namespace Bugsnag.Payload
 
       try
       {
-        data = Serializer.SerializeObjectToByteArray(this);
+        data = Serializer.SerializeObjectToByteArray(this, _configuration.MetadataFilters);
 
         if (data.Length > MaximumSize)
         {
           Event.TrimExtraData();
         }
 
-        data = Serializer.SerializeObjectToByteArray(this);
+        data = Serializer.SerializeObjectToByteArray(this, _configuration.MetadataFilters);
       }
       catch (System.Exception exception)
       {

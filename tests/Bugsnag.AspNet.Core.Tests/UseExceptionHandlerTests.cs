@@ -24,7 +24,7 @@ namespace Bugsnag.AspNet.Core.Tests
 
     public async Task InitializeAsync()
     {
-      var bugsnag = new Bugsnag.Tests.TestServer(1);
+      var bugsnag = new Bugsnag.Tests.TestServer();
       bugsnag.Start();
 
       var builder = new WebHostBuilder()
@@ -47,7 +47,7 @@ namespace Bugsnag.AspNet.Core.Tests
       var client = server.CreateClient();
       var response = await client.SendAsync(new System.Net.Http.HttpRequestMessage() { RequestUri = new Uri("/error", UriKind.Relative) });
 
-      var bugsnags = await bugsnag.Requests();
+      var bugsnags = await bugsnag.Requests(1);
 
       BugsnagPayload = bugsnags.First();
     }

@@ -29,7 +29,7 @@ namespace Bugsnag.Payload
           {
             dictionary[key] = value;
           }
-          else if(dictionary.ContainsKey(key))
+          else if (dictionary.ContainsKey(key))
           {
             dictionary.Remove(key);
           }
@@ -46,11 +46,26 @@ namespace Bugsnag.Payload
       return value;
     }
 
+    /// <summary>
+    /// Filters an IDictionary using the provided filters.
+    ///
+    /// This is no longer used and can be removed in the next major version bump.
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="filters"></param>
     public static void FilterPayload(this IDictionary dictionary, string[] filters)
     {
       dictionary.FilterPayload(filters, new Dictionary<object, bool>());
     }
 
+    /// <summary>
+    /// Filters an IDictionary using the provided filters.
+    ///
+    /// This is no longer used and can be removed in the next major version bump.
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="filters"></param>
+    /// <param name="seen"></param>
     public static void FilterPayload(this IDictionary dictionary, string[] filters, IDictionary seen)
     {
       if (seen.Contains(dictionary))
@@ -64,7 +79,7 @@ namespace Bugsnag.Payload
       {
         if (key != null && dictionary.Contains(key))
         {
-          dictionary[key] = "[Filtered]"; 
+          dictionary[key] = "[Filtered]";
         }
       }
 
@@ -89,6 +104,14 @@ namespace Bugsnag.Payload
       seen.Remove(dictionary);
     }
 
+    /// <summary>
+    /// Filters an IEnumerable using the provided filters.
+    ///
+    /// This is no longer used and can be removed in the next major version bump.
+    /// </summary>
+    /// <param name="enumerable"></param>
+    /// <param name="filters"></param>
+    /// <param name="seen"></param>
     public static void FilterPayload(this IEnumerable enumerable, string[] filters, IDictionary seen)
     {
       if (seen.Contains(enumerable))
@@ -119,6 +142,13 @@ namespace Bugsnag.Payload
       seen.Remove(enumerable);
     }
 
+    /// <summary>
+    /// Filters a Uri using the provided filters
+    ///
+    /// This is no longer used and can be removed in the next major version bump.
+    /// </summary>
+    /// <param name="uri"></param>
+    /// <param name="filters"></param>
     public static void FilterUri(this Uri uri, string[] filters)
     {
       // need to figure out a good way to modify this, it is basically readonly at this point

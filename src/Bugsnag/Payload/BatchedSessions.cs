@@ -8,6 +8,7 @@ namespace Bugsnag.Payload
   public class BatchedSessions : Dictionary<string, object>, IPayload
   {
     private readonly KeyValuePair<string, string>[] _headers;
+    private readonly IConfiguration _configuration;
 
     public BatchedSessions(IConfiguration configuration, IEnumerable<KeyValuePair<string, long>> sessionData) : this(configuration, NotifierInfo.Instance, new App(configuration), new Device(), sessionData)
     {
@@ -16,6 +17,7 @@ namespace Bugsnag.Payload
 
     public BatchedSessions(IConfiguration configuration, NotifierInfo notifier, App app, Device device, IEnumerable<KeyValuePair<string, long>> sessionData)
     {
+      _configuration = configuration;
       Endpoint = configuration.SessionEndpoint;
       Proxy = configuration.Proxy;
       _headers = new KeyValuePair<string, string>[] {
@@ -36,7 +38,7 @@ namespace Bugsnag.Payload
 
     public byte[] Serialize()
     {
-      return Serializer.SerializeObjectToByteArray(this);
+      return Serializer.SerializeObjectToByteArray(this, _configuration.MetadataFilters);
     }
   }
 

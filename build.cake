@@ -7,8 +7,9 @@ var target = Argument("target", "Default");
 var buildDir = Directory("./build");
 var nugetPackageOutput = buildDir + Directory("packages");
 var configuration = Argument("configuration", "Release");
-var examples = GetSubDirectories("./examples");
+var examples = GetFiles("./examples/**/*.sln");
 var buildProps = File("./src/Directory.build.props");
+string version = "1.0.0";
 
 Task("Clean")
     .Does(() => CleanDirectory(buildDir));
@@ -58,47 +59,17 @@ Task("Pack")
 
 Task("BuildExamples")
   .Does(() => {
-    var failures = examples.AsParallel().Select(e => {
-      IEnumerable<string> stdOut;
-      IEnumerable<string> errOut;
-      var settings = new ProcessSettings {
-        Arguments = "build",
-        WorkingDirectory = e,
-        RedirectStandardOutput = true,
-        RedirectStandardError = true
-      };
-      var exitCode = StartProcess("docker-compose", settings, out stdOut, out errOut);
-      Information("docker-compose build {0}", e);
-      return new {
-        ExitCode = exitCode,
-        StdOutput = stdOut,
-        ErrOutput = errOut,
-        Example = e
-      };
-    }).Where(o => o.ExitCode != 0).ToArray();
-
-    foreach (var failure in failures)
-    {
-      Error(failure.Example);
-      foreach (var output in failure.StdOutput)
-      {
-        Error(output);
-      }
-      foreach (var output in failure.ErrOutput)
-      {
-        Error(output);
-      }
-    }
-
-    if (failures.Any())
-    {
-      throw new Exception("Failed to build examples");
+    foreach (var example in examples) {
+      NuGetRestore(example);
+      MSBuild(example, settings =>
+        settings
+          .SetVerbosity(Verbosity.Minimal));
     }
   });
 
 Task("SetVersion")
   .Does(() => {
-    var version = AppVeyor.Environment.Build.Version;
+    version = AppVeyor.Environment.Build.Version;
     if (AppVeyor.Environment.Repository.Tag.IsTag)
     {
       version = AppVeyor.Environment.Repository.Tag.Name.TrimStart('v');
@@ -112,11 +83,23 @@ Task("SetVersion")
     XmlPoke(buildProps,  path, version);
   });
 
+
+Task("MazeRunner")
+  .IsDependentOn("Pack")
+  .Does(() => {
+    StartProcess("cmd", "/c bundle install");
+    var mazeRunner = StartProcess("cmd", $"/c \"set BUGSNAG_VERSION={version} && bundle exec bugsnag-maze-runner\"");
+    if (mazeRunner != 0) {
+      throw new Exception("maze-runner failed");
+    }
+  });
+
 Task("Default")
   .IsDependentOn("Test");
 
 Task("Appveyor")
   .IsDependentOn("SetVersion")
-  .IsDependentOn("Pack");
+  .IsDependentOn("Pack")
+  .IsDependentOn("MazeRunner");
 
 RunTarget(target);

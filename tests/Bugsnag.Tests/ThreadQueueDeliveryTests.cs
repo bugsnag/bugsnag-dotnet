@@ -13,7 +13,7 @@ namespace Bugsnag.Tests
     {
       var numberOfRequests = 500;
 
-      var server = new TestServer(numberOfRequests);
+      var server = new TestServer();
 
       server.Start();
 
@@ -23,7 +23,7 @@ namespace Bugsnag.Tests
         ThreadQueueDelivery.Instance.Send(payload);
       }
 
-      var requests = await server.Requests();
+      var requests = await server.Requests(numberOfRequests);
 
       Assert.Equal(numberOfRequests, requests.Count());
     }

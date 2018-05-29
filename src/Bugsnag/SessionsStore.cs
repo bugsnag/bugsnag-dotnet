@@ -2,6 +2,7 @@ using Bugsnag.Payload;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace Bugsnag
 {
@@ -27,7 +28,8 @@ namespace Bugsnag
 
       lock (_lock)
       {
-        foreach (var item in _store)
+        // we only care about entries that have session data
+        foreach (var item in _store.Where(d => d.Value.Any()))
         {
           sessionData[item.Key] = new Dictionary<string, long>(item.Value);
           _store[item.Key].Clear();

@@ -64,5 +64,29 @@ namespace Bugsnag.Tests
 
       public Circular Inner { get; set; }
     }
+
+    public class FilterableTestObject : Dictionary<string, object>, IFilterable
+    {
+
+    }
+
+    [Theory]
+    [MemberData(nameof(FilterTestData))]
+    public void FilterTests(object obj, string[] filters, int filteredCount)
+    {
+      var json = Serializer.SerializeObject(obj, filters);
+
+      Assert.Equal(filteredCount, System.Text.RegularExpressions.Regex.Matches(json, "\\[Filtered\\]").Count);
+    }
+
+    public static IEnumerable<object[]> FilterTestData()
+    {
+      yield return new object[] { new Dictionary<string, object> { { "password", "password" } }, new string[] { "password" }, 0 };
+      yield return new object[] { new Dictionary<string, object> { { "password", "password" }, { "additional", new FilterableTestObject { { "password", "password" } } } }, new string[] { "password" }, 1 };
+      yield return new object[] { new FilterableTestObject { { "password", "password" } }, new string[] { "password" }, 1 };
+      yield return new object[] { new FilterableTestObject { { "password", "password" } }, null, 0 };
+      yield return new object[] { new FilterableTestObject { { "username", "password" } }, new string[] { "password" }, 0 };
+      yield return new object[] { new FilterableTestObject { { "password", "password" }, { "credit_card_number", "number" } }, new string[] { "password", "credit_card_number" }, 2 };
+    }
   }
 }

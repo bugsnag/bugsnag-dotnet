@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -77,7 +78,22 @@ namespace Bugsnag.Payload
     public Request Request
     {
       get { return this.Get("request") as Request; }
-      set { this.AddToPayload("request", value); }
+      set
+      {
+        if (Context == null && value != null)
+        {
+          if (Uri.TryCreate(value.Url, UriKind.Absolute, out Uri uri))
+          {
+            Context = uri.AbsolutePath;
+          }
+          else
+          {
+            Context = value.Url;
+          }
+        }
+
+        this.AddToPayload("request", value);
+      }
     }
 
     public IEnumerable<Breadcrumb> Breadcrumbs

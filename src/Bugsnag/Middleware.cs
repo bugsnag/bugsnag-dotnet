@@ -124,6 +124,12 @@ namespace Bugsnag
       }
     };
 
+    /// <summary>
+    /// Applies the configured metadata filters to specified sections of the report.
+    /// 
+    /// This is no longer used by the notifier and can be removed in the next
+    /// major version bump.
+    /// </summary>
     public static Middleware ApplyMetadataFilters = report =>
     {
       if (report.Configuration.MetadataFilters != null)
@@ -134,9 +140,15 @@ namespace Bugsnag
       }
     };
 
+    /// <summary>
+    /// Uses a request if set on the report to provide a default context.
+    /// 
+    /// This is no longer used by the notifier and can be removed in the next
+    /// major version bump. Replaced by code in <see cref="Event.Request"/>
+    /// </summary>
     public static Middleware DetermineDefaultContext = report =>
     {
-      if (report.Event.Request != null)
+      if (report.Event.Request != null && report.Event.Context == null)
       {
         if (Uri.TryCreate(report.Event.Request.Url, UriKind.Absolute, out Uri uri))
         {

@@ -66,27 +66,6 @@ namespace Bugsnag.Tests
     }
 
     [Theory]
-    [MemberData(nameof(DetermineDefaultContextTestData))]
-    public void DetermineDefaultContextTests(string requestUrl, string expectedContext)
-    {
-      var configuration = new Configuration("123456");
-      var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session());
-      report.Event.Request = new Request { Url = requestUrl };
-
-      InternalMiddleware.DetermineDefaultContext(report);
-
-      Assert.Equal(expectedContext, report.Event.Context);
-    }
-
-    public static IEnumerable<object[]> DetermineDefaultContextTestData()
-    {
-      yield return new object[] { "not-a-valid-url", "not-a-valid-url" };
-      yield return new object[] { "https://app.bugsnag.com/user/new/", "/user/new/" };
-      yield return new object[] { "https://app.bugsnag.com/user/new/?query=ignored", "/user/new/" };
-      yield return new object[] { null, null };
-    }
-
-    [Theory]
     [MemberData(nameof(IgnoreClassesTestData))]
     public void IgnoreClassesTest(System.Exception thrownException, Type ignoreClass, bool ignored)
     {

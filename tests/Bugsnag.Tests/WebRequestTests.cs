@@ -12,7 +12,7 @@ namespace Bugsnag.Tests
     public async void Test()
     {
       var numerOfRequests = 1;
-      var server = new TestServer(numerOfRequests);
+      var server = new TestServer();
       server.Start();
 
       var webRequest = new WebRequest();
@@ -23,7 +23,7 @@ namespace Bugsnag.Tests
       var response = await Task.Factory.FromAsync((callback, state) => webRequest.BeginSend(server.Endpoint, null, headers, rawPayload, callback, state), webRequest.EndSend, null);
       Assert.Equal(HttpStatusCode.OK, response.HttpStatusCode);
 
-      var requests = await server.Requests();
+      var requests = await server.Requests(numerOfRequests);
 
       Assert.Equal(numerOfRequests, requests.Count());
     }
