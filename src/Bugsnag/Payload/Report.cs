@@ -102,9 +102,8 @@ namespace Bugsnag.Payload
         if (data.Length > MaximumSize)
         {
           Event.TrimExtraData();
+          data = Serializer.SerializeObjectToByteArray(this, _configuration.MetadataFilters);
         }
-
-        data = Serializer.SerializeObjectToByteArray(this, _configuration.MetadataFilters);
       }
       catch (System.Exception exception)
       {
