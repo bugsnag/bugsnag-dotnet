@@ -1,6 +1,7 @@
 using Bugsnag.Payload;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -82,6 +83,80 @@ namespace Bugsnag.Tests
       yield return new object[] { new System.Exception(), typeof(System.Exception), true };
       yield return new object[] { new System.DllNotFoundException(), typeof(System.Exception), true };
       yield return new object[] { new System.Exception(), typeof(System.DllNotFoundException), false };
+    }
+
+    [Theory]
+    [MemberData(nameof(InProjectTestData))]
+    public void InProjectTest(string[] projectNamespaces, StackTraceInProjectTestCase[] testCases)
+    {
+      var configuration = new Configuration("123456") { ProjectNamespaces = projectNamespaces };
+      var report = new Report(configuration, new System.Exception(), HandledState.ForHandledException(), new Breadcrumb[0], new Session());
+
+      foreach (var exception in report.Event.Exceptions)
+      {
+        exception["stacktrace"] = testCases
+          .Select(t => new StackTraceLine(null, 0, t.MethodName, false, null))
+          .ToArray();
+      }
+
+      InternalMiddleware.DetectInProjectNamespaces(report);
+
+      foreach (var exception in report.Event.Exceptions)
+      {
+        foreach (var stackTraceLine in exception.StackTrace)
+        {
+          foreach (var testCase in testCases)
+          {
+            if (stackTraceLine.MethodName == testCase.MethodName)
+            {
+              Assert.Equal(testCase.ShouldBeMarkedAsInProject, stackTraceLine.InProject);
+            }
+          }
+        }
+      }
+    }
+
+    public class StackTraceInProjectTestCase
+    {
+      public string MethodName { get; set; }
+
+      public bool ShouldBeMarkedAsInProject { get; set; }
+    }
+
+    public static IEnumerable<object[]> InProjectTestData()
+    {
+      yield return new object[] {
+        null,
+        new StackTraceInProjectTestCase[] { }
+      };
+      yield return new object[] {
+        new string[0],
+        new StackTraceInProjectTestCase[] { }
+      };
+      yield return new object[] {
+        new string[] { "Bugsnag.Code" },
+        new StackTraceInProjectTestCase[] {
+          new StackTraceInProjectTestCase {
+            MethodName = "Bugsnag.Code.Wow",
+            ShouldBeMarkedAsInProject = true }
+        }
+      };
+      yield return new object[] {
+        new string[] { "Bugsnag.Code" },
+        new StackTraceInProjectTestCase[] {
+          new StackTraceInProjectTestCase {
+            MethodName = "Bugsnag.Assets",
+            ShouldBeMarkedAsInProject = false }
+        }
+      };
+      yield return new object[] {
+        new string[] { "Bugsnag.Code", "Bugsnag.Assets" },
+        new StackTraceInProjectTestCase[] {
+          new StackTraceInProjectTestCase {
+            MethodName = "Bugsnag.Code.Wow",
+            ShouldBeMarkedAsInProject = true }
+        }
+      };
     }
   }
 }
