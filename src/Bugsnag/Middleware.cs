@@ -80,7 +80,11 @@ namespace Bugsnag
           {
             foreach (var @namespace in report.Configuration.ProjectNamespaces)
             {
-              stackTraceLine.InProject = stackTraceLine.MethodName.StartsWith(@namespace);
+              if (stackTraceLine.MethodName.StartsWith(@namespace))
+              {
+                stackTraceLine.InProject = true;
+                break;
+              }
             }
           }
         }
