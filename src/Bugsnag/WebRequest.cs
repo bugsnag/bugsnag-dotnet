@@ -10,15 +10,15 @@ namespace Bugsnag
   {
     private class WebRequestState
     {
-      public AsyncCallback Callback { get; private set; }
+      public AsyncCallback Callback { get; }
 
-      public object OriginalState { get; private set; }
+      public object OriginalState { get; }
 
-      public Uri Endpoint { get; private set; }
+      public Uri Endpoint { get; }
 
-      public byte[] Report { get; private set; }
+      public byte[] Report { get; }
 
-      public System.Net.WebRequest Request { get; private set; }
+      public System.Net.WebRequest Request { get; }
 
       public HttpWebResponse Response { get; set; }
 
@@ -34,23 +34,22 @@ namespace Bugsnag
 
     private class WebRequestAsyncResult : IAsyncResult
     {
-      public bool IsCompleted { get { return _innerAsyncResult.IsCompleted; } }
+      public bool IsCompleted => InnerAsyncResult.IsCompleted;
 
-      public WaitHandle AsyncWaitHandle { get { return _innerAsyncResult.AsyncWaitHandle; } }
+      public WaitHandle AsyncWaitHandle => InnerAsyncResult.AsyncWaitHandle;
 
       public object AsyncState => WebRequestState.OriginalState;
 
-      public bool CompletedSynchronously { get { return _innerAsyncResult.CompletedSynchronously; } }
+      public bool CompletedSynchronously => InnerAsyncResult.CompletedSynchronously;
 
-      public WebRequestState WebRequestState => _webRequestState;
+      public WebRequestState WebRequestState { get; }
 
-      private readonly IAsyncResult _innerAsyncResult;
-      private readonly WebRequestState _webRequestState;
+      private IAsyncResult InnerAsyncResult { get; }
 
       public WebRequestAsyncResult(IAsyncResult innerAsyncResult, WebRequestState webRequestState)
       {
-        _innerAsyncResult = innerAsyncResult;
-        _webRequestState = webRequestState;
+        InnerAsyncResult = innerAsyncResult;
+        WebRequestState = webRequestState;
       }
     }
 
@@ -128,13 +127,11 @@ namespace Bugsnag
 
   public class WebResponse
   {
-    private readonly HttpStatusCode _httpStatusCode;
+    public HttpStatusCode HttpStatusCode { get; }
 
     public WebResponse(HttpStatusCode httpStatusCode)
     {
-      _httpStatusCode = httpStatusCode;
+      HttpStatusCode = httpStatusCode;
     }
-
-    public HttpStatusCode HttpStatusCode => _httpStatusCode;
   }
 }
