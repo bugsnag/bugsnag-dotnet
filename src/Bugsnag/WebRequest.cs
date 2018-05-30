@@ -10,17 +10,19 @@ namespace Bugsnag
   {
     private class WebRequestState
     {
-      public AsyncCallback Callback { get; private set; }
+      public AsyncCallback Callback { get; }
 
-      public object OriginalState { get; private set; }
+      public object OriginalState { get; }
 
-      public Uri Endpoint { get; private set; }
+      public Uri Endpoint { get; }
 
-      public byte[] Report { get; private set; }
+      public byte[] Report { get; }
 
-      public System.Net.WebRequest Request { get; private set; }
+      public System.Net.WebRequest Request { get; }
 
       public HttpWebResponse Response { get; set; }
+
+      public WebException Exception { get; set; }
 
       public WebRequestState(AsyncCallback callback, object state, Uri endpoint, byte[] report, System.Net.WebRequest request)
       {
@@ -34,29 +36,31 @@ namespace Bugsnag
 
     private class WebRequestAsyncResult : IAsyncResult
     {
-      public bool IsCompleted { get { return _innerAsyncResult.IsCompleted; } }
+      public bool IsCompleted => InnerAsyncResult.IsCompleted;
 
-      public WaitHandle AsyncWaitHandle { get { return _innerAsyncResult.AsyncWaitHandle; } }
+      public WaitHandle AsyncWaitHandle => InnerAsyncResult.AsyncWaitHandle;
 
       public object AsyncState => WebRequestState.OriginalState;
 
-      public bool CompletedSynchronously { get { return _innerAsyncResult.CompletedSynchronously; } }
+      public bool CompletedSynchronously => InnerAsyncResult.CompletedSynchronously;
 
-      public WebRequestState WebRequestState => _webRequestState;
+      public WebRequestState WebRequestState { get; }
 
-      private readonly IAsyncResult _innerAsyncResult;
-      private readonly WebRequestState _webRequestState;
+      private IAsyncResult InnerAsyncResult { get; }
 
       public WebRequestAsyncResult(IAsyncResult innerAsyncResult, WebRequestState webRequestState)
       {
-        _innerAsyncResult = innerAsyncResult;
-        _webRequestState = webRequestState;
+        InnerAsyncResult = innerAsyncResult;
+        WebRequestState = webRequestState;
       }
     }
 
     public IAsyncResult BeginSend(Uri endpoint, IWebProxy proxy, KeyValuePair<string, string>[] headers, byte[] report, AsyncCallback callback, object state)
     {
-      var request = System.Net.WebRequest.Create(endpoint);
+      var request = (HttpWebRequest)System.Net.WebRequest.Create(endpoint);
+#if !NETSTANDARD1_3
+      request.KeepAlive = false;
+#endif
       request.Method = "POST";
       request.ContentType = "application/json";
       if (proxy != null)
@@ -80,8 +84,18 @@ namespace Bugsnag
     {
       if (asyncResult is WebRequestAsyncResult result)
       {
-        var statusCode = result.WebRequestState.Response.StatusCode;
-        return new WebResponse(statusCode);
+        if (result.WebRequestState.Response != null)
+        {
+          return new WebResponse(result.WebRequestState.Response.StatusCode);
+        }
+
+        if (result.WebRequestState.Exception != null)
+        {
+          if (result.WebRequestState.Exception.Response is HttpWebResponse response)
+          {
+            return new WebResponse(response.StatusCode);
+          }
+        }
       }
 
       return null;
@@ -101,7 +115,7 @@ namespace Bugsnag
       }
       catch (WebException exception)
       {
-        state.Response = exception.Response as HttpWebResponse;
+        state.Exception = exception;
       }
 
       state.Callback(new WebRequestAsyncResult(asynchronousResult, state));
@@ -119,7 +133,10 @@ namespace Bugsnag
       }
       catch (WebException exception)
       {
-        state.Response = exception.Response as HttpWebResponse;
+        state.Exception = exception;
+        // call the original callback as we cannot continue sending the report
+        state.Callback(new WebRequestAsyncResult(asynchronousResult, state));
+        return;
       }
 
       state.Request.BeginGetResponse(new AsyncCallback(ReadCallback), state);
@@ -128,13 +145,11 @@ namespace Bugsnag
 
   public class WebResponse
   {
-    private readonly HttpStatusCode _httpStatusCode;
+    public HttpStatusCode HttpStatusCode { get; }
 
     public WebResponse(HttpStatusCode httpStatusCode)
     {
-      _httpStatusCode = httpStatusCode;
+      HttpStatusCode = httpStatusCode;
     }
-
-    public HttpStatusCode HttpStatusCode => _httpStatusCode;
   }
 }
