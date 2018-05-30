@@ -129,17 +129,21 @@ namespace Bugsnag.Payload
     /// Called if the payload size is too large to send, removes data so that the payload
     /// can be sent succesfully.
     /// </summary>
-    public void TrimExtraData()
+    public bool TrimExtraData()
     {
+      var trimmed = false;
       if (Breadcrumbs != null)
       {
         Remove("breadcrumbs");
+        trimmed = true;
       }
       if (Metadata != null)
       {
         Metadata.Clear();
         Metadata.Add("notifier", "The serialized payload exceeded the 1MB size limit. Metadata and breadcrumbs have been stripped to make the payload a deliverable size.");
+        trimmed = true;
       }
+      return trimmed;
     }
   }
 }
