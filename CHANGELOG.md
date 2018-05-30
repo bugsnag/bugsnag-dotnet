@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 2.0.3 (2018-05-30)
 
 ### Enhancements
 
@@ -13,7 +13,7 @@ Changelog
 
 * Only send session data when it exists
   | [martin308](https://github.com/martin308)
-  | [98](https://github.com/bugsnag/bugsnag-dotnet/pull/98)
+  | [#98](https://github.com/bugsnag/bugsnag-dotnet/pull/98)
 
 * Request context is now available in custom middleware
   | [martin308](https://github.com/martin308)
@@ -22,6 +22,18 @@ Changelog
 * Only set the context to the current request URL if the context has not already been set
   | [tremlab](https://github.com/tremlab)
   | [#89](https://github.com/bugsnag/bugsnag-dotnet/pull/89)
+
+* Optimize serialization
+  | [ShamsulAmry](https://github.com/ShamsulAmry)
+  | [#101](https://github.com/bugsnag/bugsnag-dotnet/pull/101)
+
+* Fix InProject namespaces detection
+  | [jviolas](https://github.com/jviolas)
+  | [#102](https://github.com/bugsnag/bugsnag-dotnet/pull/102)
+
+* Improve handling of exceptions when sending data
+  | [martin308](https://github.com/martin308)
+  | [#103](https://github.com/bugsnag/bugsnag-dotnet/pull/103)
 
 ## 2.0.2 (2018-03-28)
 
