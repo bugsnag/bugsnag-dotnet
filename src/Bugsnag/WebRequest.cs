@@ -22,6 +22,8 @@ namespace Bugsnag
 
       public HttpWebResponse Response { get; set; }
 
+      public WebException Exception { get; set; }
+
       public WebRequestState(AsyncCallback callback, object state, Uri endpoint, byte[] report, System.Net.WebRequest request)
       {
         Callback = callback;
@@ -79,8 +81,18 @@ namespace Bugsnag
     {
       if (asyncResult is WebRequestAsyncResult result)
       {
-        var statusCode = result.WebRequestState.Response.StatusCode;
-        return new WebResponse(statusCode);
+        if (result.WebRequestState.Response != null)
+        {
+          return new WebResponse(result.WebRequestState.Response.StatusCode);
+        }
+
+        if (result.WebRequestState.Exception != null)
+        {
+          if (result.WebRequestState.Exception.Response is HttpWebResponse response)
+          {
+            return new WebResponse(response.StatusCode);
+          }
+        }
       }
 
       return null;
@@ -100,7 +112,7 @@ namespace Bugsnag
       }
       catch (WebException exception)
       {
-        state.Response = exception.Response as HttpWebResponse;
+        state.Exception = exception;
       }
 
       state.Callback(new WebRequestAsyncResult(asynchronousResult, state));
@@ -118,7 +130,10 @@ namespace Bugsnag
       }
       catch (WebException exception)
       {
-        state.Response = exception.Response as HttpWebResponse;
+        state.Exception = exception;
+        // call the original callback as we cannot continue sending the report
+        state.Callback(new WebRequestAsyncResult(asynchronousResult, state));
+        return;
       }
 
       state.Request.BeginGetResponse(new AsyncCallback(ReadCallback), state);
