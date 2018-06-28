@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## Unreleased
+
+* Include Configuration package with WebApi
+  | [martin308](https://github.com/martin308)
+  | [#105](https://github.com/bugsnag/bugsnag-dotnet/pull/105)
+
 ## 2.1.0 (2018-05-30)
 
 ### Enhancements
