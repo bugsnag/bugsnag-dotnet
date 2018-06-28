@@ -8,9 +8,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
+    <ProjectReference Include="..\Bugsnag.ConfigurationSection\Bugsnag.ConfigurationSection.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="4.0.20505.0" />
