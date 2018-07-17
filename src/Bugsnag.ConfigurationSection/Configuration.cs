@@ -207,7 +207,7 @@ namespace Bugsnag.ConfigurationSection
 
     private const string ignoreClasses = "ignoreClasses";
 
-    [ConfigurationProperty("ignoreClasses", IsRequired = false)]
+    [ConfigurationProperty(ignoreClasses, IsRequired = false)]
     private string InternalIgnoreClasses
     {
       get
