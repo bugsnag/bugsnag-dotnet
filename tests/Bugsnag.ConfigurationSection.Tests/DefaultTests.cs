@@ -62,9 +62,9 @@ namespace Bugsnag.ConfigurationSection.Tests
     }
 
     [Fact]
-    public void IgnoreClassesIsNull()
+    public void IgnoreClassesIsEmpty()
     {
-      Assert.Null(TestConfiguration.IgnoreClasses);
+      Assert.Empty(TestConfiguration.IgnoreClasses);
     }
 
     [Fact]

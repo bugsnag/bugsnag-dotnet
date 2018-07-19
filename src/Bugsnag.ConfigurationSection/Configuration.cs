@@ -207,7 +207,7 @@ namespace Bugsnag.ConfigurationSection
 
     private const string ignoreClasses = "ignoreClasses";
 
-    [ConfigurationProperty("ignoreClasses", IsRequired = false)]
+    [ConfigurationProperty(ignoreClasses, IsRequired = false)]
     private string InternalIgnoreClasses
     {
       get
@@ -229,16 +229,69 @@ namespace Bugsnag.ConfigurationSection
     {
       get
       {
-        if (_ignoreClasses == null && InternalIgnoreClasses != null)
+        if (_ignoreClasses == null)
         {
-          _ignoreClasses = InternalIgnoreClasses
-            .Split(',')
-            .Select(c => Type.GetType(c))
-            .Where(t => t != null).ToArray();
+          _ignoreClasses = CompleteIgnoreClasses
+            .Select(t => Type.GetType(t))
+            .Where(c => c != null)
+            .ToArray();
         }
 
         return _ignoreClasses;
       }
+    }
+
+    private IEnumerable<string> CompleteIgnoreClasses
+    {
+      get
+      {
+        if (InternalIgnoreClasses != null)
+        {
+          foreach (var item in InternalIgnoreClasses.Split(','))
+          {
+            yield return item;
+          }
+        }
+
+        if (InternalExtendedIgnoreClasses.Count > 0)
+        {
+          foreach (ExtendedIgnoreClass item in InternalExtendedIgnoreClasses)
+          {
+            yield return item.Name;
+          }
+        }
+      }
+    }
+
+    private const string extendedIgnoreClasses = "assemblyQualifiedIgnoreClasses";
+
+    [ConfigurationProperty(extendedIgnoreClasses, IsRequired = false)]
+    private ExtendedIgnoreClassCollection InternalExtendedIgnoreClasses
+    {
+      get
+      {
+        return (ExtendedIgnoreClassCollection)this[extendedIgnoreClasses];
+      }
+    }
+
+    [ConfigurationCollection(typeof(ExtendedIgnoreClass), AddItemName = "class", CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    class ExtendedIgnoreClassCollection : ConfigurationElementCollection
+    {
+      protected override ConfigurationElement CreateNewElement()
+      {
+        return new ExtendedIgnoreClass();
+      }
+
+      protected override object GetElementKey(ConfigurationElement element)
+      {
+        return ((ExtendedIgnoreClass)element).Name;
+      }
+    }
+
+    class ExtendedIgnoreClass : ConfigurationElement
+    {
+      [ConfigurationProperty("name", IsRequired = true)]
+      public string Name => (string)this["name"];
     }
 
     private const string metadataFilters = "metadataFilters";
