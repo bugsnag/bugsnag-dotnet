@@ -3,6 +3,10 @@ Changelog
 
 ## Unreleased
 
+## 2.2.0 (2018-07-19)
+
+### Enhancements
+
 * Add additional method of specifying ignore classes to allow for providing fully qualified assembly names in config files.
   | [martin308](https://github.com/martin308)
   | [#109](https://github.com/bugsnag/bugsnag-dotnet/pull/109)
