@@ -53,7 +53,9 @@ namespace Bugsnag
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
-      HandleEvent(e.Exception as Exception, !e.Observed);
+      // Starting with .NET 4.5, this does not kill the process:
+      // https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler.unobservedtaskexception
+      HandleEvent(e.Exception as Exception, false);
     }
 
     [HandleProcessCorruptedStateExceptions]
