@@ -22,7 +22,7 @@ namespace Bugsnag.Tests.Payload
     }
 
     [Fact]
-    public void InclidesTime()
+    public void IncludesTime()
     {
       var device = new Device("hostname");
       Assert.NotNull(device["time"]);
