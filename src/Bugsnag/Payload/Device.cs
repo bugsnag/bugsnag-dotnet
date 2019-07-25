@@ -20,6 +20,7 @@ namespace Bugsnag.Payload
       this.AddToPayload("timezone", TimeZoneInfo.Local.DisplayName);
       this.AddToPayload("osName", OsName);
       this.AddToPayload("time", DateTime.UtcNow);
+      this.AddToPayload("runtimeVersions", RuntimeVersions);
     }
 
     /// <summary>
@@ -42,6 +43,19 @@ namespace Bugsnag.Payload
 #else
         return Environment.OSVersion.VersionString;
 #endif
+      }
+    }
+
+    private static Dictionary<string, string> RuntimeVersions
+    {
+      get
+      {
+        var runtimeVersions = new Dictionary<string, string>();
+#if !NETSTANDARD1_3
+        // The CLR version is available for all .NET framework versions and all .NET Core versions since 2.0
+        runtimeVersions.AddToPayload("dotnetClr", Environment.Version.ToString());
+#endif
+        return runtimeVersions;
       }
     }
   }
