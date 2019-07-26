@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Bugsnag.Payload
 {
@@ -51,6 +52,11 @@ namespace Bugsnag.Payload
       get
       {
         var runtimeVersions = new Dictionary<string, string>();
+#if NET45
+        // The framework description is only available from .NET 4.5 onwards and will not return
+        // an accurate value for .NET Core until version 3.0 
+        runtimeVersions.AddToPayload("dotnet", RuntimeInformation.FrameworkDescription);
+#endif
 #if !NETSTANDARD1_3
         // The CLR version is available for all .NET framework versions and all .NET Core versions since 2.0
         runtimeVersions.AddToPayload("dotnetClr", Environment.Version.ToString());

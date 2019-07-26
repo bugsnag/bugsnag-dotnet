@@ -33,6 +33,7 @@ namespace Bugsnag.Tests.Payload
     {
       var device = new Device("hostname");
       var runtimeVersions = (Dictionary<string, string>) device["runtimeVersions"];
+      Assert.NotNull(runtimeVersions["dotnet"]);
       Assert.NotNull(runtimeVersions["dotnetClr"]);
     }
 
