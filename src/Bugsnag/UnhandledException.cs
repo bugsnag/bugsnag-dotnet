@@ -53,7 +53,7 @@ namespace Bugsnag
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
-      HandleEvent(e.Exception as Exception, !e.Observed);
+      HandleEvent(e.Exception as Exception, false);
     }
 
     [HandleProcessCorruptedStateExceptions]
