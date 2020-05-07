@@ -3,6 +3,12 @@ Changelog
 
 ## Unreleased
 
+### Bug fixes
+
+* Handle any exceptions raised when reading files for code segments 
+  | [twometresteve](https://github.com/twometresteve)
+  | [#123](https://github.com/bugsnag/bugsnag-dotnet/pull/123)
+
 ## 2.2.0 (2018-07-19)
 
 ### Enhancements
