@@ -17,7 +17,7 @@ namespace Bugsnag.Polyfills
       {
         return File.ReadLines(file);
       }
-      catch (Exception exception)
+      catch (System.Exception exception)
       {
         Trace.WriteLine(exception);
         return Enumerable.Empty<string>();
