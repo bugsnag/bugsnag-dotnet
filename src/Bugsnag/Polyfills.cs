@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Bugsnag.Polyfills
@@ -13,7 +13,15 @@ namespace Bugsnag.Polyfills
 #if NET35
       return Enumerable.Empty<string>();
 #else
-      return File.ReadLines(file);
+      try
+      {
+        return File.ReadLines(file);
+      }
+      catch (Exception exception)
+      {
+        Trace.WriteLine(exception);
+        return Enumerable.Empty<string>();
+      }
 #endif
     }
   }
