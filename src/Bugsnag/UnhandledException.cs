@@ -74,12 +74,12 @@ namespace Bugsnag
 
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
-      HandleEvent(null, _unobservedTerminates);
+      HandleEvent(null, true);
     }
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
-      HandleEvent(e.Exception as Exception, !e.Observed);
+      HandleEvent(e.Exception as Exception, _unobservedTerminates);
     }
 
     [HandleProcessCorruptedStateExceptions]
