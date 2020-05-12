@@ -11,11 +11,15 @@ namespace Bugsnag
 
     private readonly object _currentClientLock = new object();
     private IClient _currentClient;
+#if !(NET35 || NET40)
     private bool _unobservedTerminates;
+#endif
 
     private UnhandledException()
     {
+#if !(NET35 || NET40)
       _unobservedTerminates = DetermineUnobservedTerminates();
+#endif
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
       TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -53,24 +57,25 @@ namespace Bugsnag
     /// framework and (when applicable) configuration.
     /// </summary>
     /// <returns></returns>
+#if NET45
     private bool DetermineUnobservedTerminates()
     {
-#if NET35 || NET40
-      return true;
-#elif NET45
       System.Xml.Linq.XElement configFile = System.Xml.Linq.XElement.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
-      if (configFile != null)
-      {
-          // TODO Null check all the way down
-          Console.WriteLine(configFile.Element("runtime").Element("ThrowUnobservedTaskExceptions").Attribute("enabled").Value);
-      }
-#elif NETSTANDARD1_3 || NETSTANDARD2_0
-      // TODO SetupInformation does not exist in .NET Standard 1.3
-      // ConfigurationMAnager _might_ be an option in .NET Standard 2.0
-      //AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName
-      return false;
-#endif
+      var configValue = configFile?.Element("runtime")?.Element("ThrowUnobservedTaskExceptions")?.Attribute("enabled")?.Value;
+      bool value;
+      var success = bool.TryParse(configValue, out value);
+      return success && value;
     }
+#endif
+
+#if NETSTANDARD1_3 || NETSTANDARD2_0
+    private bool DetermineUnobservedTerminates()
+    {
+      //Console.WriteLine(System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
+
+      return false;
+  }
+#endif
 
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
@@ -79,7 +84,11 @@ namespace Bugsnag
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
+#if NET35 || NET40
+      HandleEvent(e.Exception as Exception, !e.Observed);
+#else
       HandleEvent(e.Exception as Exception, _unobservedTerminates);
+#endif
     }
 
     [HandleProcessCorruptedStateExceptions]
