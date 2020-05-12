@@ -57,25 +57,18 @@ namespace Bugsnag
     /// framework and (when applicable) configuration.
     /// </summary>
     /// <returns></returns>
-#if NET45
     private bool DetermineUnobservedTerminates()
     {
+#if NET45
       System.Xml.Linq.XElement configFile = System.Xml.Linq.XElement.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
       var configValue = configFile?.Element("runtime")?.Element("ThrowUnobservedTaskExceptions")?.Attribute("enabled")?.Value;
       bool value;
       var success = bool.TryParse(configValue, out value);
       return success && value;
-    }
-#endif
-
-#if NETSTANDARD1_3 || NETSTANDARD2_0
-    private bool DetermineUnobservedTerminates()
-    {
-      //Console.WriteLine(System.Runtime.InteropServices.RuntimeEnvironment.SystemConfigurationFile);
-
+#else //NETSTANDARD1_3 || NETSTANDARD2_0
       return false;
-  }
 #endif
+    }
 
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
