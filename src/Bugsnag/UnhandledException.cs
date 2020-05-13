@@ -11,15 +11,11 @@ namespace Bugsnag
 
     private readonly object _currentClientLock = new object();
     private IClient _currentClient;
-#if !(NET35 || NET40)
     private bool _unobservedTerminates;
-#endif
 
     private UnhandledException()
     {
-#if !(NET35 || NET40)
       _unobservedTerminates = DetermineUnobservedTerminates();
-#endif
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
       TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -59,7 +55,9 @@ namespace Bugsnag
     /// <returns></returns>
     private bool DetermineUnobservedTerminates()
     {
-#if NET45
+#if NET35 || NET40
+      return true;
+#elif NET45
       System.Xml.Linq.XElement configFile = System.Xml.Linq.XElement.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
       var configValue = configFile?.Element("runtime")?.Element("ThrowUnobservedTaskExceptions")?.Attribute("enabled")?.Value;
       bool value;
@@ -77,11 +75,7 @@ namespace Bugsnag
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
-#if NET35 || NET40
-      HandleEvent(e.Exception as Exception, !e.Observed);
-#else
-      HandleEvent(e.Exception as Exception, _unobservedTerminates);
-#endif
+      HandleEvent(e.Exception as Exception, _unobservedTerminates && !e.Observed);
     }
 
     [HandleProcessCorruptedStateExceptions]
