@@ -11,9 +11,11 @@ namespace Bugsnag
 
     private readonly object _currentClientLock = new object();
     private IClient _currentClient;
+    private bool _unobservedTerminates;
 
     private UnhandledException()
     {
+      _unobservedTerminates = DetermineUnobservedTerminates();
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
       TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -46,6 +48,26 @@ namespace Bugsnag
       }
     }
 
+    /// <summary>
+    /// Determines if an UnobservedTaskException leads to the process terminating, based on the target
+    /// framework and (when applicable) configuration.
+    /// </summary>
+    /// <returns></returns>
+    private bool DetermineUnobservedTerminates()
+    {
+#if NET35 || NET40
+      return true;
+#elif NET45
+      System.Xml.Linq.XElement configFile = System.Xml.Linq.XElement.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+      var configValue = configFile?.Element("runtime")?.Element("ThrowUnobservedTaskExceptions")?.Attribute("enabled")?.Value;
+      bool value;
+      var success = bool.TryParse(configValue, out value);
+      return success && value;
+#else //NETSTANDARD1_3 || NETSTANDARD2_0
+      return false;
+#endif
+    }
+
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
       HandleEvent(null, true);
@@ -53,7 +75,7 @@ namespace Bugsnag
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
-      HandleEvent(e.Exception as Exception, !e.Observed);
+      HandleEvent(e.Exception as Exception, _unobservedTerminates && !e.Observed);
     }
 
     [HandleProcessCorruptedStateExceptions]
