@@ -39,14 +39,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bugsnag, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Bugsnag.2.0.2\lib\net35\Bugsnag.dll</HintPath>
+    <Reference Include="Bugsnag, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.2.2.0\lib\net35\Bugsnag.dll</HintPath>
     </Reference>
-    <Reference Include="Bugsnag.AspNet, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Bugsnag.AspNet.2.0.2\lib\net35\Bugsnag.AspNet.dll</HintPath>
+    <Reference Include="Bugsnag.AspNet, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.AspNet.2.2.0\lib\net35\Bugsnag.AspNet.dll</HintPath>
     </Reference>
-    <Reference Include="Bugsnag.ConfigurationSection, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Bugsnag.ConfigurationSection.2.0.2\lib\net35\Bugsnag.ConfigurationSection.dll</HintPath>
+    <Reference Include="Bugsnag.ConfigurationSection, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Bugsnag.ConfigurationSection.2.2.0\lib\net35\Bugsnag.ConfigurationSection.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

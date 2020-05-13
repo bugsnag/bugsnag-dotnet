@@ -19,7 +19,9 @@ services.AddBugsnag(config => {
 });
 ```
 
-From within Visual Studio you can compile and start the website.
+From within Visual Studio you can compile and start the website.  Once the index page loads:
+- Navigating to About will invoke an unhandled exception
+- Navigating to Contact will invoke a handled exception
 
 ### Steps taken to install Bugsnag
 
