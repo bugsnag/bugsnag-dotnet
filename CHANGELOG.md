@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 2.2.1 (2019-05-14)
 
 ### Bug fixes
 
