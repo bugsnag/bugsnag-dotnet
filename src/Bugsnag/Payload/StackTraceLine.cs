@@ -94,7 +94,10 @@ namespace Bugsnag.Payload
       this.AddToPayload("lineNumber", lineNumber);
       this.AddToPayload("method", methodName);
       this.AddToPayload("inProject", inProject);
-      this.AddToPayload("code", code);
+      if (code != null && code.Count > 0)
+      {
+        this.AddToPayload("code", code);
+      }
     }
 
     public string FileName

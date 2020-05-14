@@ -1,7 +1,17 @@
 Changelog
 =========
 
-## Unreleased
+## 2.2.1 (2019-05-14)
+
+### Bug fixes
+
+* Handle any exceptions raised when reading files for code segments.
+  | [twometresteve](https://github.com/twometresteve)
+  | [#123](https://github.com/bugsnag/bugsnag-dotnet/pull/123)
+
+* Account for process termination behavior when handling UnobservedTaskExceptions.
+  | [twometresteve](https://github.com/twometresteve)
+  | [#125](https://github.com/bugsnag/bugsnag-dotnet/pull/125)
 
 ## 2.2.0 (2018-07-19)
 
