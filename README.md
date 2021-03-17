@@ -133,4 +133,4 @@ We'd love you to file issues and send pull requests. The [contributing guideline
 License
 -------
 
-The Bugsnag .NET notifier is free software released under the MIT License.
+The Bugsnag .NET notifier is free software released under the MIT License. See [LICENSE.txt](https://github.com/bugsnag/bugsnag-dotnet/blob/master/LICENSE.txt) for details.

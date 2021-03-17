@@ -41,7 +41,7 @@ namespace Bugsnag.Tests
 
       foreach (var exception in report.Event.Exceptions)
       {
-        var stacktrace = new StackTraceLine[] { new StackTraceLine(fileName, 1, string.Empty, false, null) };
+        var stacktrace = new StackTraceLine[] { new StackTraceLine(fileName, 1, string.Empty, false) };
         exception["stacktrace"] = stacktrace;
       }
 
@@ -95,7 +95,7 @@ namespace Bugsnag.Tests
       foreach (var exception in report.Event.Exceptions)
       {
         exception["stacktrace"] = testCases
-          .Select(t => new StackTraceLine(null, 0, t.MethodName, false, null))
+          .Select(t => new StackTraceLine(null, 0, t.MethodName, false))
           .ToArray();
       }
 

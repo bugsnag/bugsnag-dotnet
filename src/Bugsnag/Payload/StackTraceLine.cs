@@ -83,21 +83,16 @@ namespace Bugsnag.Payload
       var lineNumber = stackFrame.GetFileLineNumber();
       var methodName = new Method(method).DisplayName();
       var inProject = false;
-      var code = new Code(stackFrame, 5).Display();
 
-      return new StackTraceLine(file, lineNumber, methodName, inProject, code);
+      return new StackTraceLine(file, lineNumber, methodName, inProject);
     }
 
-    public StackTraceLine(string file, int lineNumber, string methodName, bool inProject, Dictionary<string, string> code)
+    public StackTraceLine(string file, int lineNumber, string methodName, bool inProject)
     {
       this.AddToPayload("file", file);
       this.AddToPayload("lineNumber", lineNumber);
       this.AddToPayload("method", methodName);
       this.AddToPayload("inProject", inProject);
-      if (code != null && code.Count > 0)
-      {
-        this.AddToPayload("code", code);
-      }
     }
 
     public string FileName
