@@ -58,7 +58,10 @@ namespace Bugsnag
 #if NET35 || NET40
       return true;
 #elif NET45
-      System.Xml.Linq.XElement configFile = System.Xml.Linq.XElement.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+      System.Xml.Linq.XElement configFile = null;
+      if(System.IO.File.Exists(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile))
+        configFile = System.Xml.Linq.XElement.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile); 
+
       var configValue = configFile?.Element("runtime")?.Element("ThrowUnobservedTaskExceptions")?.Attribute("enabled")?.Value;
       bool value;
       var success = bool.TryParse(configValue, out value);
