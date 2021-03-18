@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 2.2.2 (2021-03-18)
+
+### Bug fixes
+
+* Stop sending code snippets in error reports.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#134](https://github.com/bugsnag/bugsnag-dotnet/pull/134)
+
+* Assume default behaviour for UnobservedTaskExceptions when App.config does not exist.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#135](https://github.com/bugsnag/bugsnag-dotnet/pull/135)
+
 ## 2.2.1 (2020-05-14)
 
 ### Bug fixes
