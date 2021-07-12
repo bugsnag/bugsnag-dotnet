@@ -42,15 +42,5 @@ namespace Bugsnag.Tests.Payload
 
       Assert.NotNull(breadcrumb.Name);
     }
-
-    [Fact]
-    public void LongNamesAreTrimmed()
-    {
-      var name = new String('a', 500);
-
-      var breadcrumb = new Breadcrumb(name, BreadcrumbType.Manual);
-
-      Assert.Equal(name.Substring(0, 30), breadcrumb.Name);
-    }
   }
 }
