@@ -53,7 +53,7 @@ namespace Bugsnag.Payload
         {
           // if the exception has not come from a stack trace then we need to
           // skip the frames that originate from inside the notifier code base
-          var currentStackFrameIsNotify = stackFrame.MethodName.StartsWith("Bugsnag.Client.Notify");
+          var currentStackFrameIsNotify = !Polyfills.String.IsNullOrWhiteSpace(stackFrame.MethodName) && stackFrame.MethodName.StartsWith("Bugsnag.Client.Notify");
           seenBugsnagFrames = seenBugsnagFrames || currentStackFrameIsNotify;
           if (!seenBugsnagFrames || currentStackFrameIsNotify)
           {

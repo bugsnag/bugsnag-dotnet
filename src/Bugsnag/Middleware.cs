@@ -78,14 +78,17 @@ namespace Bugsnag
         {
           foreach (var stackTraceLine in exception.StackTrace)
           {
-            foreach (var @namespace in report.Configuration.ProjectNamespaces)
+            if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.MethodName))
             {
-              if (stackTraceLine.MethodName.StartsWith(@namespace))
+              foreach (var @namespace in report.Configuration.ProjectNamespaces)
               {
-                stackTraceLine.InProject = true;
-                break;
+                if (stackTraceLine.MethodName.StartsWith(@namespace))
+                {
+                  stackTraceLine.InProject = true;
+                  break;
+                }
               }
-            }
+            }            
           }
         }
       }
