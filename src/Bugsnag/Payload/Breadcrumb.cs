@@ -8,9 +8,7 @@ namespace Bugsnag.Payload
   /// </summary>
   public class Breadcrumb : Dictionary<string, object>
   {
-    private const int MaximumNameLength = 30;
     private const string UndefinedName = "Breadcrumb";
-    private const int MaximumMetadataCharacterCount = 1024;
 
     /// <summary>
     /// Build a new breadcrumb from an error report. This is used to attach a previously occurring exception to the
@@ -48,7 +46,6 @@ namespace Bugsnag.Payload
     public Breadcrumb(string name, BreadcrumbType type, IDictionary<string, string> metadata)
     {
       if (name == null) name = UndefinedName;
-      if (name.Length > MaximumNameLength) name = name.Substring(0, MaximumNameLength);
 
       this.AddToPayload("name", name);
       this.AddToPayload("timestamp", DateTime.UtcNow);
