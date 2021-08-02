@@ -23,6 +23,9 @@ namespace netcore11_console
       {
         client.Notify(ex);
       }
+
+      Console.WriteLine("Press any key to exit...");
+      Console.ReadKey();
     }
   }
 }
