@@ -7,7 +7,7 @@ after_build:
   - ps: 7z a build\bugsnag.zip build\Release\**\Bugsnag*.dll build\Release\**\Bugsnag*.pdb
 test: off
 artifacts:
-  - path: 'build\packages\*.nupkg'
+  - path: 'build\packages\*.*nupkg'
   - path: 'build\bugsnag.zip'
 deploy:
   - provider: NuGet
