@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## 2.2.3 (2021-09-06)
+
+### Enhancements
+
+* Set the delivery queue thread name.
+  | [xPaw](https://github.com/xPaw)
+  | [#139](https://github.com/bugsnag/bugsnag-dotnet/pull/139)
+
+* Remove the 30 character limit for breadcrumb names.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#141](https://github.com/bugsnag/bugsnag-dotnet/pull/141)
+
+* Switch to snupkg package format and publish symbols to nuget.org.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#143](https://github.com/bugsnag/bugsnag-dotnet/pull/143)
+
+### Bug fixes
+
+* Fix a crash when stackframe method is null.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#140](https://github.com/bugsnag/bugsnag-dotnet/pull/140)
+
 ## 2.2.2 (2021-03-18)
 
 ### Bug fixes

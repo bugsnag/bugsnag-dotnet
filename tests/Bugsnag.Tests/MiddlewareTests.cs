@@ -157,6 +157,14 @@ namespace Bugsnag.Tests
             ShouldBeMarkedAsInProject = true }
         }
       };
+      yield return new object[] {
+        new string[] { "Bugsnag.Code", "Bugsnag.Assets" },
+        new StackTraceInProjectTestCase[] {
+          new StackTraceInProjectTestCase {
+            MethodName = null,
+            ShouldBeMarkedAsInProject = false }
+        }
+      };
     }
   }
 }
