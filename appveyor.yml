@@ -21,7 +21,7 @@ deploy:
   - provider: GitHub
     description: draft release
     auth_token:
-      secure: fS4KNFA01HMw4lYhlOHd3Upi18Ih1i5wU2Lp0tPaeiUNf69wTXYH70pLFpgDHZlW
+      secure: 1HE8bikN3sntks6sONzT0nVoW5FZ7lQRAwMpgZkGNcpLM2t9Em9x7MCfwyhcierN
     artifact: build\bugsnag.zip
     draft: true
     on:
