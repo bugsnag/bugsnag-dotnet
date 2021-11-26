@@ -43,8 +43,7 @@ namespace Bugsnag
   {
     private readonly object _lock = new object();
     private readonly int _maximumBreadcrumbs;
-    private readonly Breadcrumb[] _breadcrumbs;
-    private int _current;
+    private readonly List<Breadcrumb> _breadcrumbs;
 
     /// <summary>
     /// Constructs a collection of breadcrumbs
@@ -53,8 +52,7 @@ namespace Bugsnag
     public Breadcrumbs(IConfiguration configuration)
     {
       _maximumBreadcrumbs = configuration.MaximumBreadcrumbs;
-      _current = 0;
-      _breadcrumbs = new Breadcrumb[_maximumBreadcrumbs];
+      _breadcrumbs = new List<Breadcrumb>();
     }
 
     /// <summary>
@@ -87,8 +85,12 @@ namespace Bugsnag
       {
         lock (_lock)
         {
-          _breadcrumbs[_current] = breadcrumb;
-          _current = (_current + 1) % _maximumBreadcrumbs;
+          if (_breadcrumbs.Count == _maximumBreadcrumbs)
+          {
+            _breadcrumbs.RemoveAt(0);
+          }
+
+          _breadcrumbs.Add(breadcrumb);
         }
       }
     }
@@ -101,18 +103,7 @@ namespace Bugsnag
     {
       lock (_lock)
       {
-        var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
-
-        if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
-
-        var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
-
-        for (int i = 0; i < numberOfBreadcrumbs; i++)
-        {
-          breadcrumbs[i] = _breadcrumbs[i];
-        }
-
-        return breadcrumbs;
+        return _breadcrumbs.ToArray();
       }
     }
   }
