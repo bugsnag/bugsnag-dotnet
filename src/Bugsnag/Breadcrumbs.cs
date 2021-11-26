@@ -81,17 +81,19 @@ namespace Bugsnag
     /// <param name="breadcrumb"></param>
     public void Leave(Breadcrumb breadcrumb)
     {
-      if (breadcrumb != null)
+      if (breadcrumb == null || _maximumBreadcrumbs < 1)
       {
-        lock (_lock)
-        {
-          if (_breadcrumbs.Count == _maximumBreadcrumbs)
-          {
-            _breadcrumbs.RemoveAt(0);
-          }
+        return;
+      }
 
-          _breadcrumbs.Add(breadcrumb);
+      lock (_lock)
+      {
+        if (_breadcrumbs.Count == _maximumBreadcrumbs)
+        {
+          _breadcrumbs.RemoveAt(0);
         }
+
+        _breadcrumbs.Add(breadcrumb);
       }
     }
 
