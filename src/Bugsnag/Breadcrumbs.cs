@@ -1,5 +1,6 @@
 using Bugsnag.Payload;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bugsnag
 {
@@ -43,7 +44,7 @@ namespace Bugsnag
   {
     private readonly object _lock = new object();
     private readonly int _maximumBreadcrumbs;
-    private readonly List<Breadcrumb> _breadcrumbs;
+    private readonly LinkedList<Breadcrumb> _breadcrumbs;
 
     /// <summary>
     /// Constructs a collection of breadcrumbs
@@ -52,7 +53,7 @@ namespace Bugsnag
     public Breadcrumbs(IConfiguration configuration)
     {
       _maximumBreadcrumbs = configuration.MaximumBreadcrumbs;
-      _breadcrumbs = new List<Breadcrumb>();
+      _breadcrumbs = new LinkedList<Breadcrumb>();
     }
 
     /// <summary>
@@ -88,12 +89,12 @@ namespace Bugsnag
 
       lock (_lock)
       {
-        if (_breadcrumbs.Count == _maximumBreadcrumbs)
+        if (_breadcrumbs.Count >= _maximumBreadcrumbs)
         {
-          _breadcrumbs.RemoveAt(0);
+          _breadcrumbs.RemoveFirst();
         }
 
-        _breadcrumbs.Add(breadcrumb);
+        _breadcrumbs.AddLast(breadcrumb);
       }
     }
 
@@ -105,7 +106,7 @@ namespace Bugsnag
     {
       lock (_lock)
       {
-        return _breadcrumbs.ToArray();
+        return _breadcrumbs.ToList();
       }
     }
   }
