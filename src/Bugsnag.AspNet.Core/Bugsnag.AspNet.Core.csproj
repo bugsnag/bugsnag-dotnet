@@ -4,6 +4,7 @@
     <Title>Bugsnag .NET ASP.NET Core Notifier</Title>
     <Description>The Bugsnag Notifier for ASP.NET Core gives you instant notification of exceptions thrown from your ASP.NET Core applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.</Description>
     <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
+	<SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
