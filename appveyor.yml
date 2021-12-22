@@ -12,7 +12,7 @@ artifacts:
 deploy:
   - provider: NuGet
     api_key:
-      secure: MALWFhc9/aJSnKQhjY1OID0nl5LZpcWpP1vYAmTDQxhNkE41Y2Sft0zR1EOk6Nw3 
+      secure: qA2cRUqCQnpT/4VxrVZcbRI9jZFbZmqJ+Wn/bCYyPosIsMfZZGsSwMAFKZYH3ewx 
     skip_symbols: false
     symbol_server: https://www.nuget.org/api/v2/symbolpackage
     artifact: /.*(\.|\.s)nupkg/
@@ -21,7 +21,7 @@ deploy:
   - provider: GitHub
     description: draft release
     auth_token:
-      secure: fS4KNFA01HMw4lYhlOHd3Upi18Ih1i5wU2Lp0tPaeiUNf69wTXYH70pLFpgDHZlW
+      secure: 1HE8bikN3sntks6sONzT0nVoW5FZ7lQRAwMpgZkGNcpLM2t9Em9x7MCfwyhcierN
     artifact: build\bugsnag.zip
     draft: true
     on:

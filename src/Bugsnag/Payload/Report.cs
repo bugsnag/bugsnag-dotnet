@@ -35,7 +35,7 @@ namespace Bugsnag.Payload
     /// <param name="severity"></param>
     /// <param name="breadcrumbs"></param>
     /// <param name="session"></param>
-    public Report(IConfiguration configuration, System.Exception exception, HandledState severity, Breadcrumb[] breadcrumbs, Session session)
+    public Report(IConfiguration configuration, System.Exception exception, HandledState severity, IEnumerable<Breadcrumb> breadcrumbs, Session session)
     {
       _ignored = false;
       Endpoint = configuration.Endpoint;

@@ -1,5 +1,6 @@
 using Bugsnag.Payload;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bugsnag
 {
@@ -43,8 +44,7 @@ namespace Bugsnag
   {
     private readonly object _lock = new object();
     private readonly int _maximumBreadcrumbs;
-    private readonly Breadcrumb[] _breadcrumbs;
-    private int _current;
+    private readonly LinkedList<Breadcrumb> _breadcrumbs;
 
     /// <summary>
     /// Constructs a collection of breadcrumbs
@@ -53,8 +53,7 @@ namespace Bugsnag
     public Breadcrumbs(IConfiguration configuration)
     {
       _maximumBreadcrumbs = configuration.MaximumBreadcrumbs;
-      _current = 0;
-      _breadcrumbs = new Breadcrumb[_maximumBreadcrumbs];
+      _breadcrumbs = new LinkedList<Breadcrumb>();
     }
 
     /// <summary>
@@ -83,13 +82,19 @@ namespace Bugsnag
     /// <param name="breadcrumb"></param>
     public void Leave(Breadcrumb breadcrumb)
     {
-      if (breadcrumb != null)
+      if (breadcrumb == null || _maximumBreadcrumbs < 1)
       {
-        lock (_lock)
+        return;
+      }
+
+      lock (_lock)
+      {
+        if (_breadcrumbs.Count >= _maximumBreadcrumbs)
         {
-          _breadcrumbs[_current] = breadcrumb;
-          _current = (_current + 1) % _maximumBreadcrumbs;
+          _breadcrumbs.RemoveFirst();
         }
+
+        _breadcrumbs.AddLast(breadcrumb);
       }
     }
 
@@ -101,18 +106,7 @@ namespace Bugsnag
     {
       lock (_lock)
       {
-        var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
-
-        if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
-
-        var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
-
-        for (int i = 0; i < numberOfBreadcrumbs; i++)
-        {
-          breadcrumbs[i] = _breadcrumbs[i];
-        }
-
-        return breadcrumbs;
+        return _breadcrumbs.ToList();
       }
     }
   }
