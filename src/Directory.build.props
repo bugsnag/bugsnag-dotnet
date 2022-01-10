@@ -1,4 +1,7 @@
 ﻿<Project>
+
+  <Import Project="..\Directory.Build.props"/>
+
   <PropertyGroup>
     <Authors>snmaynard kattrali martin308</Authors>
     <Version></Version>
