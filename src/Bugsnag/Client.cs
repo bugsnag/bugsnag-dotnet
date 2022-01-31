@@ -117,7 +117,7 @@ namespace Bugsnag
 
     public void Notify(System.Exception exception, HandledState handledState, Middleware callback)
     {
-      var report = new Report(_configuration, exception, handledState, Breadcrumbs.Retrieve().ToArray(), SessionTracking.CurrentSession);
+      var report = new Report(_configuration, exception, handledState, Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
 
       Notify(report, callback);
     }

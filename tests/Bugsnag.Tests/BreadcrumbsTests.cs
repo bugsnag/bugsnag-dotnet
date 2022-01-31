@@ -36,14 +36,14 @@ namespace Bugsnag.Tests
     {
       var breadcrumbs = new Breadcrumbs(new Configuration { MaximumBreadcrumbs = 5 });
 
-      for (int i = 0; i < 10; i++)
+      for (int i = 0; i < 6; i++)
       {
         breadcrumbs.Leave($"{i}");
       }
 
       var breadcrumbNames = breadcrumbs.Retrieve().Select(b => b.Name);
 
-      Assert.Equal(new string[] { "5", "6", "7", "8", "9" }, breadcrumbNames);
+      Assert.Equal(new string[] { "1", "2", "3", "4", "5" }, breadcrumbNames);
     }
   }
 }

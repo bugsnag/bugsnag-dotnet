@@ -1,6 +1,15 @@
 Upgrading
 =========
 
+## 2.x to 3.x
+
+If you are targeting .NET Framework, v3.0.0 contains binary breaking changes due to the introduction of strong name signing. You will need to re-compile your application against the new version. If you are referencing a library that also references Bugsnag you may also need to add a binding redirect or enable automatic binding redirection in your project file:
+
+```
+<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+```
+
+.NET Core and .NET 5/6 do not recognise strong names so there is no action required if targetting one of those.
 ## 1.x to 2.x
 
 *Our .NET notifier has gone through some major improvements, and there are some changes you'll need to make to get onto the new version.*
