@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## 3.0.0 (2022-01-31)
+
+### Breaking Changes
+ 
+The `Bugnsag.dll`, `Bugsnag.AspNet.dll`, `Bugsnag.AspNet.Mvc.dll` and `Bugsnag.AspNet.WebApi.dll` assemblies are now strong-name signed. The strong name key file `Bugsnag.snk` has been added to the repository. `Bugsnag.AspNet.Core.dll` remains unchanged. See the upgrade guide for more details.
+
+### Bug fixes
+
+* Strong name sign assemblies
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#151](https://github.com/bugsnag/bugsnag-dotnet/pull/151)
+  
+* Ensure breadcrumbs are returned in the correct order
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#150](https://github.com/bugsnag/bugsnag-dotnet/pull/150)
+
 ## 2.2.3 (2021-09-06)
 
 ### Enhancements

@@ -9,6 +9,7 @@ If you are targeting .NET Framework, v3.0.0 contains binary breaking changes due
 <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 ```
 
+.NET Core and .NET 5/6 do not recognise strong names so there is no action required if targetting one of those.
 ## 1.x to 2.x
 
 *Our .NET notifier has gone through some major improvements, and there are some changes you'll need to make to get onto the new version.*
