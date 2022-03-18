@@ -1,7 +1,5 @@
 <Project>
   <PropertyGroup>
     <OutputPath>$(BaseOutputPath)</OutputPath>
-	<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Bugsnag.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 </Project>
