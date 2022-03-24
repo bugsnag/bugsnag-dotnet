@@ -58,8 +58,14 @@ namespace Bugsnag.Tests
 
     public static IEnumerable<object[]> ProjectRootTestData()
     {
+      // Tests for Windows-based paths
       yield return new object[] { new string[] { @"C:\app" }, @"C:\app\Class.cs", "Class.cs" };
       yield return new object[] { new string[] { @"C:\app\" }, @"C:\app\Class.cs", "Class.cs" };
+
+      // Tests for Unix-based paths
+      yield return new object[] { new string[] { @"/app" }, @"/app/Class.cs", "Class.cs" };
+      yield return new object[] { new string[] { @"/app/" }, @"/app/Class.cs", "Class.cs" };
+
       // for this scenario we should only strip the file path once, here we
       // have a setup where the first prefix will then also cause the second
       // prefix to match. This should only strip the first prefix

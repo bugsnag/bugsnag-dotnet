@@ -1,7 +1,4 @@
 ﻿<Project>
-
-  <Import Project="..\Directory.Build.props"/>
-
   <PropertyGroup>
     <Authors>snmaynard kattrali martin308</Authors>
     <Version></Version>
@@ -15,5 +12,7 @@
     <LangVersion>7.1</LangVersion>
     <WarningsAsErrors />
     <NoWarn>1591</NoWarn>
+	<AssemblyOriginatorKeyFile>$(MSBuildStartupDirectory)\Bugsnag.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 </Project>

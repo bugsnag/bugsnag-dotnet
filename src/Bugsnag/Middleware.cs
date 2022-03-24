@@ -39,11 +39,26 @@ namespace Bugsnag
       {
         var projectRoots = report.Configuration.ProjectRoots.Select(prefix => {
           // if the file prefix is missing a final directory seperator then we should
-          // add one first
-          if (prefix[prefix.Length - 1] != System.IO.Path.DirectorySeparatorChar)
+          // add one first. 
+          var finalChar = prefix[prefix.Length - 1];
+
+          // Check if a prefix is a Unix-based path, if it is we add a `/`.
+          // Otherwise its a Windows-based path and we add `\` instead, if necessary. 
+          if (prefix[0] == '/')
           {
-            prefix = $"{prefix}{System.IO.Path.DirectorySeparatorChar}";
+            if (finalChar != '/')
+            {
+              prefix = $"{prefix}/";
+            }
           }
+          else if (finalChar != '\\')
+          {
+            // DirectorySeparatorChar is not being used because its `/` on Unix
+            // systems and will break the check when running assemblies build
+            // on Windows but are run on Linux.
+            prefix = $"{prefix}\\";
+          }
+
           return prefix;
         }).ToArray();
 
