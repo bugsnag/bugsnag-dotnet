@@ -28,24 +28,24 @@ Task("Build")
   Task("Test")
     .IsDependentOn("Build")
     .Does(() => {
-	  var testAssemblies = GetFiles($"{buildDir}/**/*.Tests.dll");
-	  var settings = new DotNetTestSettings
-	  {
-	    Configuration = configuration,
-		ArgumentCustomization = args => {
-		  if (AppVeyor.IsRunningOnAppVeyor)
-		  {
-		    args.Append("-appveyor");
-		  }
-		  return args;
-		}
-	  };
+      var testAssemblies = GetFiles($"{buildDir}/**/*.Tests.dll");
+      var settings = new DotNetTestSettings
+      {
+        Configuration = configuration,
+        ArgumentCustomization = args => {
+          if (AppVeyor.IsRunningOnAppVeyor)
+          {
+            args.Append("-appveyor");
+          }
+          return args;
+        }
+      };
 
-	  foreach(var file in testAssemblies)
-	  {
-		DotNetTest(file.FullPath, "MSTest.MapInconclusiveToFailed=true", settings);
-	  }
-});
+      foreach(var file in testAssemblies)
+      {
+        DotNetTest(file.FullPath, "MSTest.MapInconclusiveToFailed=true", settings);
+      }
+    });
 
 Task("Pack")
   .IsDependentOn("Test")
