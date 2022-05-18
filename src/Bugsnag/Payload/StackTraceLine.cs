@@ -28,7 +28,7 @@ namespace Bugsnag.Payload
       var stackFrames = new System.Diagnostics.StackTrace(_originalException, true).GetFrames();
 
 #if !NETSTANDARD1_3
-      if (stackFrames == null)
+      if (stackFrames == null || stackFrames.Length == 0)
       {
         // this usually means that the exception has not been thrown so we need
         // to try and create a stack trace at the point that the notify call
