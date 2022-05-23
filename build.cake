@@ -92,7 +92,7 @@ Task("MazeRunner")
   .IsDependentOn("Pack")
   .Does(() => {
     StartProcess("cmd", "/c bundle install");
-    var mazeRunner = StartProcess("cmd", $"/c \"set BUGSNAG_VERSION={version} && bundle exec bugsnag-maze-runner\"");
+    var mazeRunner = StartProcess("cmd", $"/c \"set BUGSNAG_VERSION={version} && bundle exec bugsnag-maze-runner --verbose\"");
     if (mazeRunner != 0) {
       throw new Exception("maze-runner failed");
     }
