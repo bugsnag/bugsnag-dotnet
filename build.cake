@@ -1,6 +1,3 @@
-#tool "nuget:?package=xunit.runner.console"
-#addin nuget:?package=Cake.SemVer
-#addin nuget:?package=semver&version=2.0.4
 
 var solution = File("./Bugsnag.sln");
 var target = Argument("target", "Default");
@@ -28,21 +25,27 @@ Task("Build")
         .SetConfiguration(configuration));
   });
 
-Task("Test")
-  .IsDependentOn("Build")
-  .Does(() => {
-    var testAssemblies = GetFiles($"{buildDir}/**/*.Tests.dll");
-    XUnit2(testAssemblies,
-      new XUnit2Settings {
-          ArgumentCustomization = args => {
-            if (AppVeyor.IsRunningOnAppVeyor)
-            {
-              args.Append("-appveyor");
-            }
-            return args;
+  Task("Test")
+    .IsDependentOn("Build")
+    .Does(() => {
+      var testAssemblies = GetFiles($"{buildDir}/**/*.Tests.dll");
+      var settings = new DotNetTestSettings
+      {
+        Configuration = configuration,
+        ArgumentCustomization = args => {
+          if (AppVeyor.IsRunningOnAppVeyor)
+          {
+            args.Append("-appveyor");
           }
-      });
-  });
+          return args;
+        }
+      };
+
+      foreach(var file in testAssemblies)
+      {
+        DotNetTest(file.FullPath, "MSTest.MapInconclusiveToFailed=true", settings);
+      }
+    });
 
 Task("Pack")
   .IsDependentOn("Test")
@@ -89,7 +92,7 @@ Task("MazeRunner")
   .IsDependentOn("Pack")
   .Does(() => {
     StartProcess("cmd", "/c bundle install");
-    var mazeRunner = StartProcess("cmd", $"/c \"set BUGSNAG_VERSION={version} && bundle exec bugsnag-maze-runner\"");
+    var mazeRunner = StartProcess("cmd", $"/c \"set BUGSNAG_VERSION={version} && bundle exec bugsnag-maze-runner --verbose\"");
     if (mazeRunner != 0) {
       throw new Exception("maze-runner failed");
     }
