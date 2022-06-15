@@ -7,8 +7,8 @@ end
 When("I run the console app {string} with {string}") do |name, args|
   path = File.join(Dir.pwd, "features", "fixtures", name)
   nuget_package_path = File.join(Dir.pwd, "build", "packages")
-  run_command("dotnet nuget locals all --clear")
-  run_command("dotnet add #{path} package -v #{ENV['BUGSNAG_VERSION']} bugsnag")
+  run_command("dotnet add #{path} package bugsnag --version #{ENV['BUGSNAG_VERSION']} --no-restore")
+  run_command("dotnet restore #{path} --source #{nuget_package_path} --no-cache")
   run_command(@script_env || {}, "dotnet run -p #{path} -- #{args}")
 end
 

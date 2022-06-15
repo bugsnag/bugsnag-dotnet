@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 3.0.1 (2022-03-24)
+
+### Bug fixes
+
+* Ensure RemoveProjectRoots works for assemblies that are run on a OS that differs from their build OS.
+  | [sgtfrankieboy](https://github.com/sgtfrankieboy)
+  | [#154](https://github.com/bugsnag/bugsnag-dotnet/pull/154)
+
 ## 3.0.0 (2022-01-31)
 
 ### Breaking Changes
