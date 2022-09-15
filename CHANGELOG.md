@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 3.1.0 (2022-06-15)
+
+### Enhancements
+
+The `Bugsnag` and `Bugsnag.AspNet.Core` packages now officially support .NET Core 3.x, .NET 5 and .NET 6.
+
 ## 3.0.1 (2022-03-24)
 
 ### Bug fixes
