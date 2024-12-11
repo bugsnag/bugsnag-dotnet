@@ -1,4 +1,5 @@
 using System.Web;
+using Bugsnag.ConfigurationSection;
 
 namespace Bugsnag.AspNet
 {
@@ -27,7 +28,7 @@ namespace Bugsnag.AspNet
           {
             // this is the first time a client has been requested for this
             // request scope, so create one and attach it to the request
-            var requestScopedClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
+            var requestScopedClient = new Bugsnag.Client(RuntimeConfiguration);
             HttpContext.Current.Items[HttpContextItemsKey] = requestScopedClient;
             return requestScopedClient;
           }
@@ -39,12 +40,30 @@ namespace Bugsnag.AspNet
           {
             if (_globalClient == null)
             {
-              _globalClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
+              _globalClient = new Bugsnag.Client(RuntimeConfiguration);
             }
           }
 
           return _globalClient;
         }
+      }
+    }
+
+    private static Configuration _runtimeConfiguration;
+    public static Configuration RuntimeConfiguration
+    {
+      get
+      {
+        if (_runtimeConfiguration == null)
+        {
+          _runtimeConfiguration = ConfigurationSection.Configuration.Settings.ToWritableCopy();
+        }
+
+        return _runtimeConfiguration;
+      }
+      set
+      {
+        _runtimeConfiguration = value;
       }
     }
   }
