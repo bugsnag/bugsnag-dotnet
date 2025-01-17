@@ -13,6 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
     <ProjectReference Include="..\Bugsnag.ConfigurationSection\Bugsnag.ConfigurationSection.csproj" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
   </ItemGroup>
 </Project>
