@@ -12,7 +12,7 @@
     <LangVersion>7.1</LangVersion>
     <WarningsAsErrors />
     <NoWarn>1591</NoWarn>
-	<AssemblyOriginatorKeyFile>$(MSBuildStartupDirectory)\Bugsnag.snk</AssemblyOriginatorKeyFile>
+	<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Bugsnag.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
