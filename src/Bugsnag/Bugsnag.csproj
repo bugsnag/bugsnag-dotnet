@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>Bugsnag</PackageId>
     <Title>Bugsnag .NET Notifier</Title>
     <Description>The Bugsnag Notifier for .NET gives you instant notification of exceptions thrown from your .NET applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.</Description>
-    <TargetFrameworks>net35;net40;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
     <Reference Include="System" />
