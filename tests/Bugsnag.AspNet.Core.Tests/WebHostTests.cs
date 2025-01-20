@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Bugsnag.AspNet.Core.Tests
@@ -10,7 +11,7 @@ namespace Bugsnag.AspNet.Core.Tests
   public class WebHostTests
   {
     [Fact]
-    public async void TestWithNoExceptions()
+    public async Task TestWithNoExceptions()
     {
       var builder = new WebHostBuilder()
         .ConfigureServices(services => services.AddBugsnag(config => { config.ApiKey = "123456"; }))
@@ -28,7 +29,7 @@ namespace Bugsnag.AspNet.Core.Tests
     }
 
     [Fact]
-    public async void TestWithDeveloperExceptionPage()
+    public async Task TestWithDeveloperExceptionPage()
     {
       var bugsnag = new Bugsnag.Tests.TestServer();
       bugsnag.Start();
