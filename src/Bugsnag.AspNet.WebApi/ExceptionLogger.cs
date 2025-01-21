@@ -1,4 +1,3 @@
-#if NET45
 using System.Web.Http.ExceptionHandling;
 
 namespace Bugsnag.AspNet.WebApi
@@ -16,11 +15,10 @@ namespace Bugsnag.AspNet.WebApi
       {
         if (client.Configuration.AutoNotify)
         {
-          client
-            .Notify(exception, Payload.HandledState.ForUnhandledException());
+          client.Notify(exception, Payload.HandledState.ForUnhandledException());
         }
       }
     }
   }
 }
-#endif
+
