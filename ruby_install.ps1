@@ -1,29 +1,5 @@
 $rubies = @(
     @{
-        "version"      = "Ruby 2.6.9-1"
-        "install_path" = "C:\Ruby26"
-        "download_url" = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.9-1/rubyinstaller-2.6.9-1-x86.exe"
-        "devkit_url"   = ""
-        "devkit_paths" = @()
-        "bundlerV2"    = $true
-    }    
-    @{
-        "version"      = "Ruby 2.6.9-1 (x64)"
-        "install_path" = "C:\Ruby26-x64"
-        "download_url" = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.9-1/rubyinstaller-2.6.9-1-x64.exe"
-        "devkit_url"   = ""
-        "devkit_paths" = @()
-        "bundlerV2"    = $true
-    }
-    @{
-        "version"      = "Ruby 2.7.8-1"
-        "install_path" = "C:\Ruby27"
-        "download_url" = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.8-1/rubyinstaller-2.7.8-1-x86.exe"
-        "devkit_url"   = ""
-        "devkit_paths" = @()
-        "bundlerV2"    = $true
-    }    
-    @{
         "version"      = "Ruby 2.7.8-1 (x64)"
         "install_path" = "C:\Ruby27-x64"
         "download_url" = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.8-1/rubyinstaller-2.7.8-1-x64.exe"

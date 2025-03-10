@@ -1,7 +1,9 @@
 image: Visual Studio 2022
 install:
-  - ps: ./ruby_install.ps1
   - set PATH=C:\Ruby27-x64\bin;%PATH%
+  - ridk enable
+  - pacman -S --noconfirm libcurl-devel
+  - gem install curb --platform=ruby -- --with-curl-lib=C:\msys64\usr\lib --with-curl-include=C:\msys64\usr\include
   - bundle install 
 build_script:
   - ps: .\build.ps1 --target Appveyor
