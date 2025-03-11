@@ -24,8 +24,8 @@ namespace Bugsnag.Payload
 
       switch (value)
       {
-        case System.String s:
-          if (!Polyfills.String.IsNullOrWhiteSpace(s))
+        case String s:
+          if (!String.IsNullOrWhiteSpace(s))
           {
             dictionary[key] = value;
           }

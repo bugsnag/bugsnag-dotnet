@@ -1,4 +1,4 @@
-#if NET45 || NET40
+#if NET462
 using System.Web.Mvc;
 
 namespace Bugsnag.AspNet.Mvc

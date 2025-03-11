@@ -49,7 +49,6 @@ namespace Bugsnag.Payload
             }
           }
           break;
-#if !NET35
         case System.AggregateException aggregateException:
           foreach (var exception in aggregateException.InnerExceptions)
           {
@@ -59,7 +58,6 @@ namespace Bugsnag.Payload
             }
           }
           break;
-#endif
         default:
           foreach (var item in FlattenAndReverseExceptionTree(ex.InnerException))
           {
