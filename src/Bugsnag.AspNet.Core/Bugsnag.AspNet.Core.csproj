@@ -3,7 +3,7 @@
     <PackageId>Bugsnag.AspNet.Core</PackageId>
     <Title>Bugsnag .NET ASP.NET Core Notifier</Title>
     <Description>The Bugsnag Notifier for ASP.NET Core gives you instant notification of exceptions thrown from your ASP.NET Core applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.</Description>
-    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
 	<SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
@@ -12,15 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DiagnosticAdapter" Version="1.1.2" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.Abstractions" Version="1.1.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="1.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
