@@ -1,4 +1,3 @@
-#if NET462
 using System.Web.Http.ExceptionHandling;
 
 namespace Bugsnag.AspNet.WebApi
@@ -23,4 +22,4 @@ namespace Bugsnag.AspNet.WebApi
     }
   }
 }
-#endif
+

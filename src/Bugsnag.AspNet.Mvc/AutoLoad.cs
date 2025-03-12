@@ -1,4 +1,3 @@
-#if NET462
 using System.Web.Mvc;
 
 namespace Bugsnag.AspNet.Mvc
@@ -11,4 +10,4 @@ namespace Bugsnag.AspNet.Mvc
     }
   }
 }
-#endif
+
