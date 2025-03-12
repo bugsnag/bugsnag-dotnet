@@ -10,7 +10,7 @@ namespace Bugsnag.Tests
   public class ClientTests
   {
     [Fact]
-    public async void TestThrownException()
+    public async Task TestThrownException()
     {
       var server = new TestServer();
 
