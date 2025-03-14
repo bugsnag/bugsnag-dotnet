@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -9,7 +10,7 @@ namespace Bugsnag.Tests
   public class ThreadQueueDeliveryTests
   {
     [Fact]
-    public async void Test()
+    public async Task Test()
     {
       var numberOfRequests = 500;
 

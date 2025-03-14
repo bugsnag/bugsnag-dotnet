@@ -9,7 +9,7 @@ namespace Bugsnag.Tests
   public class WebRequestTests
   {
     [Fact]
-    public async void Test()
+    public async Task Test()
     {
       var numerOfRequests = 1;
       var server = new TestServer();

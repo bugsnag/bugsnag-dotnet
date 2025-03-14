@@ -2,6 +2,7 @@ using Bugsnag.Tests;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace Bugsnag.AspNet.WebApi.Tests
     }
 
     [Fact]
-    public async void Test()
+    public async Task Test()
     {
       var bugsnagServer = new TestServer();
 

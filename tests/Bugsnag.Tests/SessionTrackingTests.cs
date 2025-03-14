@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Bugsnag.Tests
@@ -15,7 +16,7 @@ namespace Bugsnag.Tests
     }
 
     [Fact]
-    public async void CurrentSessionCanBeSet()
+    public async Task CurrentSessionCanBeSet()
     {
       var server = new TestServer();
 
@@ -33,7 +34,7 @@ namespace Bugsnag.Tests
     }
 
     [Fact]
-    public async void EmptySessionsPayloadsAreNotSent()
+    public async Task EmptySessionsPayloadsAreNotSent()
     {
       var server = new TestServer();
 
