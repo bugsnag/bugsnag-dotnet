@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,7 +28,6 @@ namespace Bugsnag.Payload
       var exceptionStackTrace = true;
       var stackFrames = new System.Diagnostics.StackTrace(_originalException, true).GetFrames();
 
-#if !NETSTANDARD1_3
       if (stackFrames == null || stackFrames.Length == 0)
       {
         // this usually means that the exception has not been thrown so we need
@@ -36,7 +36,6 @@ namespace Bugsnag.Payload
         exceptionStackTrace = false;
         stackFrames = new System.Diagnostics.StackTrace(true).GetFrames();
       }
-#endif
 
       if (stackFrames == null)
       {
@@ -53,7 +52,7 @@ namespace Bugsnag.Payload
         {
           // if the exception has not come from a stack trace then we need to
           // skip the frames that originate from inside the notifier code base
-          var currentStackFrameIsNotify = !Polyfills.String.IsNullOrWhiteSpace(stackFrame.MethodName) && stackFrame.MethodName.StartsWith("Bugsnag.Client.Notify");
+          var currentStackFrameIsNotify = !String.IsNullOrWhiteSpace(stackFrame.MethodName) && stackFrame.MethodName.StartsWith("Bugsnag.Client.Notify");
           seenBugsnagFrames = seenBugsnagFrames || currentStackFrameIsNotify;
           if (!seenBugsnagFrames || currentStackFrameIsNotify)
           {

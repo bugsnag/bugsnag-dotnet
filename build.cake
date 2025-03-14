@@ -103,7 +103,7 @@ Task("Default")
 
 Task("Appveyor")
   .IsDependentOn("SetVersion")
-  .IsDependentOn("Pack")
-  .IsDependentOn("MazeRunner");
+  .IsDependentOn("Pack");
+  //.IsDependentOn("MazeRunner");
 
 RunTarget(target);

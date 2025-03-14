@@ -11,32 +11,20 @@ namespace Bugsnag
   {
     public static Assembly GetAssembly(this Type type)
     {
-#if (NET35 || NET40 || NET45)
-      return type.Assembly;
-#else
       return type.GetTypeInfo().Assembly;
-#endif
     }
 
     public static bool IsGenericType(this Type type)
     {
-#if (NET35 || NET40 || NET45)
-      return type.IsGenericType;
-#else
       return type.GetTypeInfo().IsGenericType;
-#endif
     }
 
     public static Type[] GetGenericArguments(this Type type)
     {
-#if NET35 || NET40
-      return type.GetGenericArguments();
-#else
       var typeInfo = type.GetTypeInfo();
       return typeInfo.IsGenericTypeDefinition
         ? typeInfo.GenericTypeParameters
         : typeInfo.GenericTypeArguments;
-#endif
     }
   }
 }

@@ -58,9 +58,7 @@ namespace Bugsnag
     public IAsyncResult BeginSend(Uri endpoint, IWebProxy proxy, KeyValuePair<string, string>[] headers, byte[] report, AsyncCallback callback, object state)
     {
       var request = (HttpWebRequest)System.Net.WebRequest.Create(endpoint);
-#if !NETSTANDARD1_3
       request.KeepAlive = false;
-#endif
       request.Method = "POST";
       request.ContentType = "application/json";
       if (proxy != null)

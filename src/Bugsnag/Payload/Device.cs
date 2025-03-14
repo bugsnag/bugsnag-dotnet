@@ -37,7 +37,7 @@ namespace Bugsnag.Payload
     {
       get
       {
-#if NETSTANDARD1_3 || NETSTANDARD2_0
+#if NETSTANDARD2_0
         return System.Runtime.InteropServices.RuntimeInformation.OSDescription;
 #else
         return Environment.OSVersion.VersionString;

@@ -3,7 +3,7 @@
     <PackageId>Bugsnag.AspNet.WebApi</PackageId>
     <Title>Bugsnag .NET ASP.NET WebApi Notifier</Title>
     <Description>The Bugsnag Notifier for ASP.NET WebApi gives you instant notification of exceptions thrown from your ASP.NET WebApi applications. Any uncaught exceptions will trigger a notification to be sent to your Bugsnag project.</Description>
-    <TargetFrameworks>net40;net45</TargetFrameworks>
+    <TargetFrameworks>net462</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -14,10 +14,7 @@
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
     <ProjectReference Include="..\Bugsnag.ConfigurationSection\Bugsnag.ConfigurationSection.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="4.0.20505.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.0" />
   </ItemGroup>
 </Project>
