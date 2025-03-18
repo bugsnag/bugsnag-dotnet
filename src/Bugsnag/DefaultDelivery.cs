@@ -17,7 +17,7 @@ namespace Bugsnag
     private static DefaultDelivery instance = null;
     private static readonly object instanceLock = new object();
 
-    private readonly HttpClient _httpClient;
+    private HttpClient _httpClient;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly Task _processingTask;
     private readonly BlockingCollection<IPayload> _queue;
@@ -43,6 +43,15 @@ namespace Bugsnag
 
           return instance;
         }
+      }
+    }
+
+    public void Configure(IConfiguration configuration)
+    {
+      if (configuration.Proxy != null)
+      {
+        _httpClient.Dispose();
+        _httpClient = new HttpClient(new HttpClientHandler { Proxy = configuration.Proxy });
       }
     }
 

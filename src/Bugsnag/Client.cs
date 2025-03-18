@@ -49,7 +49,7 @@ namespace Bugsnag
     /// <param name="configuration"></param>
     public Client(IConfiguration configuration) : this(configuration, DefaultDelivery.Instance, new Breadcrumbs(configuration), new SessionTracker(configuration))
     {
-
+      DefaultDelivery.Instance.Configure(configuration);
     }
 
     /// <summary>

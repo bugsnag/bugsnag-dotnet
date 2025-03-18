@@ -19,11 +19,12 @@ namespace Bugsnag.Payload
     {
       _configuration = configuration;
       Endpoint = configuration.SessionEndpoint;
-      Proxy = configuration.Proxy;
+
       _headers = new KeyValuePair<string, string>[] {
         new KeyValuePair<string, string>(Payload.Headers.ApiKeyHeader, configuration.ApiKey),
         new KeyValuePair<string, string>(Payload.Headers.PayloadVersionHeader, "1.0")
       };
+
       this.AddToPayload("notifier", notifier);
       this.AddToPayload("device", device);
       this.AddToPayload("app", app);
@@ -31,8 +32,6 @@ namespace Bugsnag.Payload
     }
 
     public Uri Endpoint { get; set; }
-
-    public IWebProxy Proxy { get; set; }
 
     public KeyValuePair<string, string>[] Headers => _headers;
 

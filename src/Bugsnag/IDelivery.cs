@@ -17,8 +17,6 @@ namespace Bugsnag
   {
     Uri Endpoint { get; }
 
-    IWebProxy Proxy { get; }
-
     KeyValuePair<string, string>[] Headers { get; }
 
     byte[] Serialize();
