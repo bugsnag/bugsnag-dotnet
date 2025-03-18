@@ -39,7 +39,7 @@ namespace Bugsnag.AspNet.Tests
 
       var requests = await server.Requests(1);
 
-      _request = requests.Single();
+      _request = requests.Single().Body;
     }
 
     [Fact]
