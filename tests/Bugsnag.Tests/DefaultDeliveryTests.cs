@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Bugsnag.Tests
 {
-  public class ThreadQueueDeliveryTests
+  public class DefaultDeliveryTests
   {
     [Fact]
-    public async Task Test()
+    public async Task Send_EnqueuesAndSendsPayloads()
     {
       var numberOfRequests = 500;
 
@@ -21,7 +22,7 @@ namespace Bugsnag.Tests
       for (int i = 0; i < numberOfRequests; i++)
       {
         var payload = new SamplePayload(i, server.Endpoint);
-        ThreadQueueDelivery.Instance.Send(payload);
+        DefaultDelivery.Instance.Send(payload);
       }
 
       var requests = await server.Requests(numberOfRequests);
@@ -47,7 +48,7 @@ namespace Bugsnag.Tests
 
       public byte[] Serialize()
       {
-        return System.Text.Encoding.UTF8.GetBytes($"payload {Count}");
+        return Encoding.UTF8.GetBytes($"payload {Count}");
       }
     }
   }
