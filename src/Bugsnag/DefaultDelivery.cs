@@ -99,7 +99,9 @@ namespace Bugsnag
       {
         byte[] serializedPayload = payload.Serialize();
         if (serializedPayload == null)
+        {
           return;
+        }
 
         using (var request = new HttpRequestMessage(HttpMethod.Post, payload.Endpoint))
         {
@@ -121,7 +123,8 @@ namespace Bugsnag
           // Send the request and log any failures
           var response = await _httpClient.SendAsync(request);
 
-          if (!response.IsSuccessStatusCode) {
+          if (!response.IsSuccessStatusCode)
+          {
             Trace.WriteLine($"Failed to send payload to Bugsnag - received status code {response.StatusCode}");
           }
         }
