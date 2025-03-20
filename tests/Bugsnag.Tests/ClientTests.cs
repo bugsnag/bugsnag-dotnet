@@ -71,7 +71,7 @@ namespace Bugsnag.Tests
 
         var requests = await server.Requests(1);
 
-        BugsnagPayload = requests.Single();
+        BugsnagPayload = requests.Single().Body;
       }
 
       /// <summary>

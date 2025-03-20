@@ -39,7 +39,7 @@ namespace Bugsnag.Payload
     {
       _ignored = false;
       Endpoint = configuration.Endpoint;
-      Proxy = configuration.Proxy;
+
       _headers = new KeyValuePair<string, string>[] {
         new KeyValuePair<string, string>(Payload.Headers.ApiKeyHeader, configuration.ApiKey),
         new KeyValuePair<string, string>(Payload.Headers.PayloadVersionHeader, _payloadVersion),
@@ -86,8 +86,6 @@ namespace Bugsnag.Payload
     /// THe endpoint to send the error report to.
     /// </summary>
     public Uri Endpoint { get; set; }
-
-    public IWebProxy Proxy { get; set; }
 
     public KeyValuePair<string, string>[] Headers { get { return _headers; } }
 

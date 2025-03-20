@@ -49,7 +49,7 @@ namespace Bugsnag.AspNet.Core.Tests
 
       var bugsnags = await bugsnag.Requests(1);
 
-      BugsnagPayload = bugsnags.First();
+      BugsnagPayload = bugsnags.First().Body;
     }
 
     /// <summary>

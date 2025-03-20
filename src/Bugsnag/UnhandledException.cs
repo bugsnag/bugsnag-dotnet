@@ -104,7 +104,7 @@ namespace Bugsnag
       if (runtimeEnding)
       {
         SessionsStore.Instance.Stop();
-        ThreadQueueDelivery.Instance.Stop();
+        DefaultDelivery.Instance.Stop();
       }
     }
   }

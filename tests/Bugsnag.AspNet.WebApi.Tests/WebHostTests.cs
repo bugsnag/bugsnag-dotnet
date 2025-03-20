@@ -41,7 +41,7 @@ namespace Bugsnag.AspNet.WebApi.Tests
       var responses = await bugsnagServer.Requests(1);
 
       Assert.Single(responses);
-      Assert.Contains("Bugsnag is great!", responses.Single());
+      Assert.Contains("Bugsnag is great!", responses.Single().Body);
     }
   }
 }
