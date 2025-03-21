@@ -1,8 +1,8 @@
 # .NET 8 ASP.NET Core (MVC) Example Application
 
-This example shows how you can use the Bugsnag .NET notifier in a basic ASP.NET Core MVC app.
+This example shows how you can use the BugSnag .NET notifier in a basic ASP.NET Core MVC app.
 
-Try this out with [your own Bugsnag account](https://app.bugsnag.com/user/new) by replacing the placeholder API key with your own. You'll be able to see how the errors are reported in the dashboard, how breadcrumbs are left, how errors are grouped and how they relate to the original source.
+Try this out with [your own BugSnag account](https://app.bugsnag.com/user/new) by replacing the placeholder API key with your own. You'll be able to see how the errors are reported in the dashboard, how breadcrumbs are left, how errors are grouped and how they relate to the original source.
 
 ## Requirements
 
