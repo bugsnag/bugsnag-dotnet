@@ -7,7 +7,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/bugsnag/bugsnag-dotnet</PackageProjectUrl>
     <PackageIcon>bugsnag.png</PackageIcon>
-    <DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' == 'net462'">true</DisableImplicitFrameworkReferences>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>7.1</LangVersion>
     <NoWarn>1591</NoWarn>
