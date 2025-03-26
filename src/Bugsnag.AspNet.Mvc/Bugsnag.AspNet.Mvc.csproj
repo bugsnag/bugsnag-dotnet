@@ -8,14 +8,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Bugsnag.AspNet\Bugsnag.AspNet.csproj" />
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
+
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+
+
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.0.0" />
   </ItemGroup>
 </Project>

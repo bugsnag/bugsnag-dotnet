@@ -9,8 +9,6 @@
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
 </Project>

@@ -79,7 +79,9 @@ namespace Bugsnag
       HandleEvent(e.Exception as Exception, _unobservedTerminates && !e.Observed);
     }
 
+#if NET462 || NETSTANDARD2_0
     [HandleProcessCorruptedStateExceptions]
+#endif
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
       HandleEvent(e.ExceptionObject as Exception, e.IsTerminating);
