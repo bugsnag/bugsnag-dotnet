@@ -10,6 +10,13 @@ namespace Bugsnag.AspNet
 
     private static IClient _globalClient;
 
+    static Client()
+    {
+      // configure the delivery once here to avoid creating a new HttpClient
+      // for every request when a proxy is set in the configuration.
+      DefaultDelivery.Instance.Configure(ConfigurationSection.Configuration.Settings);
+    }
+
     public static IClient Current
     {
       get
@@ -27,7 +34,7 @@ namespace Bugsnag.AspNet
           {
             // this is the first time a client has been requested for this
             // request scope, so create one and attach it to the request
-            var requestScopedClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
+            var requestScopedClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings, DefaultDelivery.Instance);
             HttpContext.Current.Items[HttpContextItemsKey] = requestScopedClient;
             return requestScopedClient;
           }
@@ -39,7 +46,7 @@ namespace Bugsnag.AspNet
           {
             if (_globalClient == null)
             {
-              _globalClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
+              _globalClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings, DefaultDelivery.Instance);
             }
           }
 
