@@ -20,11 +20,18 @@ namespace Bugsnag.AspNet.Core
     {
       services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+      // configure the delivery once here to avoid creating a new HttpClient
+      // for every request when a proxy is set in the configuration.
+      services.AddSingleton<IStartupFilter>(provider => {
+         var configuration = provider.GetService<IOptions<Configuration>>();
+         DefaultDelivery.Instance.Configure(configuration.Value);
+         return new BugsnagStartupFilter();
+       });
+
       return services
-        .AddSingleton<IStartupFilter, BugsnagStartupFilter>()
         .AddScoped<IClient, Client>(context => {
           var configuration = context.GetService<IOptions<Configuration>>();
-          var client = new Client(configuration.Value);
+          var client = new Client(configuration.Value, DefaultDelivery.Instance);
           return client;
         });
     }
