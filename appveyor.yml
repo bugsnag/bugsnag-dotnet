@@ -18,11 +18,4 @@ deploy:
     artifact: /.*(\.|\.s)nupkg/
     on:
       appveyor_repo_tag: true
-  - provider: GitHub
-    description: draft release
-    auth_token:
-      secure: 1HE8bikN3sntks6sONzT0nVoW5FZ7lQRAwMpgZkGNcpLM2t9Em9x7MCfwyhcierN
-    artifact: build\bugsnag.zip
-    draft: true
-    on:
-      appveyor_repo_tag: true
+
