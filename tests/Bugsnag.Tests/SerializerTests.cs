@@ -58,6 +58,20 @@ namespace Bugsnag.Tests
       Assert.NotNull(json);
     }
 
+    [Fact]
+    public void CanSerializeException()
+    {
+      try
+      {
+        throw new System.Exception("Serialize me");
+      }
+      catch (System.Exception exception)
+      {
+        var json = Serializer.SerializeObject(exception);
+        Assert.NotNull(json);
+      }
+    }
+
     private class Circular
     {
       public string Name { get; set; }
