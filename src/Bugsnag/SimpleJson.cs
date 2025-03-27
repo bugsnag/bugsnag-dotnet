@@ -1548,6 +1548,11 @@ namespace SimpleJson
                 output = ((Guid)input).ToString("D");
             else if (input is Uri)
                 output = input.ToString();
+            else if (typeof(System.Reflection.MethodBase).IsAssignableFrom(input.GetType()))
+            {
+              // MethodBase (i.e. TargetSite in Exceptions) cannot be serialized, so ignore
+              output = null;
+            }
             else
             {
                 Enum inputEnum = input as Enum;
