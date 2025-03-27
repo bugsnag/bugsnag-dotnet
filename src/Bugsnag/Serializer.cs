@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Bugsnag
     public static string SerializeObject(object obj, string[] filters)
     {
       var parsedFilters = filters != null ?
-        filters.ToDictionary(m => m, m => true) :
+        filters.ToDictionary(m => m, m => true, StringComparer.OrdinalIgnoreCase) :
         new Dictionary<string, bool>();
 
       try

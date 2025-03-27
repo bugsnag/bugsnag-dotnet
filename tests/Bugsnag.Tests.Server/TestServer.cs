@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,15 +16,15 @@ namespace Bugsnag.Tests
   public class TestServer
   {
     private readonly IWebHost _webHost;
-    private readonly RequestCollection<string> _requests;
+    private readonly RequestCollection<CapturedRequest> _requests;
     private readonly int _port;
 
     public TestServer()
     {
       _port = PortAllocations.Instance.NextFreePort();
-      _requests = new RequestCollection<string>();
+      _requests = new RequestCollection<CapturedRequest>();
       _webHost = new WebHostBuilder()
-        .ConfigureServices(services => services.AddSingleton(typeof(RequestCollection<string>), _requests))
+        .ConfigureServices(services => services.AddSingleton(typeof(RequestCollection<CapturedRequest>), _requests))
         .UseStartup<Startup>()
         .UseKestrel(options => {
           options.Listen(IPAddress.Loopback, _port);
@@ -37,13 +39,13 @@ namespace Bugsnag.Tests
       _webHost.Start();
     }
 
-    public async Task<IEnumerable<string>> Requests(int numberOfRequests)
+    public async Task<IEnumerable<CapturedRequest>> Requests(int numberOfRequests)
     {
       var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
       return await Requests(numberOfRequests, cts.Token);
     }
 
-    public async Task<IEnumerable<string>> Requests(int numberOfRequests, CancellationToken token)
+    public async Task<IEnumerable<CapturedRequest>> Requests(int numberOfRequests, CancellationToken token)
     {
       var items = await _requests.Items(numberOfRequests, token);
       await _webHost.StopAsync();
@@ -71,9 +73,9 @@ namespace Bugsnag.Tests
 
     class Startup
     {
-      private readonly RequestCollection<string> _requests;
+      private readonly RequestCollection<CapturedRequest> _requests;
 
-      public Startup(RequestCollection<string> requests)
+      public Startup(RequestCollection<CapturedRequest> requests)
       {
         _requests = requests;
       }
@@ -81,12 +83,8 @@ namespace Bugsnag.Tests
       public void Configure(IApplicationBuilder app)
       {
         app.Run(async context => {
-          var stream = context.Request.Body;
-          using (var reader = new StreamReader(stream))
-          {
-            var request = await reader.ReadToEndAsync();
-            _requests.Add(request);
-          }
+          var request = await CapturedRequest.Create(context.Request);
+          _requests.Add(request);
           await context.Response.WriteAsync("OK");
         });
       }
@@ -133,4 +131,21 @@ namespace Bugsnag.Tests
       }
     }
   }
+
+    public class CapturedRequest
+    {
+        public Dictionary<string, string> Headers { get; set; }
+        public string Body { get; set; }
+
+        public static async Task<CapturedRequest> Create(HttpRequest request)
+        {
+            var testRequest = new CapturedRequest();
+            testRequest.Headers = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
+            using (var reader = new StreamReader(request.Body))
+            {
+                testRequest.Body = await reader.ReadToEndAsync();
+            }
+            return testRequest;
+        }
+    }
 }

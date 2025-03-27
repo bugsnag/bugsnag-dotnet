@@ -47,7 +47,17 @@ namespace Bugsnag
     /// Constructs a client with the default storage and delivery classes.
     /// </summary>
     /// <param name="configuration"></param>
-    public Client(IConfiguration configuration) : this(configuration, ThreadQueueDelivery.Instance, new Breadcrumbs(configuration), new SessionTracker(configuration))
+    public Client(IConfiguration configuration) : this(configuration, DefaultDelivery.Instance)
+    {
+      DefaultDelivery.Instance.Configure(configuration);
+    }
+
+    /// <summary>
+    /// Constructs a client with the specified configuration and delivery classes.
+    /// </summary>
+    /// <param name="configuration"></param>
+    /// <param name="delivery"></param>
+    public Client(IConfiguration configuration, IDelivery delivery) : this(configuration, delivery, new Breadcrumbs(configuration), new SessionTracker(configuration))
     {
 
     }

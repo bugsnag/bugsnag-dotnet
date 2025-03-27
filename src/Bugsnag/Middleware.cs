@@ -66,7 +66,7 @@ namespace Bugsnag
         {
           foreach (var stackTraceLine in exception.StackTrace)
           {
-            if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.FileName))
+            if (!String.IsNullOrWhiteSpace(stackTraceLine.FileName))
             {
               foreach (var filePrefix in projectRoots)
               {
@@ -93,7 +93,7 @@ namespace Bugsnag
         {
           foreach (var stackTraceLine in exception.StackTrace)
           {
-            if (!Polyfills.String.IsNullOrWhiteSpace(stackTraceLine.MethodName))
+            if (!String.IsNullOrWhiteSpace(stackTraceLine.MethodName))
             {
               foreach (var @namespace in report.Configuration.ProjectNamespaces)
               {

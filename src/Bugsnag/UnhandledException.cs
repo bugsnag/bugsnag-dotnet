@@ -55,9 +55,7 @@ namespace Bugsnag
     /// <returns></returns>
     private bool DetermineUnobservedTerminates()
     {
-#if NET35 || NET40
-      return true;
-#elif NET45
+#if NET462
       System.Xml.Linq.XElement configFile = null;
       if(System.IO.File.Exists(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile))
         configFile = System.Xml.Linq.XElement.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile); 
@@ -66,7 +64,7 @@ namespace Bugsnag
       bool value;
       var success = bool.TryParse(configValue, out value);
       return success && value;
-#else //NETSTANDARD1_3 || NETSTANDARD2_0
+#else // NETSTANDARD2_0
       return false;
 #endif
     }
@@ -81,7 +79,9 @@ namespace Bugsnag
       HandleEvent(e.Exception as Exception, _unobservedTerminates && !e.Observed);
     }
 
+#if NET462 || NETSTANDARD2_0
     [HandleProcessCorruptedStateExceptions]
+#endif
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
       HandleEvent(e.ExceptionObject as Exception, e.IsTerminating);
@@ -106,63 +106,9 @@ namespace Bugsnag
       if (runtimeEnding)
       {
         SessionsStore.Instance.Stop();
-        ThreadQueueDelivery.Instance.Stop();
+        DefaultDelivery.Instance.Stop();
       }
     }
   }
 }
 
-#if NET35
-namespace System.Threading.Tasks
-{
-  public class TaskScheduler
-  {
-    public static event EventHandler<UnobservedTaskExceptionEventArgs> UnobservedTaskException { add {} remove {} }
-  }
-
-  public class UnobservedTaskExceptionEventArgs : EventArgs
-  {
-    public Exception Exception { get; set; }
-
-    public bool Observed { get; set; }
-  }
-}
-#endif
-
-#if NETSTANDARD1_3 || NET35
-namespace System.Runtime.ExceptionServices
-{
-  public class HandleProcessCorruptedStateExceptionsAttribute : Attribute {}
-}
-#endif
-
-#if NETSTANDARD1_3
-namespace System
-{
-  public class AppDomain
-  {
-    private static readonly AppDomain _dummyAppDomain = new AppDomain();
-
-    public static AppDomain CurrentDomain
-    {
-      get
-      {
-        return _dummyAppDomain;
-      }
-    }
-
-    public event UnhandledExceptionEventHandler UnhandledException { add {} remove {} }
-
-    public event EventHandler ProcessExit { add {} remove {} }
-
-    public delegate void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args);
-  }
-
-  public class UnhandledExceptionEventArgs : EventArgs
-  {
-    public Exception ExceptionObject { get; set; }
-
-    public bool IsTerminating { get; set; }
-  }
-}
-#endif

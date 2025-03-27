@@ -1,6 +1,42 @@
 Changelog
 =========
 
+## 4.0.0 (2025-03-27)
+
+### Breaking Changes
+
+* Removed `net35`, `net40` and `netstandard1.3` TFMs. The new minimum TFM for .NET Framework is 4.6.2. If you still need to target older framework versions we recommend using v3.x.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#173](https://github.com/bugsnag/bugsnag-dotnet/pull/173)
+  
+* Removed the `Proxy` property from the `Report` object. Overriding the `Proxy` configuration for individual reports in a `BeforeNotify` callback is no longer supported.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#175](https://github.com/bugsnag/bugsnag-dotnet/pull/175)
+    
+### Enhancements
+
+* Removed/updated deprecated and vulnerable package dependencies.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#174](https://github.com/bugsnag/bugsnag-dotnet/pull/174)
+  
+* Added `net6.0` TFM for `Bugsnag` and `Bugsnag.AspNet.Core`.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#179](https://github.com/bugsnag/bugsnag-dotnet/pull/179)
+  
+* Added new default delivery implementation using `HttpClient`.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#175](https://github.com/bugsnag/bugsnag-dotnet/pull/175)
+
+* `MetadataFilters` are now case-insensitive.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#181](https://github.com/bugsnag/bugsnag-dotnet/pull/181)
+  
+### Bug fixes
+
+* Fix crash when attempting to serialize exceptions in report metadata.
+  | [yousif-bugsnag](https://github.com/yousif-bugsnag)
+  | [#182](https://github.com/bugsnag/bugsnag-dotnet/pull/182)
+  
 ## 3.1.0 (2022-06-15)
 
 ### Enhancements

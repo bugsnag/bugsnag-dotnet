@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <PropertyGroup>
     <Authors>snmaynard kattrali martin308</Authors>
     <Version></Version>
@@ -7,12 +7,10 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/bugsnag/bugsnag-dotnet</PackageProjectUrl>
     <PackageIcon>bugsnag.png</PackageIcon>
-    <DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' != 'netstandard1.3' AND '$(TargetFramework)' != 'netstandard2.0'">true</DisableImplicitFrameworkReferences>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>7.1</LangVersion>
-    <WarningsAsErrors />
     <NoWarn>1591</NoWarn>
-	<AssemblyOriginatorKeyFile>$(MSBuildStartupDirectory)\Bugsnag.snk</AssemblyOriginatorKeyFile>
+	<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Bugsnag.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>

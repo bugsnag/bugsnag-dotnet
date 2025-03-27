@@ -10,7 +10,7 @@ namespace Bugsnag.Tests
   public class ClientTests
   {
     [Fact]
-    public async void TestThrownException()
+    public async Task TestThrownException()
     {
       var server = new TestServer();
 
@@ -71,7 +71,7 @@ namespace Bugsnag.Tests
 
         var requests = await server.Requests(1);
 
-        BugsnagPayload = requests.Single();
+        BugsnagPayload = requests.Single().Body;
       }
 
       /// <summary>

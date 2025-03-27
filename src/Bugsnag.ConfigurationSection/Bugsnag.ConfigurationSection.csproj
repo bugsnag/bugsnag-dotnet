@@ -3,14 +3,12 @@
     <PackageId>Bugsnag.ConfigurationSection</PackageId>
     <Title>Bugsnag .NET Configuration</Title>
     <Description>The Bugsnag .NET configuration library is used to configure your Bugsnag integration using a Web.config or App.config</Description>
-    <TargetFrameworks>net35;net45</TargetFrameworks>
+    <TargetFrameworks>net462</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bugsnag\Bugsnag.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
 </Project>
