@@ -87,6 +87,7 @@ namespace Bugsnag.Tests
       yield return new object[] { new FilterableTestObject { { "password", "password" } }, null, 0 };
       yield return new object[] { new FilterableTestObject { { "username", "password" } }, new string[] { "password" }, 0 };
       yield return new object[] { new FilterableTestObject { { "password", "password" }, { "credit_card_number", "number" } }, new string[] { "password", "credit_card_number" }, 2 };
+      yield return new object[] { new FilterableTestObject { { "Password", "password" }, { "Credit_Card_Number", "number" } }, new string[] { "password", "credit_card_number" }, 2 };
     }
   }
 }
