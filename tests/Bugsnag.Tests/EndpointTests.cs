@@ -1,42 +1,39 @@
 using System;
 using Xunit;
 
+using CoreConfiguration = global::Bugsnag.Configuration;
+
 namespace Bugsnag.Tests
 {
-  /// <summary>
-  /// Unit-tests for the automatic selection of notify / session
-  /// endpoints in <see cref="Bugsnag.Configuration"/>.
-  /// </summary>
   public class EndpointTests
   {
-    // ───────────────────────────────────────────────────────────────
-    // Test fixtures
-    // ───────────────────────────────────────────────────────────────
-    private const string NormalKey = "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d";   // any non-hub API key
-    private const string HubKey    = "00000c0ffeebabe0000deadbeef0000";   // 5×0 prefix → hub
+    // 5 leading zeroes → Insight Hub
+    private const string HubKey    = "00000cafebabefeed0000deadbeef0000";
+    // Any non-hub key → classic Bugsnag
+    private const string ClassicKey = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
     [Fact]
-    public void Defaults_Are_Used_For_Normal_ApiKey()
+    public void ClassicKey_Uses_Bugsnag_Hosts()
     {
-      var cfg = new Configuration(NormalKey);
+      var cfg = new CoreConfiguration(ClassicKey);
 
-      Assert.Equal(new Uri(Configuration.DefaultEndpoint),        cfg.Endpoint);
-      Assert.Equal(new Uri(Configuration.DefaultSessionEndpoint), cfg.SessionEndpoint);
+      Assert.Equal(new Uri(CoreConfiguration.DefaultEndpoint),        cfg.Endpoint);
+      Assert.Equal(new Uri(CoreConfiguration.DefaultSessionEndpoint), cfg.SessionEndpoint);
     }
 
     [Fact]
-    public void Hub_Endpoints_Are_Selected_For_Hub_ApiKey()
+    public void HubKey_Uses_InsightHub_Hosts()
     {
-      var cfg = new Configuration(HubKey);
+      var cfg = new CoreConfiguration(HubKey);
 
-      Assert.Equal(new Uri(Configuration.HubEndpoint),        cfg.Endpoint);
-      Assert.Equal(new Uri(Configuration.HubSessionEndpoint), cfg.SessionEndpoint);
+      Assert.Equal(new Uri(CoreConfiguration.HubEndpoint),        cfg.Endpoint);
+      Assert.Equal(new Uri(CoreConfiguration.HubSessionEndpoint), cfg.SessionEndpoint);
     }
 
     [Fact]
-    public void Explicit_Endpoints_Override_Automatic_Selection()
+    public void HubKey_Honours_Custom_Endpoints_When_Provided()
     {
-      var cfg = new Configuration(HubKey)
+      var cfg = new CoreConfiguration(HubKey)
       {
         Endpoint        = new Uri("https://notify.example.com"),
         SessionEndpoint = new Uri("https://sessions.example.com")
@@ -47,12 +44,12 @@ namespace Bugsnag.Tests
     }
 
     [Fact]
-    public void Blank_ApiKey_Falls_Back_To_Default_Endpoints()
+    public void BlankKey_Falls_Back_To_Default_Hosts()
     {
-      var cfg = new Configuration(string.Empty);
+      var cfg = new CoreConfiguration(string.Empty);
 
-      Assert.Equal(new Uri(Configuration.DefaultEndpoint),        cfg.Endpoint);
-      Assert.Equal(new Uri(Configuration.DefaultSessionEndpoint), cfg.SessionEndpoint);
+      Assert.Equal(new Uri(CoreConfiguration.DefaultEndpoint),        cfg.Endpoint);
+      Assert.Equal(new Uri(CoreConfiguration.DefaultSessionEndpoint), cfg.SessionEndpoint);
     }
   }
 }
