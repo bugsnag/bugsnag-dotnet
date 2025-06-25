@@ -27,18 +27,13 @@ namespace Bugsnag
     public Configuration(string apiKey)
     {
       ApiKey = apiKey;
-      if (IsHubApiKey(apiKey))
-      {
-        Endpoint = new Uri(HubEndpoint);
-        SessionEndpoint = new Uri(HubSessionEndpoint);
-      }
-      else
-      {
-        Endpoint = new Uri(DefaultEndpoint);
-        SessionEndpoint = new Uri(DefaultSessionEndpoint);
-      }
+
+      // Choose the correct hosts first-time-round
+      bool isHubKey = IsHubApiKey(apiKey);
+      Endpoint = new Uri(isHubKey ? HubEndpoint : DefaultEndpoint);
+      SessionEndpoint = new Uri(isHubKey ? HubSessionEndpoint : DefaultSessionEndpoint);
+
       AutoNotify = true;
-      SessionEndpoint = new Uri(DefaultSessionEndpoint);
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
       MetadataFilters = new[] { "password", "Authorization" };
       MaximumBreadcrumbs = 25;
