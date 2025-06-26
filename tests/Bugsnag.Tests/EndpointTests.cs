@@ -8,7 +8,7 @@ namespace Bugsnag.Tests
   public class EndpointTests
   {
     // 5 leading zeroes → Insight Hub
-    private const string HubKey    = "00000cafebabefeed0000deadbeef0000";
+    private const string HubKey    = "00000aaaaaaaaaaaaaaaaaaaaaaaaaaa";
     // Any non-hub key → classic Bugsnag
     private const string ClassicKey = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
