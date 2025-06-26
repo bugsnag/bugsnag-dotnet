@@ -15,9 +15,8 @@ namespace Bugsnag
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
     public const string HubEndpoint = "https://notify.insighthub.smartbear.com";
     public const string HubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
-    private static readonly Regex HubKeyRegex = new Regex(
-      @"^0{5}[0-9a-fA-F]{27}$",
-      RegexOptions.Compiled);
+    private const string HubKeyPrefix = "00000";
+
 
     public Configuration() : this(string.Empty)
     {
@@ -28,8 +27,7 @@ namespace Bugsnag
     {
       ApiKey = apiKey;
 
-      // Choose the correct hosts first-time-round
-      bool isHubKey = IsHubApiKey(apiKey);
+      bool isHubKey = IsHubKey(apiKey);
       Endpoint = new Uri(isHubKey ? HubEndpoint : DefaultEndpoint);
       SessionEndpoint = new Uri(isHubKey ? HubSessionEndpoint : DefaultSessionEndpoint);
 
@@ -74,7 +72,8 @@ namespace Bugsnag
 
     public int MaximumBreadcrumbs { get; set; }
 
-    private static bool IsHubApiKey(string key) =>
-  !string.IsNullOrWhiteSpace(key) && HubKeyRegex.IsMatch(key);
+    private static bool IsHubKey(string key) =>
+  !string.IsNullOrEmpty(key) &&
+  key.StartsWith(HubKeyPrefix, StringComparison.OrdinalIgnoreCase);
   }
 }
