@@ -11,6 +11,14 @@ namespace Bugsnag.ConfigurationSection
   {
     private static Configuration _configuration = ConfigurationManager.GetSection("bugsnag") as Configuration ?? new Configuration();
 
+    private const string HubKeyPrefix = "00000";
+    private const string HubNotifyUrl = "https://notify.insighthub.smartbear.com";
+    private const string HubSessionsUrl = "https://sessions.insighthub.smartbear.com";
+
+    private static bool IsHubKey(string key) =>
+      !string.IsNullOrEmpty(key) &&
+      key.StartsWith(HubKeyPrefix, StringComparison.OrdinalIgnoreCase);
+
     public static Configuration Settings
     {
       get { return _configuration; }
@@ -72,15 +80,22 @@ namespace Bugsnag.ConfigurationSection
 
     private const string endpoint = "endpoint";
 
-    [ConfigurationProperty(endpoint, IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultEndpoint)]
-    private string InternalEndpoint
-    {
-      get { return this[endpoint] as string; }
-    }
+    [ConfigurationProperty(endpoint,
+      IsRequired = false,
+      DefaultValue = Bugsnag.Configuration.DefaultEndpoint)]
+    private string InternalEndpoint => this[endpoint] as string;
 
     public Uri Endpoint
     {
-      get { return new Uri(InternalEndpoint); }
+      get
+      {
+        if (IsHubKey(ApiKey) &&
+            InternalEndpoint == Bugsnag.Configuration.DefaultEndpoint)
+        {
+          return new Uri(HubNotifyUrl);
+        }
+        return new Uri(InternalEndpoint);
+      }
     }
 
     private const string autoNotify = "autoNotify";
@@ -382,15 +397,22 @@ namespace Bugsnag.ConfigurationSection
 
     private const string sessionsEndpoint = "sessionsEndpoint";
 
-    [ConfigurationProperty(sessionsEndpoint, IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultSessionEndpoint)]
-    private string InternalSessionEndpoint
-    {
-      get { return this[sessionsEndpoint] as string; }
-    }
+    [ConfigurationProperty(sessionsEndpoint,
+      IsRequired = false,
+      DefaultValue = Bugsnag.Configuration.DefaultSessionEndpoint)]
+    private string InternalSessionEndpoint => this[sessionsEndpoint] as string;
 
     public Uri SessionEndpoint
     {
-      get { return new Uri(InternalSessionEndpoint); }
+      get
+      {
+        if (IsHubKey(ApiKey) &&
+            InternalSessionEndpoint == Bugsnag.Configuration.DefaultSessionEndpoint)
+        {
+          return new Uri(HubSessionsUrl);
+        }
+        return new Uri(InternalSessionEndpoint);
+      }
     }
 
     public TimeSpan SessionTrackingInterval

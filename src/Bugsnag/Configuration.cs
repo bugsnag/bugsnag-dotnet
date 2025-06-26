@@ -11,8 +11,11 @@ namespace Bugsnag
   public class Configuration : IConfiguration
   {
     public const string DefaultEndpoint = "https://notify.bugsnag.com";
-
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
+    public const string HubEndpoint = "https://notify.insighthub.smartbear.com";
+    public const string HubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
+    private const string HubKeyPrefix = "00000";
+
 
     public Configuration() : this(string.Empty)
     {
@@ -22,9 +25,12 @@ namespace Bugsnag
     public Configuration(string apiKey)
     {
       ApiKey = apiKey;
-      Endpoint = new Uri(DefaultEndpoint);
+
+      bool isHubKey = IsHubKey(apiKey);
+      Endpoint = new Uri(isHubKey ? HubEndpoint : DefaultEndpoint);
+      SessionEndpoint = new Uri(isHubKey ? HubSessionEndpoint : DefaultSessionEndpoint);
+
       AutoNotify = true;
-      SessionEndpoint = new Uri(DefaultSessionEndpoint);
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
       MetadataFilters = new[] { "password", "Authorization" };
       MaximumBreadcrumbs = 25;
@@ -64,5 +70,9 @@ namespace Bugsnag
     public IWebProxy Proxy { get; set; }
 
     public int MaximumBreadcrumbs { get; set; }
+
+    private static bool IsHubKey(string key) =>
+  !string.IsNullOrEmpty(key) &&
+  key.StartsWith(HubKeyPrefix, StringComparison.OrdinalIgnoreCase);
   }
 }

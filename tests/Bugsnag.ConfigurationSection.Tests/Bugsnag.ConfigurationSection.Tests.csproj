@@ -20,7 +20,7 @@
     <ProjectReference Include="..\..\src\Bugsnag.ConfigurationSection\Bugsnag.ConfigurationSection.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Complete.config">
+    <None Include="*.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
