@@ -4,7 +4,8 @@
 
 | Version | Supported             |
 | ------- | --------------------- |
-| 3.x     | Yes                   |
+| 3.x     | Critical patches only |
+| 4.x     | Yes                   |
 
 ## Reporting a Vulnerability
 
