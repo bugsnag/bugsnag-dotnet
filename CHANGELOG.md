@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 4.1.0 (2025-07-17)
+
+### Enhancements
+
+* Set default endpoints based on API key
+  | [richardelms](https://github.com/richardelms)
+  | [#184](https://github.com/bugsnag/bugsnag-dotnet/pull/184)
+
 ## 4.0.0 (2025-03-27)
 
 ### Breaking Changes
