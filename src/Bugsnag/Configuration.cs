@@ -12,8 +12,8 @@ namespace Bugsnag
   {
     public const string DefaultEndpoint = "https://notify.bugsnag.com";
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
-    public const string HubEndpoint = "https://notify.insighthub.smartbear.com";
-    public const string HubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
+    public const string SecondaryEndpoint = "https://notify.bugsnag.smartbear.com";
+    public const string SecondarySessionEndpoint = "https://sessions.bugsnag.smartbear.com";
     private const string HubKeyPrefix = "00000";
 
 
@@ -26,9 +26,9 @@ namespace Bugsnag
     {
       ApiKey = apiKey;
 
-      bool isHubKey = IsHubKey(apiKey);
-      Endpoint = new Uri(isHubKey ? HubEndpoint : DefaultEndpoint);
-      SessionEndpoint = new Uri(isHubKey ? HubSessionEndpoint : DefaultSessionEndpoint);
+      bool isSecondaryKey = IsSecondaryKey(apiKey);
+      Endpoint = new Uri(isSecondaryKey ? SecondaryEndpoint : DefaultEndpoint);
+      SessionEndpoint = new Uri(isSecondaryKey ? SecondarySessionEndpoint : DefaultSessionEndpoint);
 
       AutoNotify = true;
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
@@ -71,8 +71,7 @@ namespace Bugsnag
 
     public int MaximumBreadcrumbs { get; set; }
 
-    private static bool IsHubKey(string key) =>
-  !string.IsNullOrEmpty(key) &&
-  key.StartsWith(HubKeyPrefix, StringComparison.OrdinalIgnoreCase);
+    private static bool IsSecondaryKey(string key) =>
+      !string.IsNullOrEmpty(key) && key.StartsWith(HubKeyPrefix, StringComparison.OrdinalIgnoreCase);
   }
 }
