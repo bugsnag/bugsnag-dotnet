@@ -7,9 +7,9 @@ namespace Bugsnag.Tests
 {
   public class EndpointTests
   {
-    // 5 leading zeroes → Insight Hub
-    private const string HubKey    = "00000aaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    // Any non-hub key → classic Bugsnag
+    // 5 leading zeroes → Secondary
+    private const string SecondaryKey = "00000aaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    // Any non-secondary key → classic
     private const string ClassicKey = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
     [Fact]
@@ -17,29 +17,29 @@ namespace Bugsnag.Tests
     {
       var cfg = new CoreConfiguration(ClassicKey);
 
-      Assert.Equal(new Uri(CoreConfiguration.DefaultEndpoint),        cfg.Endpoint);
+      Assert.Equal(new Uri(CoreConfiguration.DefaultEndpoint), cfg.Endpoint);
       Assert.Equal(new Uri(CoreConfiguration.DefaultSessionEndpoint), cfg.SessionEndpoint);
     }
 
     [Fact]
-    public void HubKey_Uses_InsightHub_Hosts()
+    public void SecondaryKey_Uses_Smartbear_Hosts()
     {
-      var cfg = new CoreConfiguration(HubKey);
+      var cfg = new CoreConfiguration(SecondaryKey);
 
-      Assert.Equal(new Uri(CoreConfiguration.HubEndpoint),        cfg.Endpoint);
-      Assert.Equal(new Uri(CoreConfiguration.HubSessionEndpoint), cfg.SessionEndpoint);
+      Assert.Equal(new Uri(CoreConfiguration.SecondaryEndpoint), cfg.Endpoint);
+      Assert.Equal(new Uri(CoreConfiguration.SecondarySessionEndpoint), cfg.SessionEndpoint);
     }
 
     [Fact]
-    public void HubKey_Honours_Custom_Endpoints_When_Provided()
+    public void SecondaryKey_Honours_Custom_Endpoints_When_Provided()
     {
-      var cfg = new CoreConfiguration(HubKey)
+      var cfg = new CoreConfiguration(SecondaryKey)
       {
-        Endpoint        = new Uri("https://notify.example.com"),
+        Endpoint = new Uri("https://notify.example.com"),
         SessionEndpoint = new Uri("https://sessions.example.com")
       };
 
-      Assert.Equal(new Uri("https://notify.example.com"),   cfg.Endpoint);
+      Assert.Equal(new Uri("https://notify.example.com"), cfg.Endpoint);
       Assert.Equal(new Uri("https://sessions.example.com"), cfg.SessionEndpoint);
     }
 
@@ -48,7 +48,7 @@ namespace Bugsnag.Tests
     {
       var cfg = new CoreConfiguration(string.Empty);
 
-      Assert.Equal(new Uri(CoreConfiguration.DefaultEndpoint),        cfg.Endpoint);
+      Assert.Equal(new Uri(CoreConfiguration.DefaultEndpoint), cfg.Endpoint);
       Assert.Equal(new Uri(CoreConfiguration.DefaultSessionEndpoint), cfg.SessionEndpoint);
     }
   }

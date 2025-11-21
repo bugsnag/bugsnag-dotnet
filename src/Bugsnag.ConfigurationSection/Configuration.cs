@@ -11,13 +11,13 @@ namespace Bugsnag.ConfigurationSection
   {
     private static Configuration _configuration = ConfigurationManager.GetSection("bugsnag") as Configuration ?? new Configuration();
 
-    private const string HubKeyPrefix = "00000";
-    private const string HubNotifyUrl = "https://notify.insighthub.smartbear.com";
-    private const string HubSessionsUrl = "https://sessions.insighthub.smartbear.com";
+    private const string SecondaryKeyPrefix = "00000";
+    private const string SecondaryNotifyUrl = "https://notify.bugsnag.smartbear.com";
+    private const string SecondarySessionsUrl = "https://sessions.bugsnag.smartbear.com";
 
-    private static bool IsHubKey(string key) =>
+    private static bool IsSecondaryKey(string key) =>
       !string.IsNullOrEmpty(key) &&
-      key.StartsWith(HubKeyPrefix, StringComparison.OrdinalIgnoreCase);
+      key.StartsWith(SecondaryKeyPrefix, StringComparison.OrdinalIgnoreCase);
 
     public static Configuration Settings
     {
@@ -89,10 +89,10 @@ namespace Bugsnag.ConfigurationSection
     {
       get
       {
-        if (IsHubKey(ApiKey) &&
+        if (IsSecondaryKey(ApiKey) &&
             InternalEndpoint == Bugsnag.Configuration.DefaultEndpoint)
         {
-          return new Uri(HubNotifyUrl);
+          return new Uri(SecondaryNotifyUrl);
         }
         return new Uri(InternalEndpoint);
       }
@@ -406,10 +406,10 @@ namespace Bugsnag.ConfigurationSection
     {
       get
       {
-        if (IsHubKey(ApiKey) &&
+        if (IsSecondaryKey(ApiKey) &&
             InternalSessionEndpoint == Bugsnag.Configuration.DefaultSessionEndpoint)
         {
-          return new Uri(HubSessionsUrl);
+          return new Uri(SecondarySessionsUrl);
         }
         return new Uri(InternalSessionEndpoint);
       }
