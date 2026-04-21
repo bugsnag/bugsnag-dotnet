@@ -2,10 +2,12 @@
 
 ## Development Dependencies
 
-- Windows 10 pro
+- Windows 10 or later
 - Docker for Windows
-- Visual Studio 2017
-- [.NET framework 3.5](https://docs.microsoft.com/en-us/dotnet/framework/install/dotnet-35-windows-10)
+- Visual Studio 2022 or later
+- .NET SDK 6.0+
+- .NET SDK 8.0 (for running tests)
+- .NET Framework 4.6.2 targeting pack
 
 ## Running the build script
 
@@ -51,23 +53,37 @@ See the [README](examples)
 If you're a member of the core team, follow these instructions for releasing
 bugsnag-dotnet.
 
-### First-time setup
+### Versioning
 
-### Every time
+This project follows [semantic versioning](http://semver.org):
 
-* Compile new features, enhancements, and fixes into the CHANGELOG.
-* Update the project version using [semantic versioning](http://semver.org).
-  Specifically:
+> Given a version number MAJOR.MINOR.PATCH, increment the:
+>
+> 1. MAJOR version when you make incompatible API changes,
+> 2. MINOR version when you add functionality in a backwards-compatible
+>    manner, and
+> 3. PATCH version when you make backwards-compatible bug fixes.
 
-  > Given a version number MAJOR.MINOR.PATCH, increment the:
-  >
-  > 1. MAJOR version when you make incompatible API changes,
-  > 2. MINOR version when you add functionality in a backwards-compatible
-  >    manner, and
-  > 3. PATCH version when you make backwards-compatible bug fixes.
-  >
-  > Additional labels for pre-release and build metadata are available as
-  > extensions to the MAJOR.MINOR.PATCH format.
+### Release steps
 
-* Commit and push your changes
-* Add a git tag with the new version of the library
+1. Create a release branch from `next` (e.g. `release/vX.Y.Z`)
+2. Compile new features, enhancements, and fixes into the `CHANGELOG.md`
+3. Make a PR from your release branch into `master`
+4. Once the PR has been approved, merge the release branch into `master`
+5. Create a git tag on `master` with the new version (e.g. `vX.Y.Z`)
+6. Create a new release on GitHub https://github.com/bugsnag/bugsnag-dotnet/releases/new
+  - Use the tag vX.Y.Z as the name of the release
+  - Copy the release notes from `CHANGELOG.md`
+7. Crate a PR from `master` to `next` to keep the branches in sync
+
+### How deployment works
+
+Pushing a git tag triggers an automatic deployment via AppVeyor CI (configured
+in `appveyor.yml`):
+
+* The `Appveyor` Cake task runs, which sets the package version from the git
+  tag and creates NuGet packages (`.nupkg` and `.snupkg` symbol packages)
+* AppVeyor's deploy step detects the tag (`appveyor_repo_tag: true`) and
+  pushes all NuGet and symbol packages to **nuget.org**
+* No manual publish step is needed — tagging the commit is what triggers the
+  release

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 4.1.1 (2026-04-21)
+
+### Bug fixes
+* Amend secondary instance URL to bugsnag.smartbear.com 
+  | [richardelms](https://github.com/richardelms)
+  | [#186](https://github.com/bugsnag/bugsnag-dotnet/pull/186)
+
 ## 4.1.0 (2025-07-17)
 
 ### Enhancements
