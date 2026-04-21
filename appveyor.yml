@@ -12,7 +12,7 @@ artifacts:
 deploy:
   - provider: NuGet
     api_key:
-      secure: m6WbgFUUql5zTSC3cVuiejmiR5obXO888p/MejtpT6MNXdsUPAaa0/bCW7crgrgK 
+      secure: ZOltiJQYBDnQdQxzM3eROvsQo5RB4INOv6RqUPtE+j7E2HbdKqI6SNX7h3YxNNkO 
     skip_symbols: false
     symbol_server: https://www.nuget.org/api/v2/symbolpackage
     artifact: /.*(\.|\.s)nupkg/
